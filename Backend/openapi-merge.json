@@ -1,0 +1,191 @@
+{
+  "inputs": [
+    {
+      "inputFile": "src/main/resources/WRIS.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Addresses.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Applicants.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Applications.yml"
+    },
+    {
+      "inputFile": "src/main/resources/ApplicationFileLocation.yml"
+    },
+    {
+      "inputFile": "src/main/resources/ApplicationWaterRights.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Basins.yml"
+    },
+    {
+      "inputFile": "src/main/resources/CaseAssignmentTypes.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Cases.yml"
+    },
+    {
+      "inputFile": "src/main/resources/CaseStatus.yml"
+    },
+    {
+      "inputFile": "src/main/resources/CaseTypes.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Categories.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Change.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Compacts.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Counties.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Customers.yml"
+    },
+    {
+      "inputFile": "src/main/resources/DataSources.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Decrees.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Ditches.yml"
+    },
+    {
+      "inputFile": "src/main/resources/ElectronicContacts.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Enforcements.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Events.yml"
+    },
+    {
+      "inputFile": "src/main/resources/EventTypes.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Examinations.yml"
+    },
+    {
+      "inputFile": "src/main/resources/LegalLand.yml"
+    },
+    {
+      "inputFile": "src/main/resources/MailingJobParties.yml"
+    },
+    {
+      "inputFile": "src/main/resources/MailingJobs.yml"
+    },
+    {
+      "inputFile": "src/main/resources/MailingJobWaterRights.yml"
+    },
+    {
+      "inputFile": "src/main/resources/MeansOfDiversion.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Notice.yml"
+    },
+    {
+      "inputFile": "src/main/resources/NotTheSame.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Objections.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Objectors.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Offices.yml"
+    },
+    {
+      "inputFile": "src/main/resources/OwnershipUpdate.yml"
+    },
+    {
+      "inputFile": "src/main/resources/OwnershipUpdateFileLocation.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Payments.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Periods.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Purposes.yml"
+    },
+    {
+      "inputFile": "src/main/resources/References.yml"
+    },
+    {
+      "inputFile": "src/main/resources/RelatedRights.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Remarks.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Representatives.yml"
+    },
+    {
+      "inputFile": "src/main/resources/RoleTypes.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Sources.yml"
+    },
+    {
+      "inputFile": "src/main/resources/SubdivisionCodes.yml"
+    },
+    {
+      "inputFile": "src/main/resources/Usgs.yml"
+    },
+    {
+      "inputFile": "src/main/resources/VersionApplications.yml"
+    },
+    {
+      "inputFile": "src/main/resources/VersionCompacts.yml"
+    },
+    {
+      "inputFile": "src/main/resources/VersionHistorical.yml"
+    },
+    {
+      "inputFile": "src/main/resources/VersionMeasurements.yml"
+    },
+    {
+      "inputFile": "src/main/resources/VersionPOD.yml"
+    },
+    {
+      "inputFile": "src/main/resources/VersionRemarks.yml"
+    },
+    {
+      "inputFile": "src/main/resources/VersionReservoirs.yml"
+    },
+    {
+      "inputFile": "src/main/resources/WaterRightFileLocation.yml"
+    },
+    {
+      "inputFile": "src/main/resources/WaterRightGeocodes.yml"
+    },
+    {
+      "inputFile": "src/main/resources/WaterRightOwners.yml"
+    },
+    {
+      "inputFile": "src/main/resources/WaterRightOwnershipUpdates.yml"
+    },
+    {
+      "inputFile": "src/main/resources/WaterRights.yml"
+    },
+    {
+      "inputFile": "src/main/resources/WaterRightStatuses.yml"
+    },
+    {
+      "inputFile": "src/main/resources/WaterRightVersions.yml"
+    },
+    {
+      "inputFile": "src/main/resources/ZipCode.yml"
+    }
+  ],
+  "output": "src/main/resources/output.json"
+}

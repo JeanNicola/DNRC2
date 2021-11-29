@@ -1,0 +1,99 @@
+<div *ngIf="title" class="edit-header-title">{{ title }}</div>
+<div *ngIf="!data && !error; else loaded" class="loading-container">
+  <p class="edit-header-title">Loading...</p>
+</div>
+<ng-template #loaded>
+  <div class="app-edit-header" *ngIf="data && !error; else failed">
+    <div class="data-row">
+      <ng-container *ngFor="let item of displayedColumns">
+        <div
+          *ngIf="item.columnId === 'clarification'"
+          [matTooltip]="data[item.columnId]"
+          matTooltipClass="show-complete-tooltip-text"
+          matTooltipPosition="right"
+        >
+          <shared-data-row-field
+            [inputStyles]="{ whiteSpace: 'normal', overflow: 'auto' }"
+            [field]="item"
+            [dataValue]="data[item.columnId]"
+            [removePadding]="true"
+          ></shared-data-row-field>
+        </div>
+        <div *ngIf="item.columnId !== 'clarification'">
+          <shared-data-row-field
+            [inputStyles]="{ whiteSpace: 'normal', overflow: 'auto' }"
+            [field]="item"
+            [dataValue]="data[item.columnId]"
+            [removePadding]="true"
+            (keydown.enter)="onFieldDblClickHandler(item)"
+            (keydown.space)="onFieldDblClickHandler(item)"
+            (dblclick)="onFieldDblClickHandler(item)"
+          ></shared-data-row-field>
+        </div>
+      </ng-container>
+      <div
+        *ngIf="showAdditionalPurposeInformation"
+        class="edit-header-sub-title"
+      >
+        Purpose additional information
+      </div>
+      <ng-container *ngFor="let item of purposeAdditionalColumns">
+        <shared-data-row-field
+          [inputStyles]="{ whiteSpace: 'normal', overflow: 'auto' }"
+          [field]="item"
+          [dataValue]="data[item.columnId]"
+          [removePadding]="true"
+        ></shared-data-row-field>
+      </ng-container>
+    </div>
+
+    <!-- Button Action -->
+    <div class="data-row-actions">
+      <button
+        mat-mini-fab
+        color="primary"
+        matTooltip="Examination"
+        (click)="onClickExaminationHandler()"
+        [disabled]="
+          !this.data.examinationId ||
+          disableExaminations ||
+          this.data.versionHasCompact
+        "
+      >
+        <mat-icon>e_mobiledata</mat-icon>
+      </button>
+      <button
+        #firstInsert
+        mat-mini-fab
+        color="primary"
+        matTooltip="Add Purpose"
+        (click)="onInsert()"
+        [disabled]="!permissions.canPOST || !canEdit"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+      <button
+        #editButton
+        mat-mini-fab
+        color="primary"
+        matTooltip="Edit Purpose"
+        (click)="onEdit()"
+        [disabled]="!permissions.canPUT || !canEdit"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <app-reports-button
+        class="data-row-actions"
+        [data]="data"
+        [reportConfig]="reports"
+        [title]="reportTitle"
+      ></app-reports-button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #failed>
+  <div class="loading-container">
+    <p class="edit-header-title">Purpose not found.</p>
+  </div>
+</ng-template>

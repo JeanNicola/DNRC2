@@ -1,0 +1,50 @@
+<div class="content">
+  <mat-card>
+    <mat-card-title>
+      <div class="title-container">
+        <div class="card-title">{{ title }}</div>
+      </div>
+    </mat-card-title>
+    <mat-card-content>
+      <div class="data-container">
+        <h2 *ngIf="!rows?.length && dataMessage" class="data-message">
+          {{ dataMessage }}
+        </h2>
+        <app-data-table
+          *ngIf="rows?.length"
+          #dataTable
+          [data]="rows"
+          [columns]="columns"
+          [permissions]="permissions"
+          [hideActions]="true"
+          [hideEdit]="hideEdit"
+          [hideDelete]="hideDelete"
+          [hideHeader]="hideHeader"
+          [clickableRow]="clickableRow"
+          [highlightOneRow]="clickableRow"
+          [highlightFirstRowOnInit]="clickableRow"
+          [dblClickableRow]="clickableRow"
+          (rowDblClickEvent)="onRowDoubleClick(data?.results[$event])"
+          [zHeight]="1"
+          [primarySortColumn]="primarySortColumn"
+          [primaryDirection]="sortDirection"
+          (cellClickEvent)="cellClick($event);"
+          (sortEvent)="onSortRequest($event)"
+        >
+        </app-data-table>
+      </div>
+      <div *ngIf="paging">
+        <mat-paginator
+          *ngIf="data && rows?.length"
+          [length]="data.totalElements"
+          [pageIndex]="queryParameters.pageNumber - 1"
+          [pageSize]="data.pageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          [showFirstLastButtons]="true"
+          (page)="onPaging($event)"
+        >
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

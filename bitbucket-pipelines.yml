@@ -1,0 +1,104 @@
+#  Build the DNRC code
+image:
+  name: respecdnrc/build:1.0
+  username: $USERNAME
+  password: $PASSWORD
+  email: $EMAIL
+
+pipelines:
+  branches:
+    develop:
+    - step:
+        name: Build DNRC Development Environment
+        caches:
+        - maven
+        - node
+        script:
+        - echo "Building the application..."
+        - mvn -B -P dev package -DskipTests
+        - echo "Moving artifacts to Bitbucket Downloads..."
+        - cd deploy
+        - for file in wris-*; do curl -X POST --user "${BITBUCKET_USERNAME}:${BITBUCKET_APP_PASSWORD}" "https://api.bitbucket.org/2.0/repositories/ssglimited/dnrct-webapp/downloads" -F files=@${file}; done
+
+    qa:
+    - step:
+        name: Build DNRC QA Environment
+        caches:
+        - maven
+        - node
+        script:
+        - echo "Building the application..."
+        - mvn -B -P qa package -DskipTests
+        - echo "Moving artifacts to Bitbucket Downloads..."
+        - cd deploy
+        - for file in wris-*; do curl -X POST --user "${BITBUCKET_USERNAME}:${BITBUCKET_APP_PASSWORD}" "https://api.bitbucket.org/2.0/repositories/ssglimited/dnrct-webapp/downloads" -F files=@${file}; done
+
+    uat:
+    - step:
+        name: Build DNRC UAT Environment
+        caches:
+        - maven
+        - node
+        script:
+        - echo "Building the application..."
+        - mvn -B -P uat package -DskipTests
+        - echo "Moving artifacts to Bitbucket Downloads..."
+        - cd deploy
+        - for file in wris-*; do curl -X POST --user "${BITBUCKET_USERNAME}:${BITBUCKET_APP_PASSWORD}" "https://api.bitbucket.org/2.0/repositories/ssglimited/dnrct-webapp/downloads" -F files=@${file}; done
+
+    master:
+    - step:
+        name: Build DNRC Production Environment
+        caches:
+        - maven
+        - node
+        script:
+        - echo "Building the application..."
+        - mvn -B -P prod package -DskipTests
+        - echo "Moving artifacts to Bitbucket Downloads..."
+        - cd deploy
+        - for file in wris-*; do curl -X POST --user "${BITBUCKET_USERNAME}:${BITBUCKET_APP_PASSWORD}" "https://api.bitbucket.org/2.0/repositories/ssglimited/dnrct-webapp/downloads" -F files=@${file}; done
+
+  custom:
+    build-test-env:
+    - step:
+        name: Build Test environment
+        caches:
+        - maven
+        - node
+        script:
+        - echo "Running the script to build a SAMPLE test environment"
+        - echo "Building the application..."
+        - mvn -B -P test package -DskipTests
+        - echo "Moving artifacts to Bitbucket Downloads..."
+        - cd deploy
+        - for file in wris-*; do curl -X POST --user "${BITBUCKET_USERNAME}:${BITBUCKET_APP_PASSWORD}" "https://api.bitbucket.org/2.0/repositories/ssglimited/dnrct-webapp/downloads" -F files=@${file}; done
+
+    build-sample-prod-env:
+    - step:
+        name: Build Test environment
+        caches:
+        - maven
+        - node
+        script:
+        - echo "Running the script to build the SAMPLE production environment"
+        - echo "Building the application..."
+        - mvn -B -P qa package -DskipTests
+        - echo "Moving artifacts to Bitbucket Downloads..."
+        - cd deploy
+        - for file in wris-*; do curl -X POST --user "${BITBUCKET_USERNAME}:${BITBUCKET_APP_PASSWORD}" "https://api.bitbucket.org/2.0/repositories/ssglimited/dnrct-webapp/downloads" -F files=@${file}; done
+ 
+ # Left this incase we need to revert easily.
+  # tags:
+  #   QA20*:
+  #     - step:
+  #         name: Build DNRC QA Environment
+  #         caches:
+  #           - maven
+  #           - node
+  #         script:
+  #           - echo "Building the application..."
+  #           - mvn -B package -DskipTests -Dbuild-env=qa
+  #           - echo "Moving artifacts to Bitbucket Downloads..."
+  #           - cd deploy
+  #           - curl -X POST --user "${BITBUCKET_USERNAME}:${BITBUCKET_APP_PASSWORD}" "https://api.bitbucket.org/2.0/repositories/ssglimited/dnrct-webapp/downloads" -F files=@"wris-backend-1.0-SNAPSHOT-qa.war"  -F files=@"wris-frontend-1.0-SNAPSHOT-qa.zip"

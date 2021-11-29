@@ -1,0 +1,85 @@
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px">
+  <form [formGroup]="formGroup">
+    <mat-error>
+      <app-form-errors></app-form-errors>
+    </mat-error>
+    <div class="form-field" *ngFor="let field of displayFields; let i = index">
+      <shared-data-form-field
+        [mode]="mode"
+        [field]="field"
+        [value]="values !== null ? values[field.columnId] : null"
+        (shiftTabEvent)="receiveShiftTab($event, i)"
+        (changeEvent)="_onChange($event)"
+      >
+      </shared-data-form-field>
+    </div>
+
+    <h3 class="update-sub-title">Search Decree Basin</h3>
+    <div class="search-decree-basin">
+      <div
+        class="form-field"
+        *ngFor="let field of searchDecreeField; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          [value]="values !== null ? values[field.columnId] : null"
+          (changeEvent)="_onChange($event)"
+        >
+        </shared-data-form-field>
+      </div>
+      <button
+        #searchButton
+        (click)="onSearch()"
+        mat-mini-fab
+        color="primary"
+        matTooltip="Search"
+      >
+        <mat-icon>search</mat-icon>
+      </button>
+    </div>
+    <h3 class="update-sub-title">Selected Decree</h3>
+    <div class="selected-decrees-container">
+      <div class="selected-decree-fields">
+        <div
+          class="form-field"
+          *ngFor="let field of selectedDecreeColumns; let i = index"
+        >
+          <shared-data-form-field
+            [mode]="mode"
+            [field]="field"
+            [value]="values !== null ? values[field.columnId] : null"
+            (shiftTabEvent)="receiveShiftTab($event, i)"
+            (changeEvent)="_onChange($event)"
+          >
+          </shared-data-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <ng-template [ngIf]="formGroup">
+    <button
+      (click)="save()"
+      matTooltip="Update"
+      mat-mini-fab
+      color="primary"
+      [disabled]="!formGroup.valid || (!formGroup.dirty && mode !== 'search')"
+    >
+      <mat-icon>done</mat-icon>
+    </button>
+  </ng-template>
+
+  <button
+    (click)="onClose.emit(null)"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>

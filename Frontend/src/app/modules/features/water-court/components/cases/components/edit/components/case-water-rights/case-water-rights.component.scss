@@ -1,0 +1,14 @@
+.water-rights-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+
+  ::ng-deep .mat-card {
+    width: -webkit-fill-available;
+    height: fit-content;
+  }
+
+  > * {
+    min-width: 45%;
+  }
+}

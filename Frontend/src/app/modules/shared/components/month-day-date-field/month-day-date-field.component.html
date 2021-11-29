@@ -1,0 +1,49 @@
+<mat-form-field [appearance]="'outline'" [formGroup]="form">
+  <mat-label *ngIf="field.title">{{ field.title }}</mat-label>
+
+  <input
+    matInput
+    [matDatepicker]="datePicker"
+    [formControlName]="field.columnId"
+    [required]="isRequired"
+    #focusRef
+    onfocus="select()"
+    (keydown)="keydown($event)"
+    (dateChange)="change($event)"
+  />
+  <mat-datepicker-toggle
+    *ngIf="!form.controls[field.columnId].disabled"
+    matSuffix
+    [for]="datePicker"
+  ></mat-datepicker-toggle>
+  <mat-datepicker
+    startView="year"
+    #datePicker
+    panelClass="remove-year-from-date-picker"
+  ></mat-datepicker>
+
+  <!-- Display clear button on each field, if the field is editable or the dialog is not Update -->
+  <button
+    mat-button
+    type="button"
+    *ngIf="
+      (field.editable != false || mode != dialogTypes.Update) &&
+      !form.controls[field.columnId].disabled
+    "
+    matSuffix
+    mat-icon-button
+    aria-label="Clear"
+    (click)="clear($event)"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <!-- Provide the user a hint for input -->
+  <mat-hint *ngIf="field?.hint">{{ field?.hint }}</mat-hint>
+
+  <!-- Show the appropriate error if a validation fails -->
+  <mat-error>
+    <shared-data-field-errors [field]="field"></shared-data-field-errors>
+  </mat-error>
+  <!-- mat-icon *ngIf="icon" matSuffix>{{ icon }}</mat-icon -->
+</mat-form-field>

@@ -1,0 +1,77 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /decrees/basins:
+    get:
+      summary: get basins for cases and hearings
+      operationId: searchBasins
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/search-basins-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/basin'
+      responses:
+        200:
+          description: page of basins
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchBasinsResultPageDto'
+components:
+  schemas:
+    SearchBasinsResultPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/SearchBasinsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchBasinsResultDto'
+    SearchBasinsResultDto:
+      type: object
+      properties:
+        basin:
+          type: string
+        decreeId:
+          type: integer
+          format: int64
+        dctpCode:
+          type: string
+        dctpCodeDescription:
+          type: string
+        issueDate:
+          type: string
+          format: date
+    SearchBasinsSortColumn:
+      type: string
+      enum: [BASIN, DECREEID, DCTPCODEDESCRIPTION, ISSUEDATE]
+      default: BASIN
+  parameters:
+    search-basins-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/SearchBasinsSortColumn'

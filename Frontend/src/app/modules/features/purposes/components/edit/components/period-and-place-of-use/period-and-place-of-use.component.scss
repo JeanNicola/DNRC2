@@ -1,0 +1,29 @@
+.main-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  ::ng-deep .mat-card {
+    width: -webkit-fill-available;
+    height: fit-content;
+  }
+}
+
+.partition {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: -webkit-fill-available;
+
+  .child:first-of-type {
+    margin-right: 10px;
+  }
+
+  .child {
+    width: 50%;
+  }
+}
+
+.place-of-use-container {
+  width: 100%;
+  // margin-bottom: 15px;
+}

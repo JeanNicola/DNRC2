@@ -1,0 +1,14 @@
+.water-rights-container {
+  padding: 16px;
+  font-size: 2px;
+  border-radius: 4px;
+  margin-top: 20px;
+
+  ::ng-deep .mat-tab-body-content {
+    overflow: hidden;
+  }
+
+  ::ng-deep .mat-card {
+    width: 100%;
+  }
+}

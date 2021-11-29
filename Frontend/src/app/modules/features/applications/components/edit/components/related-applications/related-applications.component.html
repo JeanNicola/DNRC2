@@ -1,0 +1,45 @@
+<div class="content">
+  <mat-card>
+    <mat-card-content>
+      <div class="data-container">
+        <h2 *ngIf="!rows?.length && dataMessage" class="data-message">
+          {{ dataMessage }}
+        </h2>
+        <app-data-table
+          *ngIf="rows?.length"
+          [data]="rows"
+          [columns]="columns"
+          [permissions]="permissions"
+          [hideActions]="hideActions"
+          [hideEdit]="hideEdit"
+          [hideDelete]="hideDelete"
+          [hideHeader]="hideHeader"
+          [expandChildRef]="expandRef"
+          [clickableRow]="clickableRow"
+          [dblClickableRow]="dblClickableRow"
+          [zHeight]="zHeight"
+          [primarySortColumn]="primarySortColumn"
+          [isInMain]="false"
+          [primaryDirection]="sortDirection"
+          (sortEvent)="onSortRequest($event)"
+          (editEvent)="onEdit(data.results[$event])"
+          (deleteEvent)="onDelete($event)"
+          (rowDblClickEvent)="onRowDoubleClick(data.results[$event])"
+        >
+        </app-data-table>
+      </div>
+      <div *ngIf="paging">
+        <mat-paginator
+          *ngIf="data && rows?.length"
+          [length]="data.totalElements"
+          [pageIndex]="queryParameters.pageNumber - 1"
+          [pageSize]="data.pageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          [showFirstLastButtons]="true"
+          (page)="onPaging($event)"
+        >
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

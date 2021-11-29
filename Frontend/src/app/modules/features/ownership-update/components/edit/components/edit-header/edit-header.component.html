@@ -1,0 +1,51 @@
+<div *ngIf="title" class="edit-header-title">{{ title }}</div>
+<div *ngIf="!data && !error; else loaded" class="loading-container">
+  <p class="edit-header-title">Loading...</p>
+</div>
+<ng-template #loaded>
+  <div class="app-edit-header" *ngIf="data && !error; else failed">
+    <div class="data-row">
+      <shared-data-row-field
+        *ngFor="let item of displayedColumns"
+        [inputStyles]="{ whiteSpace: 'nowrap', overflow: 'hidden' }"
+        [field]="item"
+        [dataValue]="data[item.columnId]"
+        [removePadding]="true"
+      ></shared-data-row-field>
+    </div>
+
+    <!-- Button Action -->
+    <div class="data-row-actions">
+      <button
+        mat-mini-fab
+        color="primary"
+        matTooltip="Edit Ownership Update"
+        (click)="onEdit()"
+        [disabled]="!permissions.canPUT"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <app-reports-button
+        class="data-row-actions"
+        [data]="data"
+        [reportConfig]="reports"
+        [title]="reportTitle"
+      ></app-reports-button>
+      <button
+        mat-mini-fab
+        color="primary"
+        matTooltip="Process Transfer"
+        [disabled]="data.canTransfer !== 'Y'"
+        (click)="onProcessTransferHandler()"
+      >
+        <mat-icon>autorenew</mat-icon>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #failed>
+  <div class="loading-container">
+    <p class="edit-header-title">Ownership Update not found.</p>
+  </div>
+</ng-template>

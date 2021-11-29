@@ -1,0 +1,85 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px">
+  <div [formGroup]="searchForm" class="search">
+    <shared-data-form-field
+      [mode]="searchMode"
+      [field]="officeField"
+      class="inline"
+      [value]="data.responsibleOfficeId"
+      (changeEvent)="search()"
+    ></shared-data-form-field>
+    <div class="inline">
+      <div class="button-container">
+        <button
+          mat-raised-button
+          color="primary"
+          matTooltip="Include All"
+          (click)="include()"
+          [disabled]="!rows?.length || (includeAll && !exceptions.length)"
+          class="centered-button"
+        >
+          Include All
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          matTooltip="Exclude All"
+          (click)="exclude()"
+          [disabled]="!rows?.length || (!includeAll && !exceptions.length)"
+          class="centered-button"
+        >
+          Exclude All
+        </button>
+      </div>
+    </div>
+  </div>
+  <div [formGroup]="partiesForm" *ngIf="rows?.length">
+    <app-selection-data-table
+      [data]="rows"
+      [columns]="displayFields"
+      [isInMain]="false"
+      (sortEvent)="onSortRequest($event)"
+      (rowDblClickEvent)="onRowDoubleClick($event)"
+      (onRowStateChanged)="onRowStateChangedHandler($event)"
+    >
+    </app-selection-data-table>
+  </div>
+  <div class="loading" *ngIf="!rows?.length">{{ dataMessage }}</div>
+  <mat-paginator
+    *ngIf="rows?.length"
+    [length]="queryResult.totalElements"
+    [pageIndex]="queryParameters.pageNumber - 1"
+    [pageSize]="queryResult.pageSize"
+    [pageSizeOptions]="pageSizeOptions"
+    [showFirstLastButtons]="true"
+    (page)="onPaging($event)"
+  >
+  </mat-paginator
+></mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <button
+    (click)="save()"
+    type="button"
+    matTooltip="Add Customer"
+    mat-mini-fab
+    color="primary"
+    [disabled]="
+      (includeAll && exceptions.length >= queryResult?.totalElements) ||
+      (!includeAll && !exceptions.length) ||
+      !searchForm.get('officeId').value
+    "
+  >
+    <mat-icon>done</mat-icon>
+  </button>
+  <button
+    (click)="close()"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>

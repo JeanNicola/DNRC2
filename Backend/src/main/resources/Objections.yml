@@ -1,0 +1,397 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+tags:
+- name: Objections
+  description: Objections
+paths:
+  /objections:
+    get:
+      summary: search objections and counter objections
+      operationId: searchObjections
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/search-objections-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/objection-id'
+        - $ref: '#/components/parameters/objection-type'
+        - $ref: '#/components/parameters/filed-date'
+        - $ref: '#/components/parameters/objection-late'
+        - $ref: '#/components/parameters/objection-status'
+        - $ref: '#/components/parameters/basin'
+      responses:
+        200:
+          description: page of objections search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectionsSearchResultPageDto'
+    post:
+      summary: create objection or counter objection
+      operationId: createObjection
+      requestBody:
+        description: a new objection or counter objection
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectionCreationDto'
+      responses:
+        201:
+          description: the new objection or counter objection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectionsSearchResultDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: decree or application not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /applications/{applicationId}/objections:
+    get:
+      summary: get all the Objections
+      operationId: getObjections
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/objection-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a list of Objections
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectionsPageDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /cases/water-right/objections/{objectionId}:
+    put:
+      summary: update Objection
+      operationId: updateObjection
+      parameters:
+        - $ref: '#/components/parameters/objection-id'
+      requestBody:
+        description: the updated objection
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectionUpdateDto'
+      responses:
+        200:
+          description: the updated objection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectionDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: objection not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    ObjectionDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          x-message-name: Objection ID
+        objectionType:
+          type: string
+          maxLength: 3
+          pattern: '^[ -~]+$'
+        late:
+          type: string
+          x-message-name: Is Late
+        status:
+          type: string
+          maxLength: 4
+          pattern: '^[ -~]+$'
+        dateReceived:
+          type: string
+          format: date
+          x-message-name: Date Receive
+      required:
+        - id
+        - objectionType
+        - dateReceived
+      example:
+        id: 0
+        objectionType: OWT
+        dateReceived: 18/11/1985
+    ObjectionUpdateDto:
+      type: object
+      properties:
+        status:
+          type: string
+          maxLength: 4
+          pattern: '^[ -~]+$'
+    ObjectionsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/ObjectionSortColumn'
+        results:
+          type: object
+          properties:
+            summary:
+              $ref: '#/components/schemas/ApplicationCaseSummaryDto'
+            details:
+              type: array
+              items:
+                $ref: '#/components/schemas/ObjectionDto'
+    ApplicationCaseSummaryDto:
+      type: object
+      properties:
+        caseId:
+          type: integer
+          format: int64
+        statusDescription:
+          type: string
+        typeDescription:
+          type: string
+    ObjectionSortColumn:
+      type: string
+      enum: [ ID, OBJECTIONTYPE, DATERECEIVED, LATE, STATUS ]
+      default: STATUS
+    ObjectionsSearchResultPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/SearchObjectionsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectionsSearchResultDto'
+    ObjectionsSearchResultDto:
+      type: object
+      properties:
+        objectionId:
+          type: integer
+          format: int64
+        objectionType:
+          type: string
+        objectionTypeDescription:
+          type: string
+        filedDate:
+          type: date
+        objectionStatus:
+          type: string
+        objectionStatusDescription:
+          type: string
+        basin:
+          type: string
+        completeBasin:
+          type: string
+        completeWaterRightNumber:
+          type: string
+    SearchObjectionsSortColumn:
+      type: string
+      enum: [OBJECTIONID, OBJECTIONTYPEDESCRIPTION, FILEDDATE, OBJECTIONSTATUSDESCRIPTION, COMPLETEBASIN, COMPLETEWATERRIGHTNUMBER]
+      default: OBJECTIONID
+
+    ObjectionCreationDto:
+      type: object
+      properties:
+        objectionType:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+          x-message-name: Objection Type
+        objectionStatus:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Objection Status
+        filedDate:
+          type: date
+        waterRightId:
+          type: integer
+          format: int64
+        versionId:
+          type: integer
+          format: int64
+        applicationId:
+          type: integer
+          format: int64
+        decreeId:
+          type: integer
+          format: int64
+        issuedDate:
+          type: date
+        objectionLate:
+          type: string
+          pattern: '^(?:Y|N)$'
+          maxLength: 1
+          x-message-name: Objection Late
+        selfObjector:
+          type: string
+          pattern: '^(?:Y|N)$'
+          maxLength: 1
+          x-message-name: Self Objector
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/ElementDto'
+        objectors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectorDto'
+      required:
+        - objectionType
+        - filedDate
+    ElementDto:
+      allOf:
+        - $ref: '#/components/schemas/WaterRightVersionObjectionsElementsDto'
+
+    EligibleApplicationsSearchPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/EligibleApplicationsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'EligibleApplicationsDto'
+    EligibleApplicationsDto:
+      allOf:
+        - $ref: '#/components/schemas/ApplicationSearchResultDto'
+        - type: object
+          properties:
+            objectionsAllowed:
+              type: string
+            objectionAllowedDescription:
+              type: string
+    EligibleApplicationsSortColumn:
+      type: string
+      enum: [ APPLICATIONID, APPLICATIONTYPEDESCRIPTION ]
+      default: APPLICATIONID
+
+  parameters:
+    objection-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/ObjectionSortColumn'
+    search-objections-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/SearchObjectionsSortColumn'
+    eligible-applications-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/EligibleApplicationsSortColumn'
+    objection-id:
+      name: objectionId
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    objection-type:
+      name: objectionType
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    filed-date:
+      name: filedDate
+      in: query
+      schema:
+        type: string
+        format: date
+    objection-late:
+      name: objectionLate
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    objection-status:
+      name: objectionStatus
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'

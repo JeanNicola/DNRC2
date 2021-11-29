@@ -1,0 +1,48 @@
+.title {
+  margin-bottom: 0;
+}
+
+.create-sub-title {
+  white-space: nowrap;
+}
+
+.ownership-update-checkboxes {
+  display: flex;
+  height: 40px;
+  margin-top: 15px;
+
+  width: 100%;
+}
+
+.ownership-update-checkbox {
+  margin: 0 15px 15px 0;
+}
+
+.ownership-update-form {
+  ::ng-deep .mat-horizontal-content-container {
+    padding-bottom: 0;
+  }
+}
+
+.water-rights-header,
+.sellers-header,
+.buyers-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.no-customers-message {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.data-row-flex-container {
+  margin-top: 15px;
+  display: flex;
+}
+
+.data-row-flex-container > div {
+  margin-right: 10px;
+}

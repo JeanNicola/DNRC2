@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# Script to copy deployment artifacts to Bitbucket "Downloads" directory
+# where DNRC can pick up the files.
+#
+
+# Set the environment based on input parameter, -d, -u
+# If no paratmer is passed in default to "dev"
+ENV="none"
+
+for arg in "$@"
+do
+    case $arg in
+        -d|--dev)
+            ENV="dev"
+	    break
+	    ;;
+        -u|--uat)
+            ENV="uat"
+	    break
+	    ;;
+        *)
+            shift # Remove generic argument from processing
+            ;;
+    esac
+done
+
+# make sure an appropriate command line arg was passed in. if not show usage and exit.
+if [ "$ENV" = "none" ]; then
+    echo "At least one argument is required."
+    echo "Usage: $0 -u | -d"
+    exit
+fi
+
+# Set the filenames based on the environment
+DEV_BACKENDFILE=wris-backend-1.0-SNAPSHOT-$ENV.war
+DEV_FRONTENDFILE=wris-frontend-1.0-SNAPSHOT-$ENV.zip
+
+# Check to make sure the files are in the current directory
+if [ ! -f $DEV_BACKENDFILE ]; then
+    echo "Cannot find $DEV_BACKENDFILE in current directory"
+    exit -1
+fi
+
+if [ ! -f $DEV_FRONTENDFILE ]; then
+    echo "Cannot find $DEV_FRONTENDFILE in current directory"
+    exit -1
+fi
+
+echo ""
+echo "Uploading artifacts for '$ENV'"
+echo "This process will take a little while..."
+
+# Get the user's bitbucket userid. curl will prompt for the password
+read -p "Enter your Bitbucket Userid > " response
+
+# Upload the files to bitbucket
+curl -u $response -# -X POST https://api.bitbucket.org/2.0/repositories/ssglimited/dnrct-webapp/downloads -F files=@$DEV_BACKENDFILE -F files=@$DEV_FRONTENDFILE
+
+echo ""
+echo "*************************************************************"
+echo "The upload command has completed."
+echo "Unfortunately this process does not fail well."
+echo "You will need to go to the Downloads location in Bitbucket to"
+echo "confirm the files were uploaded. Check date of the 2 files."
+exit 0

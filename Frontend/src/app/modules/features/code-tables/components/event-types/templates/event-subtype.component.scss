@@ -1,0 +1,4 @@
+:host ::ng-deep table > tbody > tr.element-row > td {
+  // Reset the max width to the full table as it only has one column
+  max-width: 100% !important;
+}

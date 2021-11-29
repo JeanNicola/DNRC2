@@ -1,0 +1,15 @@
+<ng-template [ngIf]="paymentsData">
+  <app-fee-summary
+    (paymentsSummaryUpdate)="onChange($event)"
+    (reloadEvents)="passEventReload()"
+    [paymentsData]="paymentsData"
+  ></app-fee-summary>
+  <app-payments-details
+    [permissions]="permissions"
+    [paymentsData]="paymentsData"
+    [amountPaid]="this.paymentsData?.results?.summary?.totalDue"
+    [datePaid]="this.appData?.dateTimeReceived"
+    [service]="service"
+    (paymentChanged)="onChange($event)"
+  ></app-payments-details>
+</ng-template>

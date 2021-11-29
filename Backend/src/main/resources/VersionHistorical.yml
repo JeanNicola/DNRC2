@@ -1,0 +1,284 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+
+paths:
+  /water-rights/{waterRightId}/versions/{versionNumber}/historical:
+    get:
+      summary: retrieve the historical data on a water right version
+      operationId: getVersionHistorical
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      responses:
+        200:
+          description: the historical data of a water right version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionHistoricalWithReferencesDto'
+
+  /water-rights/{waterRightId}/versions/{versionNumber}/historical/priority-date:
+    put:
+      summary: update the historical priority date on a water right version
+      operationId: updateVersionHistoricalPriorityDate
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionHistoricalPriorityDateDto'
+      responses:
+        200:
+          description: the updated historical data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionHistoricalDto'
+
+  /water-rights/{waterRightId}/versions/{versionNumber}/historical/claim-filing:
+    put:
+      summary: update the historical claim filing related data on a water right version
+      operationId: updateVersionHistoricalClaimFiling
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionHistoricalClaimFilingDto'
+      responses:
+        200:
+          description: the updated historical data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionHistoricalDto'
+
+  /water-rights/{waterRightId}/versions/{versionNumber}/historical/courthouse-filing:
+    put:
+      summary: update the historical courthouse filing on a water right version
+      operationId: updateVersionHistoricalCourthouseFiling
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionHistoricalCourthouseFilingDto'
+      responses:
+        200:
+          description: the updated historical data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionHistoricalDto'
+
+  /water-rights/{waterRightId}/versions/{versionNumber}/historical/changes:
+    put:
+      summary: update the historical data for changes on a water right version
+      operationId: updateVersionHistoricalChanges
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionHistoricalChangesDto'
+      responses:
+        200:
+          description: the updated historical data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionHistoricalDto'
+
+components:
+  schemas:
+    VersionHistoricalWithReferencesDto:
+      type: object
+      properties:
+        record:
+          $ref: '#/components/schemas/VersionHistoricalDto'
+        rightTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReferenceDto'
+        elementOrigins:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReferenceDto'
+        adjudicationProcesses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReferenceDto'
+        flowRateUnits:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReferenceDto'
+    VersionHistoricalDto:
+      type: object
+      properties:
+        priorityDate:
+          type: string
+          format: date-time
+        priorityDateOrigin:
+          type: string
+        priorityDateOriginMeaning:
+          type: string
+        enforceableDate:
+          type: string
+          format: date-time
+        adjudicationProcess:
+          type: string
+        adjudicationProcessMeaning:
+          type: string
+        flowRate:
+          type: number
+          format: double
+          multipleOf: 0.01
+        flowRateUnit:
+          type: string
+        flowRateUnitMeaning:
+          type: string
+        divertedVolume:
+          type: number
+          format: double
+          multipleOf: 0.01
+        consumptiveVolume:
+          type: number
+          format: double
+          multipleOf: 0.01
+        dateReceived:
+          type: string
+          format: date
+        lateDesignation:
+          type: string
+        feeReceived:
+          type: boolean
+        impliedClaim:
+          type: boolean
+        exemptClaim:
+          type: boolean
+        countyId:
+          type: integer
+          format: int64
+        county:
+          type: string
+        caseNumber:
+          type: string
+        filingDate:
+          type: string
+          format: date
+        rightType:
+          type: string
+        rightTypeMeaning:
+          type: string
+        rightTypeOrigin:
+          type: string
+        rightTypeOriginMeaning:
+          type: string
+        decreeAppropriator:
+          type: string
+        source:
+          type: string
+        decreedMonth:
+          type: integer
+        decreedDay:
+          type: integer
+        decreedYear:
+          type: integer
+        minersInches:
+          type: number
+          format: double
+          multipleOf: 0.01
+        flowDescription:
+          type: string
+    VersionHistoricalPriorityDateDto:
+      type: object
+      properties:
+        priorityDate:
+          type: string
+          format: date-time
+        priorityDateOrigin:
+          type: string
+        enforceableDate:
+          type: string
+          format: date-time
+        adjudicationProcess:
+          type: string
+    VersionHistoricalClaimFilingDto:
+      type: object
+      properties:
+        dateReceived:
+          type: string
+          format: date
+        lateDesignation:
+          type: string
+        feeReceived:
+          type: boolean
+        impliedClaim:
+          type: boolean
+        exemptClaim:
+          type: boolean
+    VersionHistoricalCourthouseFilingDto:
+      type: object
+      properties:
+        caseNumber:
+          type: string
+        filingDate:
+          type: string
+          format: date
+        countyId:
+          type: integer
+          format: int64
+        rightType:
+          type: string
+        rightTypeOrigin:
+          type: string
+        decreeAppropriator:
+          type: string
+        source:
+          type: string
+        decreedMonth:
+          type: integer
+        decreedDay:
+          type: integer
+        decreedYear:
+          type: integer
+        minersInches:
+          type: number
+          format: double
+          multipleOf: 0.01
+        flowDescription:
+          type: string
+    VersionHistoricalChangesDto:
+      type: object
+      properties:
+        flowRate:
+          type: number
+          format: double
+          multipleOf: 0.01
+        flowRateUnit:
+          type: string
+        divertedVolume:
+          type: number
+          format: double
+          multipleOf: 0.01
+        consumptiveVolume:
+          type: number
+          format: double
+          multipleOf: 0.01

@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>
+  {{ data.title }}
+  <h2>
+    <mat-divider></mat-divider>
+    <mat-dialog-content style="margin-top: 10px">
+      <div class="review-ownership-update-information">
+        <app-ownership-update-table
+          [contactId]="data.contactId"
+          [customerType]="data.customerType"
+          (dblClickEvent)="onDblClick($event)"
+        >
+        </app-ownership-update-table>
+      </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button
+        [mat-dialog-close]="null"
+        mat-mini-fab
+        color="warn"
+        matTooltip="Cancel"
+        #cancel
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+    </mat-dialog-actions>
+  </h2>
+</h2>

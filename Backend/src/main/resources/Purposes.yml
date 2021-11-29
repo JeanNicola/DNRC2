@@ -1,0 +1,1347 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /purposes:
+    get:
+      summary: search purposes and place-of-use
+      operationId: searchPurposes
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/purposes-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/basin'
+        - $ref: '#/components/parameters/water-right-number'
+        - $ref: '#/components/parameters/water-right-type'
+        - $ref: '#/components/parameters/version-type'
+        - $ref: '#/components/parameters/version'
+        - $ref: '#/components/parameters/purpose-search-type'
+        - $ref: '#/components/parameters/ext'
+      responses:
+        200:
+          description: page of purposes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurposesSearchPageDto'
+
+  /purposes/{purposeId}:
+    get:
+      summary: get purpose detail
+      operationId: getPurpose
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+      responses:
+        200:
+          description: get purpose detail data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurposeDetailDto'
+        404:
+          description: purpose not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: update purpose detail
+      operationId: updatePurpose
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+      requestBody:
+        description: the updated purpose
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurposeUpdateDto'
+      responses:
+        200:
+          description: the updated PaymentDto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurposeDetailDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: purpose not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: delete purpose detail
+      operationId: deletePurpose
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+      responses:
+        204:
+          description: delete purpose detail data
+  /purposes/{purposeId}/examinations:
+    post:
+      summary: Create new Examination for a Purpose
+      operationId: createExamination
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+      requestBody:
+        description: Examination body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExaminationCreationDto'
+      responses:
+        201:
+          description: The new Examination
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExaminationDetailDto'
+        404:
+          description: purpose not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /purposes/{purposeId}/retired-places:
+    get:
+      summary: get retired places of use
+      operationId: getRetiredPlacesOfUse
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/places-of-use-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/purpose-id'
+      responses:
+        200:
+          description: get retired places of use data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlacesOfUsePageDto'
+        404:
+          description: purpose not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: create retired place for a purpose
+      operationId: createRetiredPlaceForPurpose
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+        - $ref: '#/components/parameters/sort'
+      requestBody:
+        description: a new Retired Place Of Use
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceOfUseCreationDto'
+      responses:
+        201:
+          description: the new Retired Place
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaceOfUseDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Purpose not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /purposes/{purposeId}/retired-places/{retiredPlaceId}:
+    put:
+      summary: update Retired Place Of Use
+      operationId: updateRetiredPlaceForPurpose
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+        - $ref: '#/components/parameters/retired-place-id'
+      requestBody:
+        description: Place Of Use body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceOfUseCreationDto'
+      responses:
+        200:
+          description: the updated Retired Place Of Use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaceOfUseDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Purpose or Retired Place Of Use not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: delete Retired Place Of Use
+      operationId: deleteRetiredPlaceOfUse
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+        - $ref: '#/components/parameters/retired-place-id'
+      responses:
+        204:
+          description: Retired Place Of Use deleted
+        404:
+          description: Purpose or Retired Place Of Use not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /purposes/{purposeId}/periods:
+    get:
+      summary: get periods of use
+      operationId: getPeriodsOfUse
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/periods-of-use-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/purpose-id'
+      responses:
+        200:
+          description: get periods of use data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PeriodsOfUsePageDto'
+        404:
+          description: purpose not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: create a period of use
+      operationId: createPeriodOfUse
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+      requestBody:
+        description: a new period of use
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PeriodOfUseCreationDto'
+      responses:
+        201:
+          description: the new period of use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PeriodOfUseDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: purpose not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /purposes/{purposeId}/diversions/copy:
+    post:
+      summary: copy first period of diversion to period of use
+      operationId: copyDiversionToPeriod
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        201:
+          description: the new copied periods and warnings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CopyDiversionToPeriodResultsDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: purpose not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /purposes/{purposeId}/places:
+    get:
+      summary: get places of use
+      operationId: getPlacesOfUse
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/places-of-use-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/purpose-id'
+      responses:
+        200:
+          description: get places of use data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlacesOfUsePageDto'
+        404:
+          description: purpose not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: create a place of use
+      operationId: createPlaceOfUse
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+      requestBody:
+        description: a new place of use
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceOfUseCreationDto'
+      responses:
+        201:
+          description: the new place of use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaceOfUseDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: purpose not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /purposes/{purposeId}/places/{placeId}:
+    put:
+      summary: update Place Of Use
+      operationId: updatePlaceOfUse
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+        - $ref: '#/components/parameters/place-id'
+      requestBody:
+        description: Place Of Use body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceOfUseCreationDto'
+      responses:
+        200:
+          description: the updated Place Of Use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaceOfUseDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Purpose or Place Of Use not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: delete Place Of Use
+      operationId: deletePlaceOfUse
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+        - $ref: '#/components/parameters/place-id'
+      responses:
+        204:
+          description: Place Of Use deleted
+        404:
+          description: Purpose or Place Of Use not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /purposes/{purposeId}/places/{placeId}/subdivisions:
+    get:
+      summary: get a list of Subdivisions for a Place Of Use
+      operationId: getSubdivisionsForPlaceOfUse
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/pou-sub-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/place-id'
+        - $ref: '#/components/parameters/purpose-id'
+      responses:
+        200:
+          description: list of Subdivisions for a Place Of Use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubdivisionPageDto'
+        404:
+          description: Place Of Use not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: Create Subdivision for a Place Of Use
+      operationId: createSubdivisionForPlaceOfUse
+      parameters:
+        - $ref: '#/components/parameters/place-id'
+        - $ref: '#/components/parameters/purpose-id'
+      requestBody:
+        description: a new Subdivision
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubdivisionCreationDto'
+      responses:
+        201:
+          description: the new Subdivision
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubdivisionDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Purpose or Place Of Use not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /purposes/{purposeId}/places/{placeId}/subdivisions/{code}:
+    put:
+      summary: update Subdivision
+      operationId: updateSubdivisionForPlaceOfUse
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+        - $ref: '#/components/parameters/place-id'
+        - $ref: '#/components/parameters/code'
+      requestBody:
+        description: Subdivision body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubdivisionCreationDto'
+      responses:
+        200:
+          description: the updated Subdivision
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubdivisionDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Subdivision not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete Subdivision from a Place Of Use
+      operationId: deleteSubdivisionFromPlaceOfUse
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+        - $ref: '#/components/parameters/place-id'
+        - $ref: '#/components/parameters/code'
+      responses:
+        204:
+          description: Subdivision deleted
+        404:
+          description: Subdivision not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /purposes/{purposeId}/pous-copy-pods:
+    post:
+      summary: Copy POD's for Place Of Use
+      operationId: pousCopyPods
+      parameters:
+        - in: path
+          name: purposeId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The Purpose Id
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        201:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+        404:
+          description: Purpose not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        400:
+          description: Bad Request, e.g. Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /purposes/{purposeId}/retired-places/{retiredPlaceId}/subdivisions:
+    get:
+      summary: get a list of Subdivisions for a Retired Place Of Use
+      operationId: getSubdivisionsForRetPou
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/ret-pou-sub-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/retired-place-id'
+        - $ref: '#/components/parameters/purpose-id'
+      responses:
+        200:
+          description: list of Subdivisions for a Retired Place Of Use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubdivisionPageDto'
+        404:
+          description: Retired Place Of Use not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: Create Subdivision for a Retired Place Of Use
+      operationId: createSubdivisionForRetPou
+      parameters:
+        - $ref: '#/components/parameters/retired-place-id'
+        - $ref: '#/components/parameters/purpose-id'
+      requestBody:
+        description: a new Subdivision
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubdivisionCreationDto'
+      responses:
+        201:
+          description: the new Subdivision
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubdivisionDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Purpose or Retired Place Of Use not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /purposes/{purposeId}/retired-places/{retiredPlaceId}/subdivisions/{code}:
+    put:
+      summary: update Subdivision
+      operationId: updateSubdivisionForRetPou
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+        - $ref: '#/components/parameters/retired-place-id'
+        - $ref: '#/components/parameters/code'
+      requestBody:
+        description: Subdivision body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubdivisionCreationDto'
+      responses:
+        200:
+          description: the updated Subdivision
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubdivisionDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Subdivision not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete Subdivision from a Retired Place Of Use
+      operationId: deleteSubdivisionFromRetPou
+      parameters:
+        - $ref: '#/components/parameters/purpose-id'
+        - $ref: '#/components/parameters/retired-place-id'
+        - $ref: '#/components/parameters/code'
+      responses:
+        204:
+          description: Subdivision deleted
+        404:
+          description: Subdivision not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /purposes/{purposeId}/copy-pous-to-retired:
+    post:
+      summary: Copy POU's to Retired Place Of Use
+      operationId: retiredPousCopyPods
+      parameters:
+        - in: path
+          name: purposeId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The Purpose Id
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        201:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+        404:
+          description: Purpose not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        400:
+          description: Bad Request, e.g. Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    SubdivisionPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/SubdivisionSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubdivisionDto'
+    SubdivisionDto:
+      type: object
+      properties:
+        placeId:
+          type: integer
+          format: int64
+        purposeId:
+          type: integer
+          format: int64
+        code:
+          type: string
+        dorName:
+          type: string
+        dnrcName:
+          type: string
+        blk:
+          type: string
+        lot:
+          type: string
+    SubdivisionCreationDto:
+      type: object
+      properties:
+        code:
+          type: string
+        blk:
+          type: string
+        lot:
+          type: string
+    SubdivisionSortColumn:
+      type: string
+      enum: [DORNAME, DNRCNAME, BLK, LOT]
+      default: DORNAME
+
+    CopyDiversionToPeriodResultsDto:
+      type: object
+      properties:
+        periods:
+          type: array
+          items:
+            $ref: '#/components/schemas/PeriodOfUseDto'
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/WarningDto'
+
+    PeriodsOfUsePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/PeriodsOfUseSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PeriodOfUseDto'
+    PeriodOfUseDto:
+      type: object
+      properties:
+        periodId:
+          type: integer
+          format: int64
+        beginDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        elementOrigin:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        elementOriginDescription:
+          type: string
+        purposeId:
+          type: integer
+          format: int64
+        waterRightId:
+          type: integer
+          format: int64
+        versionId:
+          type: integer
+          format: int64
+        flowRate:
+          type: number
+          multipleOf: 0.01
+        leaseYear:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 3
+    PeriodOfUseCreationDto:
+      type: object
+      properties:
+        beginDate:
+          type: string
+          format: date
+          x-message-name: Begin Date
+        endDate:
+          type: string
+          format: date
+          x-message-name: End Date
+        elementOrigin:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Element Origin
+        purposeId:
+          type: integer
+          format: int64
+        waterRightId:
+          type: integer
+          format: int64
+        versionId:
+          type: integer
+          format: int64
+        flowRate:
+          type: number
+          multipleOf: 0.01
+        leaseYear:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 3
+      required:
+        - beginDate
+        - endDate
+        - elementOrigin
+
+    PeriodsOfUseSortColumn:
+      type: string
+      enum: [PERIODBEGIN, PERIODEND, ELEMENTORIGINDESCRIPTION, LEASEYEAR]
+      default: PERIODBEGIN
+    PlacesOfUsePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/PlacesOfUseSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlaceOfUseDto'
+    PlaceOfUseDto:
+      type: object
+      properties:
+        placeId:
+          type: integer
+          format: int64
+        acreage:
+          type: number
+          multipleOf: 0.01
+        elementOrigin:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        elementOriginDescription:
+          type: string
+        legalId:
+          type: integer
+          format: int64
+        modifiedByThisChange:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+        modifiedByThisChangeDescription:
+          type: string
+        countyId:
+          type: integer
+          format: int64
+        purposeId:
+          type: integer
+          format: int64
+        completeLegalLandDescription:
+          type: string
+        governmentLot:
+          type: integer
+          format: int64
+        description40:
+          type: string
+        description80:
+          type: string
+        description160:
+          type: string
+        description320:
+          type: string
+        section:
+          type: integer
+          format: int64
+        township:
+          type: integer
+          format: int64
+        townshipDirection:
+          type: string
+        range:
+          type: integer
+          format: int64
+        rangeDirection:
+          type: string
+        hasSubdivisions:
+          type: boolean
+        hasExaminations:
+          type: boolean
+    LegalLandCreationDto:
+      type: object
+      properties:
+        countyId:
+          type: integer
+          format: int64
+          x-message-name: County Id
+        governmentLot:
+          type: integer
+          format: int64
+        description40:
+          type: string
+        description80:
+          type: string
+        description160:
+          type: string
+        description320:
+          type: string
+        section:
+          type: integer
+          format: int64
+          x-message-name: Section
+        township:
+          type: integer
+          format: int64
+          x-message-name: Township
+        townshipDirection:
+          type: string
+          x-message-name: Township Direction
+        range:
+          type: integer
+          format: int64
+          x-message-name: Range
+        rangeDirection:
+          type: string
+          x-message-name: Range Direction
+      required:
+        - section
+        - township
+        - townshipDirection
+        - range
+        - rangeDirection
+        - countyId
+
+    PlaceOfUseCreationDto:
+      type: object
+      properties:
+        purposeId:
+          type: integer
+          format: int64
+        acreage:
+          type: number
+          multipleOf: 0.01
+        elementOrigin:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Element Origin
+        legalId:
+          type: integer
+          format: int64
+          x-message-name: Legal Id
+        legalLand:
+          $ref: '#/components/schemas/LegalLandCreationDto'
+        countyId:
+          type: integer
+          format: int64
+          x-message-name: County Id
+        modifiedByThisChange:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+      required:
+        - elementOrigin
+    PlacesOfUseSortColumn:
+      type: string
+      enum: [PLACEID, ACREAGE, ELEMENTORIGINDESCRIPTION, LEGALID, MODIFIEDBYTHISCHANGEDESCRIPTION, COUNTYID, COMPLETELEGALLANDDESCRIPTION]
+      default: ACREAGE
+    PurposesSearchPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/PurposesSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PurposeDto'
+    PurposeDto:
+      type: object
+      properties:
+        waterRightId:
+          type: integer
+          format: int64
+        versionId:
+          type: integer
+          format: int64
+        purposeId:
+          type: integer
+          format: int64
+        completeWaterRightNumber: # Basin, Water Right Number, Ext
+          type: string
+        waterRightTypeCode:
+          type: string
+        waterRightTypeDescription:
+          type: string
+        completeWaterRightVersion: #Version Type Description, Version Id, Version Status Description
+          type: string
+        purposeCode:
+          type: string
+        purposeDescription:
+          type: string
+        elementOrigin:
+          type: string
+        elementOriginDescription:
+          type: string
+        purposeVolume:
+          type: number
+          multipleOf: 0.01
+        climaticCode:
+          type: string
+        climaticCodeDescription:
+          type: string
+        clarification:
+          type: string
+        completePurposeCode: # Purpose Description, Irrigation Description
+          type: string
+    PurposesSortColumn:
+      type: string
+      enum: [COMPLETEPURPOSECODE, COMPLETEWATERRIGHTNUMBER, WATERRIGHTTYPEDESCRIPTION, COMPLETEWATERRIGHTVERSION, PURPOSEDESCRIPTION, ELEMENTORIGINDESCRIPTION, CLIMATICCODEDESCRIPTION, CLARIFICATION, PURPOSEVOLUME]
+      default: COMPLETEWATERRIGHTNUMBER
+    PurposeSearchType:
+      type: string
+      enum: [PURPOSES, WATERRIGHTVERSION]
+      default: PURPOSES
+
+    PurposeDetailDto:
+      type: object
+      properties:
+        canPrintDecreeReport:
+          type: boolean
+        waterRightId:
+          type: integer
+          format: int64
+        versionNumber:
+          type: integer
+          format: int64
+        versionTypeCode:
+          type: string
+        purposeId:
+          type: integer
+          format: int64
+        purposeCode:
+          type: string
+        purposeCodeDescription: # Purpose Description
+          type: string
+        completePurposeCode: # Purpose Description, Irrigation Description
+          type: string
+        completeWaterRightNumber: # Basin, Water Right Number, Ext
+          type: string
+        completeWaterRightVersion: #Version Type Description, Version Id, Version Status Description
+          type: string
+        waterRightTypeCode:
+          type: string
+        waterRightTypeDescription:
+          type: string
+        waterRightStatusCode:
+          type: string
+        waterRightStatusDescription:
+          type: string
+        irrigationCode:
+          type: string
+        irrigationCodeDescription:
+          type: string
+        clarification:
+          type: string
+        purposeOrigin:
+          type: string
+        purposeOriginDescription:
+          type: string
+        purposeVolume:
+          type: number
+          multipleOf: 0.01
+        animalUnits:
+          type: number
+          multipleOf: 0.1
+        household:
+          type: integer
+        climaticCode:
+          type: string
+        climaticCodeDescription:
+          type: string
+        rotation:
+          type: string
+        rotationDescription:
+          type: string
+        modifiedByThisChange:
+          type: string
+        modifiedByThisChangeDescription:
+          type: string
+        isDecreed:
+          type: boolean
+        isVersionLocked:
+          type: boolean
+        isEditableIfDecreed:
+          type: boolean
+        canReexamineDecree:
+          type: boolean
+        canModifySplitDecree:
+          type: boolean
+        versionHasCompact:
+          type: boolean
+        examinationId:
+          type: integer
+          format: int64
+        reservoirCount:
+          type: integer
+        applicationTypeCodes:
+          type: array
+          items:
+            type: string
+        placesOfUse:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlaceOfUseDto'
+        periodsOfUse:
+          type: array
+          items:
+            $ref: '#/components/schemas/PeriodOfUseDto'
+        calcVolWarnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/CalcVolWarningDto'
+    CalcVolWarningDto:
+      type: object
+      properties:
+        warning:
+          type: string
+    WarningDto:
+      type: object
+      properties:
+        warning:
+          type: string
+    PurposeUpdateDto:
+      type: object
+      properties:
+        purposeCode:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        irrigationCode:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        clarification:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 100
+        purposeOrigin:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        purposeVolume:
+          type: number
+          multipleOf: 0.01
+        animalUnits:
+          type: number
+          multipleOf: 0.1
+        household:
+          type: integer
+        climaticCode:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        rotation:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+        modifiedByThisChange:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+
+  parameters:
+    purposes-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/PurposesSortColumn'
+    periods-of-use-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/PeriodsOfUseSortColumn'
+    places-of-use-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/PlacesOfUseSortColumn'
+    ret-pou-sub-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/SubdivisionSortColumn'
+    pou-sub-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/SubdivisionSortColumn'
+    purpose-search-type:
+      name: purposeSearchType
+      in: query
+      description: The purpose search type
+      schema:
+        $ref: '#/components/schemas/PurposeSearchType'
+    basin:
+      name: basin
+      in: query
+      required: true
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    ext:
+      name: ext
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    water-right-type:
+      name: waterRightType
+      in: query
+      required: true
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    water-right-number:
+      name: waterRightNumber
+      in: query
+      required: true
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    version:
+      name: version
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]*$'
+    version-type:
+      name: versionType
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]*$'
+    purpose-id:
+      name: purposeId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the purpose id
+      required: true
+    retired-place-id:
+      name: retiredPlaceId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the Retired Place Of Use
+      required: true
+    place-id:
+      name: placeId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the Place Of Use
+      required: true
+    code:
+      name: code
+      in: path
+      schema:
+        type: string
+      description: the Subdivision code
+      required: true
+    sort:
+      name: sort
+      in: query
+      schema:
+        type: boolean

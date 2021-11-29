@@ -1,0 +1,9 @@
+table {
+  width: 100%;
+  .cell-container {
+    max-height: 200px;
+    overflow-wrap: break-word;
+    overflow-y: auto;
+    max-width: 330px;
+  }
+}

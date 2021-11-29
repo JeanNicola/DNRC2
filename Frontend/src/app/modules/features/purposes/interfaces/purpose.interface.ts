@@ -1,0 +1,36 @@
+export interface Purpose {
+  versionNumber: number;
+  waterRightId: number;
+  purposeId: number;
+  completeWaterRightNumber: string;
+  completeWaterRightVersion: string;
+  waterRightTypeCode: string;
+  waterRightTypeDescription: string;
+  waterRightStatusCode: string;
+  waterRightStatusDescription: string;
+  purposeCode: string;
+  purposeCodeDescription: string;
+  purposeOrigin: string;
+  purposeOriginDescription: string;
+  purposeVolume?: number;
+  clarification?: string;
+  irrigationCode?: string;
+  irrigationCodeDescription?: string;
+  animalUnits?: number;
+  household?: number;
+  climaticCode?: string;
+  climaticCodeDescription?: string;
+  rotation?: string;
+  rotationDescription?: string;
+  modifiedByThisChange?: string;
+  modifiedByThisChangeDescription?: string;
+  canEdit: boolean;
+  isVersionLocked: boolean;
+  isDecreed: boolean;
+  isEditableIfDecreed: boolean;
+  canModifySplitDecree: boolean;
+  canReexamineDecree: boolean;
+  reservoirCount?: number;
+  applicationTypeCodes?: string[];
+  versionTypeCode?: string;
+}

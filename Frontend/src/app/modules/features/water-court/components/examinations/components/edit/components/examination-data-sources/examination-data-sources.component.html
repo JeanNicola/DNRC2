@@ -1,0 +1,63 @@
+<div class="data-source-container">
+  <app-data-source-table
+    [reloadDataObservable]="reloadDataSources.asObservable()"
+    (onDataSourceSelect)="dataSourceSelected = $event"
+  ></app-data-source-table>
+  <ng-template
+    [ngIf]="dataSourceSelected?.sourceType === dataSourceTypes.USGS_QUAD_MAPS"
+  >
+    <app-usgs-quad-map-table [idArray]="[dataSourceSelected?.pexmId]">
+    </app-usgs-quad-map-table>
+  </ng-template>
+</div>
+<div class="parcels-table">
+  <ng-template
+    [ngIf]="
+      dataSourceSelected?.sourceType === dataSourceTypes.FIELD_INVESTIGATION
+    "
+  >
+    <app-field-investigation-row
+      (dataChanged)="reloadParcels.next(null)"
+      [idArray]="[dataSourceSelected?.pexmId]"
+    >
+    </app-field-investigation-row>
+  </ng-template>
+  <ng-template
+    [ngIf]="
+      dataSourceSelected?.sourceType === dataSourceTypes.WATER_RESOURCE_SURVEY
+    "
+  >
+    <app-water-survey-table
+      (dataChanged)="reloadParcels.next(null)"
+      [idArray]="[dataSourceSelected?.pexmId]"
+    >
+    </app-water-survey-table>
+  </ng-template>
+  <ng-template
+    [ngIf]="
+      [dataSourceTypes.WRS_AERIAL_PHOTO, dataSourceTypes.AERIAL_PHOTO].includes(
+        dataSourceSelected?.sourceType
+      )
+    "
+  >
+    <app-aerial-photos-table
+      (dataChanged)="reloadParcels.next(null)"
+      [sourceType]="dataSourceSelected?.sourceType"
+      [idArray]="[dataSourceSelected?.pexmId]"
+    >
+    </app-aerial-photos-table>
+  </ng-template>
+  <ng-template
+    [ngIf]="
+      dataSourceSelected?.sourceType !== dataSourceTypes.USGS_QUAD_MAPS &&
+      dataSourceSelected?.pexmId
+    "
+  >
+    <app-parcel-table
+      (dataChanged)="reloadDataSources.next(null)"
+      [reloadDataObservable]="reloadParcels.asObservable()"
+      [sourceType]="dataSourceSelected?.sourceType"
+      [idArray]="[dataSourceSelected?.pexmId]"
+    ></app-parcel-table>
+  </ng-template>
+</div>

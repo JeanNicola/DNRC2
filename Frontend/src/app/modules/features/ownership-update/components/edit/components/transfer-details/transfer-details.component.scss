@@ -1,0 +1,25 @@
+.transfer-details-content > div {
+  margin-top: 10px;
+}
+
+.transfer-details-content > .flex-space-between {
+  margin-bottom: 10px;
+}
+
+.flex-space-between {
+  ::ng-deep .mat-header-cell {
+    white-space: pre-wrap;
+  }
+}
+
+.transfer-details-content {
+  ::ng-deep .title {
+    font-size: 16px;
+  }
+  ::ng-deep .card-content {
+    width: 100%;
+    height: fit-content;
+    margin: 20px 0;
+    background: rgb(250, 250, 250);
+  }
+}

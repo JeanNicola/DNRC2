@@ -1,0 +1,24 @@
+<div style="display: flex">
+  <app-fee-summary
+    (totalDue)="this.totalDue = $event"
+    (feeDueUpdated)="onFeeDueChanged()"
+    [refreshFeeSummaryOnChange]="refreshFeeSummaryOnChange"
+    [reloadPaymentsData]="reloadPaymentsData"
+    [showRecalculateDialog]="
+      !_ownershipUpdateDateTerminated && !_ownershipUpdateDateProcessed
+    "
+  ></app-fee-summary>
+  <app-fee-letter></app-fee-letter>
+</div>
+<div>
+  <app-payments-details
+    *ngIf="paymentsData"
+    [hideDelete]="!!_ownershipUpdateDateProcessed"
+    [permissions]="permissions"
+    [paymentsData]="paymentsData"
+    [amountPaid]="totalDue"
+    [datePaid]="_ownershipUpdateDateReceived"
+    [service]="service"
+    (paymentChanged)="onPaymentChangedHandlerHandler($event)"
+  ></app-payments-details>
+</div>

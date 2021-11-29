@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+<p>Please click on a report to display it in a new browser tab</p>
+<mat-divider></mat-divider>
+<mat-dialog-content>
+  <ul *ngIf="data.reports.length > 0; else none">
+    <li *ngFor="let report of data.reports">
+      <a [href]="buildUrl(report)" target="_blank">
+        {{ report.title }}
+      </a>
+    </li>
+  </ul>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <button mat-dialog-close mat-mini-fab color="warn" matTooltip="Close" #cancel>
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>
+
+<ng-template #none>
+  <h3>No Available Reports</h3>
+</ng-template>

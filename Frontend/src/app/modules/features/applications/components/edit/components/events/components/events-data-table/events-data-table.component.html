@@ -1,0 +1,146 @@
+<div *ngIf="data; else loading" style="margin: 10px">
+  <table
+    table-striped
+    table-hover
+    table-active
+    class="mat-elevation-z{{ zHeight }}"
+    mat-table
+    [dataSource]="data"
+    matSort
+    (matSortChange)="onSortData($event)"
+    [matSortActive]="
+      !!primarySortColumn ? primarySortColumn : columns[0].columnId
+    "
+    [matSortDirection]="
+      noSort ? '' : !!primaryDirection ? primaryDirection : 'asc'
+    "
+    matSortDisableClear
+    multiTemplateDataRows
+  >
+    <!-- Create the data columns using the Column-->
+    <ng-container *ngFor="let column of columns">
+      <ng-container matColumnDef="{{ column.columnId }}">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          [disabled]="column.noSort || noSort"
+          [ngClass]="isInMain ? 'extraTop' : ''"
+        >
+          {{ column.title }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{
+            column.type.toString() == 'datetime'
+              ? (element[column.columnId] | date: dateTimeFormatString)
+              : column.type.toString() == 'date'
+              ? (element[column.columnId] | date: dateFormatString)
+              : element[column.columnId]
+          }}
+        </td>
+      </ng-container>
+    </ng-container>
+
+    <!-- Add in the row actions -->
+    <ng-container matColumnDef="actions" *ngIf="!hideActions">
+      <th
+        class="table-actions"
+        mat-header-cell
+        *matHeaderCellDef
+        [ngClass]="isInMain ? 'extraTop' : ''"
+      >
+        Actions
+      </th>
+      <td
+        class="table-actions"
+        mat-cell
+        *matCellDef="let element; let i = dataIndex; let row"
+        (click)="$event.stopPropagation()"
+      >
+        <!-- Button Action Column -->
+        <div class="table-row-actions">
+          <button
+            class="info-btn"
+            mat-mini-fab
+            matTooltip="More Info"
+            (click)="moreInfo(i)"
+          >
+            i
+          </button>
+          <button
+            *ngIf="!hideEdit && !row?.hideEdit"
+            mat-mini-fab
+            color="primary"
+            matTooltip="Edit"
+            (click)="editRow($event, i)"
+            [disabled]="!permissions.canPUT"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            *ngIf="
+              !hideDelete &&
+              !row?.hideDelete &&
+              row?.event !== 'FRMR' &&
+              row?.event !== 'PAMH'
+            "
+            mat-mini-fab
+            color="warn"
+            matTooltip="Delete Row"
+            (click)="deleteRow($event, i)"
+            [disabled]="!permissions.canDELETE"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="expandedDetail">
+      <td
+        mat-cell
+        *matCellDef="let row"
+        [attr.colspan]="displayedColumns.length"
+      >
+        <div
+          class="row element-detail"
+          [@detailExpand]="row.isExpanded ? 'expanded' : 'collapsed'"
+        >
+          <ng-template [ngIf]="row.isExpanded">
+            <ng-container
+              *ngTemplateOutlet="expandChildRef; context: { row: row }"
+            ></ng-container>
+          </ng-template>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container *ngIf="!hideHeader">
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    </ng-container>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns; let i = dataIndex"
+      class="element-row"
+      [ngClass]="[
+        selectedRow == i && highlightOneRow ? 'selected' : '',
+        clickableRow ? 'pointer' : ''
+      ]"
+      (click)="row.isExpanded = !row.isExpanded"
+      (dblclick)="dblclickRow($event, i)"
+      (keydown.enter)="dblclickRow($event, i)"
+    ></tr>
+    <!-- This attribute is to be inserted into the above tag 
+          to highlight the row whenever it's been clicked on-->
+    <!-- [ngClass]="{ 'selected': row.isExpanded }" -->
+    <tr
+      mat-row
+      *matRowDef="let row; columns: ['expandedDetail']"
+      class="detail-row"
+    ></tr>
+  </table>
+</div>
+
+<ng-template #loading>
+  <div class="loading">Loading...</div>
+</ng-template>

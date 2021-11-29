@@ -1,0 +1,31 @@
+.point-of-diversion-title {
+  font-weight: 550;
+  font-size: 14pt;
+  display: flex;
+  align-items: center;
+  height: 60px;
+}
+
+.pod-table-container {
+  ::ng-deep .mat-card {
+    width: 100%;
+    padding: 0;
+  }
+
+  ::ng-deep .mat-expansion-panel-body {
+    padding: 0;
+  }
+
+  ::ng-deep .content {
+    margin: 0;
+  }
+
+  ::ng-deep .mat-card-title {
+    margin: 0;
+  }
+
+  ::ng-deep .mat-expansion-panel {
+    box-shadow: none;
+    background: transparent;
+  }
+}

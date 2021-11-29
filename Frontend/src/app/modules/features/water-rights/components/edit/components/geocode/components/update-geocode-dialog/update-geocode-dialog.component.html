@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px">
+  <form [formGroup]="formGroup" (keyup)="keyPress($event)">
+    <div class="form-field" *ngFor="let field of displayFields.slice(0, 4); let i = index">
+      <shared-data-form-field
+        [mode]="mode"
+        [field]="field"
+        [value]="data?.values !== null ? data.values[field.columnId] : null"
+        (shiftTabEvent)="receiveShiftTab($event, i)"
+        (changeEvent)="_onChange($event)"
+        (blurEvent)="_onBlur($event)"
+      >
+      </shared-data-form-field>
+    </div>
+    <div class="one-lined">
+      <div class="form-field" *ngFor="let field of displayFields.slice(4); let i = index">
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          [value]="data?.values !== null ? data.values[field.columnId] : null"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+          (changeEvent)="_onChange($event)"
+          (blurEvent)="_onBlur($event)"
+        >
+        </shared-data-form-field>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <button
+    (click)="save()"
+    [matTooltip]="tooltip"
+    mat-mini-fab
+    color="primary"
+    [disabled]="!formGroup.valid || (!formGroup.dirty && mode !== 'search')"
+  >
+    <mat-icon>done</mat-icon>
+  </button>
+  <button
+    (click)="close()"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>
+

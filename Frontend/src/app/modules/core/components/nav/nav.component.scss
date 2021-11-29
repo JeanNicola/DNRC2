@@ -1,0 +1,158 @@
+@import 'src/sass/variables';
+
+#env {
+  text-align: center;
+  color: white;
+  width: 100%;
+  font-weight: 500;
+  padding: 2px;
+}
+
+div.nav-menu {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  overflow: hidden;
+  height: $nav-height;
+  width: 100%;
+  color: white;
+  background-color: $dnrc-mt-navy;
+}
+
+div.logo-area {
+  display: flex;
+  align-items: center;
+  left: 0px;
+  margin-left: 20px;
+  margin-right: 15px;
+  padding-right: 20px;
+  border-right: 5px solid white;
+  height: 40px;
+
+  img.logo {
+    height: 64px;
+    padding: 0 18px;
+  }
+
+  span {
+    font-size: 20px;
+    margin-left: 0;
+    font-weight: 300;
+    font-size: 40px;
+  }
+}
+
+a:focus,
+a:hover {
+  color: white;
+  background-color: $dnrc-mt-navy-hover !important;
+  box-shadow: inset 0 10px 20px rgba(255, 255, 255, 0.3),
+    //$inset-black-opaque,
+    inset 0 6px 6px $inset-black-more-opaque;
+  outline: 1px solid white;
+}
+
+nav {
+  display: flex;
+  align-items: flex-start;
+  width: -webkit-fill-available;
+  width: -moz-available;
+
+  button {
+    font-weight: normal;
+    height: 60px;
+    color: white;
+    font-size: 18px;
+    margin: 0 5px;
+    padding: 0 15px;
+    background-color: $dnrc-mt-navy !important;
+    white-space: normal;
+    line-height: inherit;
+    min-width: 80px;
+  }
+
+  a {
+    display: flex;
+    font-weight: normal;
+    align-items: center;
+    height: 40px;
+    color: white;
+    font-size: 18px;
+    text-decoration: none;
+    text-align: center;
+    margin: 0 5px;
+    padding: 10px 15px;
+    border-radius: 4px;
+    background-color: $dnrc-mt-navy !important;
+    white-space: normal;
+    line-height: inherit;
+  }
+
+  button.active-link,
+  button:active,
+  a.active-link {
+    color: $dnrc-mt-navy;
+    background-color: $dnrc-mt-green !important;
+    box-shadow: inset 0 10px 20px $inset-black-opaque,
+      inset 0 6px 6px $inset-black-more-opaque;
+  }
+
+  button:focus,
+  button:hover,
+  a:focus,
+  a:hover {
+    color: white;
+    // background-color: $dnrc-mt-green !important;
+    background-color: $dnrc-mt-navy-hover !important;
+    box-shadow: inset 0 10px 20px rgba(255, 255, 255, 0.3),
+      //$inset-black-opaque,
+      inset 0 6px 6px $inset-black-more-opaque;
+    outline: 1px solid white;
+  }
+}
+
+::ng-deep .subMenu {
+  background-color: $dnrc-mt-navy;
+  color: $dnrc-mt-green !important;
+  box-shadow: inset 0 10px 20px rgba(255, 255, 255, 0.3),
+    //$inset-black-opaque,
+    inset 0 6px 6px $inset-black-more-opaque;
+
+  button,
+  a {
+    color: white;
+    font-weight: normal;
+    font-size: 14px;
+  }
+
+  button.active-link,
+  a.active-link {
+    color: $dnrc-mt-navy;
+    background-color: $dnrc-mt-green !important;
+    box-shadow: inset 0 10px 20px $inset-black-opaque,
+      inset 0 6px 6px $inset-black-more-opaque;
+  }
+
+  button:focus,
+  button:hover,
+  a:focus,
+  a:hover {
+    color: white;
+    background-color: $dnrc-mt-navy-hover !important;
+    box-shadow: inset 0 10px 20px rgba(255, 255, 255, 0.3),
+      //$inset-black-opaque,
+      inset 0 6px 6px $inset-black-more-opaque;
+    outline: 1px solid white;
+  }
+}
+
+div.login-menu {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  max-width: max-content;
+  margin: 0 20px;
+}

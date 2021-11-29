@@ -1,0 +1,714 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /related-rights:
+    get:
+      summary: search Related Rights
+      operationId: searchRelatedRights
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/related-right-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/related-right-id'
+        - $ref: '#/components/parameters/relationship-type'
+        - $ref: '#/components/parameters/water-right-number'
+        - $ref: '#/components/parameters/basin'
+        - $ref: '#/components/parameters/ext'
+      responses:
+        200:
+          description: a page of Related Rights
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatedRightsPageDto'
+    post:
+      summary: Create Related Right
+      operationId: createRelatedRight
+      requestBody:
+        description: Related Right and optional Water Rights
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelatedRightCreationDto'
+      responses:
+        201:
+          description: The new Related Right and optional Water Right references
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatedRightCreationResultDto'
+
+  /related-rights/{relatedRightId}:
+    get:
+      summary: search one Related Right with details
+      operationId: getRelatedRightDetails
+      parameters:
+        - in: path
+          name: relatedRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Related Right Id
+      responses:
+        200:
+          description: a Related Right with details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatedRightDto'
+    put:
+      summary: Change an existing RelatedRight
+      operationId: changeRelatedRight
+      parameters:
+        - in: path
+          name: relatedRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The Related Right changes
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRelatedRightDto'
+      responses:
+        200:
+          description: The changed RelatedRight
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatedRightDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Related Right not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete a Related Right
+      operationId: deleteRelatedRight
+      parameters:
+        - in: path
+          name: relatedRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Deleted Related Right
+        404:
+          description: Related Right does not exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /related-rights/{relatedRightId}/water-rights:
+    get:
+      summary: search Water Rights of one Related Right
+      operationId: getRelatedRightWaterRights
+      parameters:
+        - in: path
+          name: relatedRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Related Right Id
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/related-right-water-right-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/return-versions'
+      responses:
+        200:
+          description: a Related Right with details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatedRightWaterRightPageDto'
+    post:
+      summary: Create Water Right reference to Related Right
+      operationId: createWaterRightReferenceToRelatedRight
+      parameters:
+        - in: path
+          name: relatedRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Related Right Id
+      requestBody:
+        description: Water Right references to be added to Related Right
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaterRightReferenceToRelatedRightCreationDto'
+      responses:
+        201:
+          description: The new Water Right references to Related Right
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightReferenceToRelatedRightSearchResultDto'
+  /related-rights/{relatedRightId}/related-elements:
+    get:
+      summary: get all Related Elements for a specific Related Right
+      operationId: getRelatedRightElements
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/related-right-elements-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: path
+          name: relatedRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Related Right Id
+      responses:
+        200:
+          description: a page of Related Right Elements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatedRightElementsPageDto'
+        404:
+          description: No Related Right found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: Create a Related Right Element
+      operationId: createRelatedRightElement
+      parameters:
+        - in: path
+          name: relatedRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Related Right Id
+      requestBody:
+        description: A Related Right Element to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelatedRightElementCreationDto'
+      responses:
+        201:
+          description: The new Related Right Element
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatedRightElementsSearchResultDto'
+
+  /related-rights/{relatedRightId}/related-elements/{elementType}:
+    delete:
+      summary: Delete a Related Right Element
+      operationId: deleteRelatedRightElement
+      parameters:
+        - in: path
+          name: relatedRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Related Right Id
+        - in: path
+          name: elementType
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Deleted Related Right Element
+        404:
+          description: The Related Right and Element combination doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /related-rights/{relatedRightId}/water-rights/{waterRightId}/{versionId}:
+    delete:
+      summary: Delete Water Right reference to Related Right
+      operationId: deleteWaterRightReferenceToRelatedRight
+      parameters:
+        - in: path
+          name: relatedRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Related Right Id
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Water Right Id
+        - in: path
+          name: versionId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Water Right Version Id
+      responses:
+        204:
+          description: Deleted Water Right reference to Related Right
+        404:
+          description: The Water Right or Related Right doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /related-rights/{relatedRightId}/water-rights-versions:
+    get:
+      summary: search water rights versions
+      operationId: searchWaterRightsVersions
+      parameters:
+        - in: path
+          name: relatedRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Related Right Id
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-versions-for-related-right-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/basin'
+        - $ref: '#/components/parameters/water-right-number'
+        - $ref: '#/components/parameters/ext'
+      responses:
+        200:
+          description: a page of water right versions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightsVersionsPageDto'
+  /related-rights/water-rights-versions:
+    get:
+      summary: search water rights versions
+      operationId: searchWaterRightsVersionsAll
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-versions-for-related-right-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/basin'
+        - $ref: '#/components/parameters/water-right-number'
+        - $ref: '#/components/parameters/ext'
+      responses:
+        200:
+          description: a page of water right versions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightsVersionsPageDto'
+
+components:
+  schemas:
+    RelatedRightCreationDto:
+      type: object
+      properties:
+        relationshipType:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Related Right Type
+        waterRights:
+          type: array
+          items:
+            $ref: '#/components/schemas/WaterRightsReferenceDto'
+          x-message-name: Water Rights
+      required:
+        - relationshipType
+
+    RelatedRightCreationResultDto:
+      type: object
+      properties:
+        relatedRightId:
+          type: integer
+          format: int64
+        relationshipType:
+          type: string
+        waterRights:
+          type: array
+          items:
+            $ref: '#/components/schemas/WaterRightsReferenceDto'
+
+    WaterRightsVersionsPageDto:
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightVersionsForRelatedRightSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WaterRightsVersionsSearchResultDto'
+
+    WaterRightsVersionsSearchResultDto:
+      type: object
+      properties:
+        waterRightId:
+          type: integer
+          format: int64
+        waterRightNumber:
+          type: integer
+          format: int64
+        basin:
+          type: string
+        ext:
+          type: string
+        versionId:
+          type: integer
+          format: int64
+        versionType:
+          type: string
+        version:
+          type: string
+        typeDescription:
+          type: string
+        status:
+          type: string
+        completeWaterRightNumber:
+          type: string
+
+    WaterRightReferenceToRelatedRightCreationDto:
+      type: object
+      properties:
+        waterRights:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/WaterRightsReferenceDto'
+          x-message-name: Water Rights
+
+    WaterRightReferenceToRelatedRightSearchResultDto:
+      type: object
+      properties:
+        waterRights:
+          type: array
+          items:
+            $ref: '#/components/schemas/WaterRightsReferenceDto'
+
+    RelatedRightElementsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/RelatedRightElementsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedRightElementsSearchResultDto'
+
+    RelatedRightElementsSearchResultDto:
+      type: object
+      properties:
+        relatedRightId:
+          type: integer
+          format: int64
+        elementType:
+          type: string
+        elementTypeValue:
+          type: string
+    RelatedRightWaterRightPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/RelatedRightWaterRightSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedRightWaterRightDto'
+
+    RelatedRightWaterRightDto:
+      type: object
+      properties:
+        waterRightId:
+          type: integer
+          format: int64
+        basin:
+          type: string
+          pattern: '^[ -~]+$'
+          x-message-name: Basin number
+          maxLength: 4
+        waterRightNumber:
+          type: integer
+          format: int64
+          x-message-name: Water Right Id
+          maxLength: 10
+        completeWaterRightNumber:
+          type: string
+          pattern: '^[ -~]+$'
+        typeDescription:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 30
+        ext:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 3
+        status:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 20
+        versionId:
+          type: integer
+          format: int64
+        versionType:
+          type: string
+        version:
+          type: string
+
+    RelatedRightsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/RelatedRightSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedRightDto'
+    RelatedRightElementCreationDto:
+      type: object
+      properties:
+        relatedRightId:
+          type: integer
+          format: int64
+          x-message-name: Related Right Id
+        elementType:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Shared Element Type Code
+      required:
+        - relatedRightId
+        - elementType
+    RelatedRightDto:
+      type: object
+      properties:
+        relationshipTypeVal:
+          type: string
+        relationshipType:
+          type: string
+        relatedRightId:
+          type: integer
+          format: int64
+        maxFlowRate:
+          type: integer
+          format: int64
+        flowRateUnit:
+          type: string
+        flowRateUnitVal:
+          type: string
+        maxAcres:
+          type: number
+          format: double
+        maxVolume:
+          type: number
+          format: double
+        hasRelatedElements:
+          type: boolean
+        waterRightsCount:
+          type: integer
+          format: int64
+    UpdateRelatedRightDto:
+      type: object
+      properties:
+        relationshipType:
+          type: string
+        relatedRightId:
+          type: integer
+          format: int64
+        maxFlowRate:
+          type: integer
+          format: int64
+        flowRateUnit:
+          type: string
+        maxAcres:
+          type: number
+          format: double
+        maxVolume:
+          type: number
+          format: double
+    RelatedRightSortColumn:
+      type: string
+      enum: [ RELATEDRIGHTID, RELATIONSHIPTYPE, RELATIONSHIPTYPEVAL, MAXFLOWRATE, FLOWRATEUNIT, FLOWRATEUNITVAL, MAXACRES, MAXVOLUME ]
+      default: RELATEDRIGHTID
+    RelatedRightWaterRightSortColumn:
+      type: string
+      enum: [ COMPLETEWATERRIGHTNUMBER, BASIN, WATERRIGHTNUMBER, TYPEDESCRIPTION, EXT, STATUS, VERSION, VERSIONID, VERSIONTYPE ]
+      default: WATERRIGHTNUMBER
+
+    WaterRightsReferenceDto:
+      type: object
+      properties:
+        waterRightId:
+          type: integer
+          format: int64
+          x-message-name: Water Right Id
+        versionId:
+          type: integer
+          format: int64
+          x-message-name: Version Id
+      required:
+        - waterRightId
+        - versionId
+
+    RelatedRightElementsSortColumn:
+      type: string
+      enum: [ ELEMENTTYPEVALUE, ELEMENTTYPE, RELATEDRIGHTID ]
+      default: ELEMENTTYPEVALUE
+
+    WaterRightVersionsForRelatedRightSortColumn:
+      type: string
+      enum: [ BASIN, EXT, COMPLETEWATERRIGHTNUMBER, TYPEDESCRIPTION, STATUS, VERSION ]
+      default: BASIN
+
+  parameters:
+    related-right-elements-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/RelatedRightElementsSortColumn'
+    related-right-water-right-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/RelatedRightWaterRightSortColumn'
+    water-right-versions-for-related-right-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightVersionsForRelatedRightSortColumn'
+    related-right-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/RelatedRightSortColumn'
+    relationship-type:
+      name: relationshipType
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    related-right-id:
+      name: relatedRightId
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    water-right-number:
+      name: waterRightNumber
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    basin:
+      name: basin
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    ext:
+      name: ext
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    return-versions:
+      name: returnVersions
+      in: query
+      schema:
+        type: string

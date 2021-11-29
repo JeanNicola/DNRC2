@@ -1,0 +1,269 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /applications/{applicationId}/applicants/{ownerId}/{customerId}/representatives:
+    get:
+      summary: get a page of Representatives
+      operationId: getRepresentatives
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/representative-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: ownerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: a list of Representatives
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepresentativesPageDto'
+
+    post:
+      summary: create a new Representative
+      operationId: createRepresentative
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: ownerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new Representative
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RepresentativeDto'
+      responses:
+        201:
+          description: The new Representative
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepresentativeDto'
+  /applications/{applicationId}/applicants/{ownerId}/{customerId}/representatives/{representativeId}:
+    put:
+      summary: change a existing Representative
+      operationId: changeRepresentative
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: ownerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: representativeId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new Representative 
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RepresentativeDto'
+      responses:
+        200:
+          description: Changed the Representative
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepresentativeDto'
+        301:
+          description: Changed and Moved the Representative
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepresentativeDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: No Representative found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: delete a Representative
+      operationId: deleteRepresentative
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: ownerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: representativeId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: deleted the Representative
+        404:
+          description: No Representative with that Code was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    RepresentativeDto:
+      type: object
+      properties:
+        representativeId:
+          type: integer
+          format: int64
+          x-message-name: Representative ID
+        contactId:
+          type: integer
+          format: int64
+          x-message-name: Contact ID
+        applicantContactId:
+          type: integer
+          format: int64
+          x-message-name: Applicant Contact ID
+        lastName:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 50
+          x-message-name: Last Name
+        firstName:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 20
+          x-message-name: First Name
+        middleInitial:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 2
+          x-message-name: Middle Initial
+        suffix:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 3
+          x-message-name: Suffix
+        beginDate:
+          type: string
+          format: date
+          x-message-name: Begin Date
+        endDate:
+          type: string
+          format: date
+          x-message-name: End Date
+        roleTypeCode:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+          x-message-name: Role Type Code
+        roleTypeDescription:
+          type: string
+          x-message-name: Role Type Description
+      required:
+        - contactId
+        - beginDate
+        - roleType
+    RepresentativesPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/RepresentativeSortColumn'
+        results:
+           type: array
+           items:
+             $ref: '#/components/schemas/RepresentativeDto'
+    RepresentativeSortColumn:
+      type: string
+      enum: [CONTACTID, FULLNAME, BEGINDATE, ENDDATE, ROLETYPEDESCRIPTION]
+      default: CONTACTID
+  parameters:
+    representative-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/RepresentativeSortColumn'

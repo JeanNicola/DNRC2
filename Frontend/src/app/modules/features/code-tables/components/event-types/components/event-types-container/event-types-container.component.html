@@ -1,0 +1,42 @@
+<code-table-event-types>
+  <!-- This section uses Content Projection to display on the Data Table when the row is clicked on -->
+  <ng-template #expandRef let-row="row">
+    <mat-accordion multi>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> Application Types </mat-panel-title>
+          <mat-panel-description></mat-panel-description>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <event-types-application-types
+            [idArray]="[row.code]"
+          ></event-types-application-types>
+        </ng-template>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> Case Types </mat-panel-title>
+          <mat-panel-description></mat-panel-description>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <event-types-case-types [idArray]="[row.code]">
+          </event-types-case-types>
+        </ng-template>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> Decree Types </mat-panel-title>
+          <mat-panel-description></mat-panel-description>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <event-types-decree-types
+            [idArray]="[row.code]"
+          ></event-types-decree-types>
+        </ng-template>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </ng-template>
+  <!-- End of Content Projection -->
+</code-table-event-types>

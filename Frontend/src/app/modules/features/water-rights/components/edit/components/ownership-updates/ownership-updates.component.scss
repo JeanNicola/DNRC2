@@ -1,0 +1,17 @@
+.subcontainer {
+    width: -webkit-fill-available;
+    width: -moz-available;
+    display: flex;
+    justify-content: space-around;
+}
+
+.subtable {
+    width: 50%;
+}
+
+#subtable1 {
+    margin-right: 16px;
+}
+#subtable2 {
+    margin-left: 16px;
+}

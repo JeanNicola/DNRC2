@@ -1,0 +1,53 @@
+<mat-card class="card">
+  <div class="loading" *ngIf="!data.value">
+    <h2>Loading...</h2>
+  </div>
+  <ng-container *ngIf="data.value">
+    <div class="heading">
+      <app-priority-date
+        [historical]="data"
+        [waterRightTypeCode]="waterRightTypeCode"
+        [versionTypeCode]="versionTypeCode"
+        [isDecreed]="isDecreed"
+        [isEditableIfDecreed]="isEditableIfDecreed"
+        [canEdit]="canEdit"
+        (reloadHeader)="onReloadHeader()"
+      ></app-priority-date>
+    </div>
+    <div class="partitioned">
+      <div class="partition" *ngIf="data.value">
+        <h4 class="title">Adjudication</h4>
+        <div style="margin-bottom: 50px">
+          <app-claim-filing
+            [historical]="data"
+            [waterRightTypeCode]="waterRightTypeCode"
+            [versionTypeCode]="versionTypeCode"
+            [isDecreed]="isDecreed"
+            [isEditableIfDecreed]="isEditableIfDecreed"
+            [canEdit]="canEdit && validWRType"
+          ></app-claim-filing>
+        </div>
+        <app-courthouse-filing
+          style="margin-top: 40px"
+          [historical]="data"
+          [waterRightTypeCode]="waterRightTypeCode"
+          [versionTypeCode]="versionTypeCode"
+          [isDecreed]="isDecreed"
+          [isEditableIfDecreed]="isEditableIfDecreed"
+          [canEdit]="canEdit && validWRType"
+        ></app-courthouse-filing>
+      </div>
+      <div class="partition" *ngIf="data.value">
+        <h4 class="title">New Appropriations</h4>
+        <app-changes
+          [historical]="data"
+          [waterRightTypeCode]="waterRightTypeCode"
+          [versionTypeCode]="versionTypeCode"
+          [isDecreed]="isDecreed"
+          [isEditableIfDecreed]="isEditableIfDecreed"
+          [canEdit]="canEdit && validWRType"
+        ></app-changes>
+      </div>
+    </div>
+  </ng-container>
+</mat-card>

@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content>
+  <form [formGroup]="formGroup">
+    <div class="form-field" *ngFor="let field of displayFields; let i = index">
+      <shared-data-form-field *ngIf="!field.list" [mode]="mode" [field]="field">
+      </shared-data-form-field>
+      <div *ngIf="field.list">
+        <div class="create-text-container">
+          <h3 class="create-sub-title">{{ field.title }}</h3>
+          <div class="text-buttons-container">
+            <button
+              #insert
+              mat-mini-fab
+              color="primary"
+              matTooltip="Add {{ field.title }}"
+              (click)="onInsertOwner(null)"
+            >
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+        </div>
+        <app-data-table
+          *ngIf="owners.length"
+          [data]="dataSource"
+          [columns]="getColumn(field.columnId).list"
+          [permissions]="permissions"
+          hideEdit="true"
+          noSort="true"
+          (deleteEvent)="onDelete($event)"
+        ></app-data-table>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <button
+    mat-mini-fab
+    color="primary"
+    matTooltip="Create Water Right"
+    [disabled]="!(formGroup.valid && dataSource.data.length)"
+    (click)="save()"
+  >
+    <mat-icon>done</mat-icon>
+  </button>
+  <button mat-mini-fab color="warn" matTooltip="Cancel" (click)="close()">
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>

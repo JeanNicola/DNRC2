@@ -1,0 +1,13 @@
+::ng-deep .remove-year-from-date-picker {
+  padding: 10px;
+  height: -webkit-fill-available !important;
+  .mat-calendar-header,
+  .mat-calendar-body-cell-preview {
+    display: none;
+  }
+
+  .mat-calendar-body-label {
+    opacity: 0;
+    padding-bottom: 0 !important;
+  }
+}

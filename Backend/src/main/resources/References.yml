@@ -1,0 +1,586 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /references/yes-no:
+    get:
+      summary: get a list of yes/no options
+      operationId: getYesNo
+      responses:
+        200:
+          description: a list of yes/no
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/case-assignment-type-programs:
+    get:
+      summary: get the dropdown values for the program field of Case Assignment Type
+      operationId: getCaseAssignmentTypePrograms
+      responses:
+        200:
+          description: all the possible programs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/flow-rate-units:
+    get:
+      summary: a list of Flow rate units
+      operationId: getFlowRateUnits
+      responses:
+        200:
+          description: all the possible flow rate units
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/case-type-programs:
+    get:
+      summary: get the dropdown values for the program field of Case Type
+      operationId: getCaseTypePrograms
+      responses:
+        200:
+          description: all the possible programs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/directions:
+    get:
+      summary: get the dropdown direction values for Chnage Description
+      operationId: getDirections
+      responses:
+        200:
+          description: all up and down direction
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/cardinal_directions:
+    get:
+      summary: get the dropdown cardinal direction values for Chnage Description
+      operationId: getCardinalDirections
+      responses:
+        200:
+          description: all the possible cardinal direction
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+
+  /references/contact-status:
+    get:
+      summary: get values for contact status dropdown list
+      operationId: getContactStatus
+      responses:
+        200:
+          description: all distinct contact status values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+
+  /references/contact-suffix:
+    get:
+      summary: get values for contact suffix dropdown list
+      operationId: getContactSuffix
+      responses:
+        200:
+          description: all distinct contact suffix values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+
+  /references/contact-type:
+    get:
+      summary: get values for contact type dropdown list
+      operationId: getContactType
+      responses:
+        200:
+          description: all distinct contact type values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/application-payment-origins:
+    get:
+      summary: get a list of Payment Origins for Applications
+      operationId: getApplicationPaymentOrigins
+      responses:
+        200:
+          description: a list of Payment Origins
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/application-payment-fee-statuses/all:
+    get:
+      summary: get a list of Payment Fee Statuses for Applications
+      operationId: getApplicationPaymentFeeStatuses
+      responses:
+        200:
+          description: a list of Payment Fee Statuses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/electronic-contacts/all:
+    get:
+      summary: get a list of Electronic Contact Types
+      operationId: getElectronicContactTypes
+      responses:
+        200:
+          description: a list of Electronic Contact Types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/ownership-transfer:
+    get:
+      summary: a list of Ownership Transfer Types
+      operationId: getOwnershipTransfers
+      responses:
+        200:
+          description: all the possible ownership transfers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/water-right-creation-types:
+    get:
+      summary: get the list of allowed water right types during water right creation
+      operationId: getCreationWaterRightTypes
+      responses:
+        200:
+          description: the water right types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/contract-for-deed-rle:
+    get:
+      summary: a list of Contract for Deed RLE Types
+      operationId: getContractForDeedRle
+      responses:
+        200:
+          description: all the possible contract for deed rle types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+
+  /references/water-right-types:
+    get:
+      summary: get all the water right types
+      operationId: getWaterRightTypes
+      responses:
+        200:
+          description: the water right types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/version-types:
+    get:
+      summary: Get Version Types
+      operationId: getVersionTypes
+      responses:
+        200:
+          description: the version types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/owner-origins:
+    get:
+      summary: Get Owner Origins
+      operationId: getOwnerOrigins
+      responses:
+        200:
+          description: the owner origins
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/relationship-types:
+    get:
+      summary: Get Relationship Types for a Related Right
+      operationId: getRelationshipTypes
+      responses:
+        200:
+          description: the relationship types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/related-element-types:
+    get:
+      summary: a list of Related SharedElement Types
+      operationId: getRelatedElementTypes
+      responses:
+        200:
+          description: all the possible related element types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/report-url:
+    get:
+      summary: get report url
+      operationId: getReportUrl
+      parameters:
+        - $ref: '#/components/parameters/env'
+      responses:
+        200:
+          description: report url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/reservoir-origins:
+    get:
+      summary: get reservoir origins
+      operationId: getReservoirOrigins
+      responses:
+        200:
+          description: all possible reservoir origins
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/aliquot-parts:
+    get:
+      summary: get all aliquot parts
+      operationId: getAliquotParts
+      responses:
+        200:
+          description: all possible aliquot parts 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/range-directions:
+    get:
+      summary: get all range directions
+      operationId: getRangeDirections
+      responses:
+        200:
+          description: all possible range directions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+
+  /references/township-directions:
+    get:
+      summary: get all township directions
+      operationId: getTownshipDirections
+      responses:
+        200:
+          description: all possible township directions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/report-types:
+    get:
+      summary: get all ReportTypes
+      operationId: getReportTypes
+      responses:
+        200:
+          description: all report types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/climatic-areas:
+    get:
+      summary: get values for climatic areas dropdown list
+      operationId: getClimaticAreas
+      responses:
+        200:
+          description: all distinct climatic area values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/measurement-remark-codes:
+    get:
+      summary: get all Measurement Report Remark Codes
+      operationId: getMeasurementReportRemarkCodes
+      responses:
+        200:
+          description: all Report Remark Codes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllRemarkCodeReferencesDto'
+  /references/purpose-types:
+    get:
+      summary: get all purpose types
+      operationId: getPurposeTypes
+      responses:
+        200:
+          description: all purpose type values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/irrigation-types:
+    get:
+      summary: get all irrigation types
+      operationId: getIrrigationTypes
+      responses:
+        200:
+          description: all irrigation type values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/lease-year-values:
+    get:
+      summary: get all lease year values
+      operationId: getLeaseYearValues
+      responses:
+        200:
+          description: all lease year values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/data-source-types:
+    get:
+      summary: get all data source types
+      operationId: getDataSourceTypes
+      responses:
+        200:
+          description: all data source types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/pod-origins:
+    get:
+      summary: get all POD Origins
+      operationId: getPODOrigins
+      responses:
+        200:
+          description: all pod origins
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/major-types:
+    get:
+      summary: get all the Major Types
+      operationId: getMajorTypes
+      responses:
+        200:
+          description: all major types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/source-origins:
+    get:
+      summary: get all the Source Origins
+      operationId: getSourceOrigins
+      responses:
+        200:
+          description: all source origins
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/pod-types:
+    get:
+      summary: get all the POD types
+      operationId: getPODTypes
+      responses:
+        200:
+          description: all POD Types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/diversion-types:
+    get:
+      summary: get all the Diversion types
+      operationId: getDiversionTypes
+      responses:
+        200:
+          description: all Diversion Types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/minor-types:
+    get:
+      summary: get all the minor types
+      operationId: getMinorTypes
+      responses:
+        200:
+          description: all Minor Types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/origins:
+    get:
+      summary: get all the origins
+      operationId: getOrigins
+      responses:
+        200:
+          description: all Origins
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/reservoir-types:
+    get:
+      summary: get all reservoir types
+      operationId: getReservoirTypes
+      responses:
+        200:
+          description: all Reservoir Types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/photo-types:
+    get:
+      summary: get all photo types
+      operationId: getPhotoTypes
+      responses:
+        200:
+          description: all photo types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/flow-rate-descriptions:
+    get:
+      summary: get all the flow rate descriptions
+      operationId: getFlowRateDescriptions
+      responses:
+        200:
+          description: all Flow Rate Descriptions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/max-volume-descriptions:
+    get:
+      summary: get all the max volume descriptions
+      operationId: getMaxVolumeDescriptions
+      responses:
+        200:
+          description: all Max Volume Descriptions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/case-types:
+    get:
+      summary: get case type values
+      operationId: getCaseTypeValues
+      parameters:
+        - $ref: '#/components/parameters/supported'
+      responses:
+        200:
+          description: case type values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseAllReferencesDto'
+  /references/objection-status:
+    get:
+      summary: get all objection status
+      operationId: getAllObjectionStatus
+      responses:
+        200:
+          description: all objection status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /references/objection-types:
+    get:
+      summary: get all objection types
+      operationId: getAllObjectionTypes
+      parameters:
+        - $ref: '#/components/parameters/supported'
+      responses:
+        200:
+          description: all objection types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+components:
+  schemas:
+    AllReferencesDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReferenceDto'
+    CaseAllReferencesDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseReferenceDto'
+    CaseReferenceDto:
+      type: object
+      properties:
+        value:
+          type: string
+        description:
+          type: string
+        program:
+          type: string
+    ReferenceDto:
+      type: object
+      properties:
+        value:
+          type: string
+        description:
+          type: string
+    AllRemarkCodeReferencesDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RemarkCodeReferenceDto'
+    RemarkCodeReferenceDto:
+      type: object
+      properties:
+        value:
+          type: string
+        description:
+          type: string
+        createable:
+          type: boolean
+  parameters:
+    env:
+      name: env
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    supported:
+      name: supported
+      in: query
+      description: 0 for all types else supported only
+      schema:
+        type: integer

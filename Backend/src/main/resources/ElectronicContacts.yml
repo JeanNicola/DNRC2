@@ -1,0 +1,248 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /customers/{customerId}/electronic-contacts:
+    get:
+      summary: get a page of Electronic Contacts
+      operationId: searchElectronicContacts
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/electronic-contacts-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: a list of Electronic Contacts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ElectronicContactsSearchPageDto'
+    post:
+      summary: create a new Electronic Contact
+      operationId: createElectronicContact
+      parameters:
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new Electronic Contact
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ElectronicContactsUpdateDto'
+      responses:
+        201:
+          description: The new Electronic Contact
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ElectronicContactsDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /customers/{customerId}/electronic-contacts/{electronicId}:
+    get:
+      summary: get a specific Electronic Contact
+      operationId: getElectronicContact
+      parameters:
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: electronicId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Get the Electronic Contact data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ElectronicContactsDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: No Electronic Contact found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: change an existing Electronic Contact
+      operationId: changeElectronicContact
+      parameters:
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: electronicId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated Electronic Contact
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ElectronicContactsUpdateDto'
+      responses:
+        200:
+          description: Changed the Electronic Contact
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ElectronicContactsDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: No Electronic Contact found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete an existing Electronic Contact
+      operationId: deleteElectronicContact
+      parameters:
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: electronicId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Deleted Electronic Contact
+        404:
+          description: Either the Customer or Electronic Contact doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+components:
+  schemas:
+    ElectronicContactsSearchPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/ElectronicContactsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ElectronicContactsDto'
+
+    ElectronicContactsUpdateDto:
+      type: object
+      properties:
+        customerId:
+          type: integer
+          format: int64
+          x-message-name: Customer Id
+        electronicType:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+          x-message-name: Electronic Type
+        electronicValue:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 40
+          x-message-name: Electronic Value
+        electronicNotes:
+          type: string
+          pattern: '^[ -~\n]*$'
+          maxLength: 40
+      required:
+        - customerId
+        - electronicType
+        - electronicValue
+
+    ElectronicContactsDto:
+      type: object
+      properties:
+        electronicId:
+          type: integer
+          format: int64
+        customerId:
+          type: integer
+          format: int64
+        electronicType:
+          type: string
+        electronicTypeValue:
+          type: string
+        electronicValue:
+          type: string
+        electronicNotes:
+          type: string
+
+    ElectronicContactsSortColumn:
+      type: string
+      enum: [ ELECTRONICID, TYPE, VALUE, NOTES ]
+      default: ELECTRONICID
+
+  parameters:
+    electronic-contacts-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/ElectronicContactsSortColumn'

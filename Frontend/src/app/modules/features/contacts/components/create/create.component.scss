@@ -1,0 +1,10 @@
+@import 'src/sass/variables';
+
+// to match the material dialog styling
+.mat-divider-horizontal {
+  padding: 8px 0;
+}
+
+.mat-card {
+  min-width: 30%;
+}

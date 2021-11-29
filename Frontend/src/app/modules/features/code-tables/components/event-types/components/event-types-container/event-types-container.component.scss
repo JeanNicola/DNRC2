@@ -1,0 +1,14 @@
+@import 'src/sass/variables';
+
+:host ::ng-deep .mat-accordion {
+  width: 100%;
+  margin-bottom: 10px;
+
+  > .mat-expansion-panel {
+    background-color: $dnrc-mt-green-selected;
+  }
+
+  .mat-expansion-panel-header-title {
+    font-weight: 550;
+  }
+}

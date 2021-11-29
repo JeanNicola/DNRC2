@@ -1,0 +1,14 @@
+.fields-grid-container {
+  width: 95%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.fields-grid-container > div:nth-child(4) {
+  grid-column-start: 3;
+  grid-row-start: 1;
+}
+
+.fields-grid-container > div:nth-child(3) {
+  grid-column: span 3;
+}

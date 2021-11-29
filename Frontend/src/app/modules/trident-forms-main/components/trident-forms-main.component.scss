@@ -1,0 +1,32 @@
+@import 'src/sass/variables';
+
+.loading {
+  text-align: center;
+  color: white;
+  background-color: red;
+  width: 100%;
+  font-weight: 500;
+  padding: 2px;
+}
+
+div.page-container {
+  position: absolute;
+  min-width: 100%;
+}
+
+div.nav-wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  overflow: hidden;
+  left: 0;
+  top: 0;
+  position: sticky;
+  min-width: 1500px;
+  z-index: 1000;
+}
+
+div.main-content {
+  top: $nav-height;
+  white-space: nowrap;
+  margin: 0 10px 20px;
+}

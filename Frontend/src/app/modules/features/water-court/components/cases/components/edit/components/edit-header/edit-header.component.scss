@@ -1,0 +1,14 @@
+.expired-issued-date-field {
+  ::ng-deep .mat-form-field-label {
+    color: red;
+  }
+
+  ::ng-deep .mat-input-element {
+    color: red;
+  }
+}
+
+.data-row-actions {
+  display: flex;
+  flex-direction: column;
+}

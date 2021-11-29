@@ -1,0 +1,13 @@
+<mat-card *ngIf="data" class="mat-card">
+  <mat-card-title
+    ><div class="card-title">{{ title }}</div></mat-card-title
+  >
+  <div class="text-container">
+    <shared-data-row-field
+      style="width: 100%"
+      [field]="_getColumn('remarkText')"
+      [dataValue]="data?.remarkText"
+      [removePadding]="true"
+    ></shared-data-row-field>
+  </div>
+</mat-card>

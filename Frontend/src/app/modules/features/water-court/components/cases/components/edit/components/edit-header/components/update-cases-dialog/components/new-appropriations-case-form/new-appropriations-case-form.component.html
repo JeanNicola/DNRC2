@@ -1,0 +1,103 @@
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px">
+  <form [formGroup]="formGroup">
+    <mat-error>
+      <app-form-errors></app-form-errors>
+    </mat-error>
+    <div class="form-field" *ngFor="let field of displayFields; let i = index">
+      <ng-template [ngIf]="field.columnId !== 'waterCourtCaseNumber'">
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          [value]="values !== null ? values[field.columnId] : null"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+          (changeEvent)="_onChange($event)"
+        >
+        </shared-data-form-field>
+      </ng-template>
+    </div>
+
+    <h3 class="update-sub-title">Search Application</h3>
+    <div class="search-application">
+      <div
+        class="form-field"
+        *ngFor="let field of searchApplicationField; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          [value]="values !== null ? values[field.columnId] : null"
+          (changeEvent)="_onChange($event)"
+        >
+        </shared-data-form-field>
+      </div>
+      <button
+        #searchButton
+        (click)="onSearch()"
+        mat-mini-fab
+        color="primary"
+        matTooltip="Search"
+      >
+        <mat-icon>search</mat-icon>
+      </button>
+    </div>
+    <h3 class="update-sub-title">Selected Application</h3>
+    <div class="selected-applications-container">
+      <div class="selected-application-fields">
+        <div
+          [ngStyle]="{
+            width: [
+              'applicationBasinSelected',
+              'applicationIdSelected'
+            ].includes(field.columnId)
+              ? '48%'
+              : '-webkit-fill-available'
+          }"
+          class="form-field selected-application-field"
+          *ngFor="let field of selectedApplicationColumns; let i = index"
+        >
+          <shared-data-form-field
+            [mode]="mode"
+            [field]="field"
+            [value]="values !== null ? values[field.columnId] : null"
+            (shiftTabEvent)="receiveShiftTab($event, i)"
+            (changeEvent)="_onChange($event)"
+          >
+          </shared-data-form-field>
+        </div>
+      </div>
+      <button
+        (click)="clearApplication()"
+        mat-mini-fab
+        color="primary"
+        matTooltip="Clear Application"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <ng-template [ngIf]="formGroup">
+    <button
+      (click)="save()"
+      matTooltip="Update"
+      mat-mini-fab
+      color="primary"
+      [disabled]="!formGroup.valid || (!formGroup.dirty && mode !== 'search')"
+    >
+      <mat-icon>done</mat-icon>
+    </button>
+  </ng-template>
+
+  <button
+    (click)="onClose.emit(null)"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>

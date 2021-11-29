@@ -1,0 +1,75 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /endpoints:
+    get:
+      summary: get all the endpoints that the user can access
+      operationId: getEndpoints
+      responses:
+        200:
+          description: an object of endpoints with lists of verbs it can use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointDto'
+        204:
+          description: no endpoints available to the user
+components:
+  schemas:
+    EndpointDto:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
+    Message:
+      type: object
+      properties:
+        userMessage:
+          type: string
+        developerMessage:
+          type: string
+        stackTrace:
+          type: string
+        exceptionName:
+          type: string
+    SortDirection:
+      type: string
+      enum: [ASC, DESC]
+      default: ASC
+    DescSortDirection:
+      type: string
+      enum: [ASC, DESC]
+      default: DESC
+  parameters:
+    sortdirection:
+      name: sortDirection
+      in: query
+      description: The direction to sort by
+      schema:
+        $ref: '#/components/schemas/SortDirection'
+    descsortdirection:
+      name: sortDirection
+      in: query
+      description: The direction to sort by
+      schema:
+        $ref: '#/components/schemas/DescSortDirection'
+    pagenumber:
+      name: pageNumber
+      in: query
+      description: The page number to get
+      schema:
+        type: integer
+        default: 1
+    pagesize:
+      name: pageSize
+      in: query
+      description: The amount of elements to get on each page
+      schema:
+        type: integer
+        default: 25

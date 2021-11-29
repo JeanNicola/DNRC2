@@ -1,0 +1,15 @@
+.review-related-rights-information {
+  ::ng-deep .mat-tab-body-content {
+    overflow: hidden;
+  }
+
+  ::ng-deep .mat-card {
+    width: 100%;
+  }
+}
+
+.related-rights-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}

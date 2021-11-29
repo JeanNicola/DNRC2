@@ -1,0 +1,97 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content>
+  <form [formGroup]="formGroup">
+    <div class="input-form">
+      <!-- Acreage fields -->
+      <div class="one-lined">
+        <div
+          class="form-field lined"
+          *ngFor="let field of placeOfUseDisplayFields; let i = index"
+        >
+          <shared-data-form-field
+            [mode]="mode"
+            [field]="field"
+            [value]="data?.values !== null ? data.values[field.columnId] : null"
+          >
+          </shared-data-form-field>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <h3>Legal Land Description</h3>
+      <div>
+        <div class="one-lined">
+          <div
+            class="form-field"
+            *ngFor="
+              let field of firstLegalLandDescriptionDisplayFields;
+              let i = index
+            "
+          >
+            <shared-data-form-field
+              [mode]="mode"
+              [field]="field"
+              [value]="
+                data?.values !== null ? data.values[field.columnId] : null
+              "
+              (shiftTabEvent)="receiveShiftTab($event, i)"
+              (changeEvent)="_onChange($event)"
+              (blurEvent)="_onBlur($event)"
+            >
+            </shared-data-form-field>
+          </div>
+        </div>
+        <div class="one-lined">
+          <div
+            class="form-field"
+            *ngFor="
+              let field of secondLegalLandDescriptionDisplayFields;
+              let i = index
+            "
+          >
+            <shared-data-form-field
+              [mode]="mode"
+              [field]="field"
+              [value]="
+                data?.values !== null ? data.values[field.columnId] : null
+              "
+              (shiftTabEvent)="receiveShiftTab($event, i)"
+              (changeEvent)="_onChange($event)"
+              (blurEvent)="_onBlur($event)"
+            >
+            </shared-data-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <div *ngIf="formGroup">
+    <button
+      (click)="save()"
+      [matTooltip]="data.mode === dialogModesEnum.Insert ? 'Insert' : 'Update'"
+      mat-mini-fab
+      color="primary"
+      [disabled]="!formGroup.valid"
+      [matTooltip]="
+        this.data.mode === dataManagementDialogModes.Update
+          ? 'Update'
+          : 'Insert'
+      "
+    >
+      <mat-icon>done</mat-icon>
+    </button>
+  </div>
+
+  <button
+    (click)="close()"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>

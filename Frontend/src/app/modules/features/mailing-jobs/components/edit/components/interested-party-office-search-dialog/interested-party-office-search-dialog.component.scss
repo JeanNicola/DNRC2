@@ -1,0 +1,19 @@
+.inline {
+  display: inline-block
+}
+
+.search {
+  text-align: center;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  top: -5px;
+}
+
+.loading {
+  text-align: center;
+  margin: 8px 0;
+}

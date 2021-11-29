@@ -1,0 +1,273 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /water-rights/{waterRightId}/owners:
+    get:
+      summary: Get a page of Water Right Owners
+      operationId: getWaterRightOwners
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-owner-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+        - $ref: '#/components/parameters/water-right-id'
+      responses:
+        200:
+          description: a page of water right owners
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightOwnerPageDto'
+  /water-rights/{waterRightId}/owners/{ownerId}/{contactId}:
+    put:
+      summary: edit an Owner of a Water Right
+      operationId: editWaterRightOwner
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/owner-id'
+        - $ref: '#/components/parameters/contact-id'
+      requestBody:
+        description: The updated Owner
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaterRightOwnerUpdateDto'
+      responses:
+        200:
+          description: The Owner
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightOwnerDto'
+  /water-rights/{waterRightId}/owners/{ownerId}/{contactId}/representatives:
+    get:
+      summary: get the Representatives of an Owner of a Water Right
+      operationId: getWaterRightRepresentatives
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-representative-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/owner-id'
+        - $ref: '#/components/parameters/contact-id'
+      responses:
+        200:
+          description: a page of water right representatives
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightRepresentativePageDto'
+    post:
+      summary: add a Representative to an Owner of a Water Right
+      operationId: addWaterRightRepresentative
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/owner-id'
+        - $ref: '#/components/parameters/contact-id'
+      requestBody:
+        description: The new Representative
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaterRightRepresentativeDto'
+      responses:
+        200:
+          description: a water right representatives
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightRepresentativeDto'
+  /water-rights/{waterRightId}/owners/{ownerId}/{contactId}/representatives/{representativeId}:
+    put:
+      summary: update a Representative to an Owner of a Water Right
+      operationId: editWaterRightRepresentative
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/owner-id'
+        - $ref: '#/components/parameters/contact-id'
+        - in: path
+          name: representativeId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: the representative id
+      requestBody:
+        description: The new Representative
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaterRightRepresentativeUpdateDto'
+      responses:
+        200:
+          description: a water right representatives
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightRepresentativeDto'
+components:
+  schemas:
+    WaterRightOwnerUpdateDto:
+      type: object
+      properties:
+        receivedMail:
+          type: boolean
+        originValue:
+          type: string
+    WaterRightOwnerDto:
+      type: object
+      properties:
+        ownerId:
+          type: integer
+          format: int64
+        contactId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        beginDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        originalOwner:
+          type: boolean
+        contractForDeedValue:
+          type: string
+        contractForDeedDescription:
+          type: string
+        receivedMail:
+          type: boolean
+        originValue:
+          type: string
+        originDescription:
+          type: string
+        repCount:
+          type: integer
+          format: int64
+    WaterRightOwnerPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightOwnerSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'WaterRightOwnerDto'
+    WaterRightRepresentativePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightRepresentativeSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'WaterRightRepresentativeDto'
+    WaterRightRepresentativeDto:
+      type: object
+      properties:
+        representativeId:
+          type: integer
+          format: int64
+        contactId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        roleCode:
+          type: string
+        roleDescription:
+          type: string
+        beginDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+      required:
+        - contactId
+        - roleCode
+        - beginDate
+    WaterRightRepresentativeUpdateDto:
+      type: object
+      properties:
+        roleCode:
+          type: string
+        beginDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+      required:
+        - roleCode
+        - beginDate
+    WaterRightOwnerSortColumn:
+      type: string
+      enum: [CONTACTID, NAME, BEGINDATE, ENDDATE, ORIGINALOWNER, CONTRACTFORDEED, RECEIVEDMAIL, ORIGINDESCRIPTION]
+      default: ENDDATE
+    WaterRightRepresentativeSortColumn:
+      type: string
+      enum: [CONTACTID, NAME, ROLEDESCRIPTION, BEGINDATE, ENDDATE]
+      default: ENDDATE
+  parameters:
+    water-right-owner-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightOwnerSortColumn'
+    water-right-representative-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightRepresentativeSortColumn'
+    owner-id:
+      in: path
+      name: ownerId
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: the owner id
+    contact-id:
+      in: path
+      name: contactId
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: the contact id

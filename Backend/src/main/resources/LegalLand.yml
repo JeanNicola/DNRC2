@@ -1,0 +1,111 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /legal-land/get-id:
+    get:
+      summary: get Legal Land ID
+      operationId: getLegalLandDescriptionId
+      parameters:
+        - $ref: '#/components/parameters/description320'
+        - $ref: '#/components/parameters/description160'
+        - $ref: '#/components/parameters/description80'
+        - $ref: '#/components/parameters/description40'
+        - $ref: '#/components/parameters/governmentLot'
+        - $ref: '#/components/parameters/township'
+        - $ref: '#/components/parameters/townshipDirection'
+        - $ref: '#/components/parameters/range'
+        - $ref: '#/components/parameters/rangeDirection'
+        - $ref: '#/components/parameters/section'
+        - $ref: '#/components/parameters/countyId'
+      responses:
+        200:
+          description: get a Legal Land ID
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        400:
+          description: Validation exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  parameters:
+    description320:
+      name: description320
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    description160:
+      name: description160
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    description80:
+      name: description80
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    description40:
+      name: description40
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    governmentLot:
+      name: governmentLot
+      in: query
+      schema:
+        type: integer
+        format: int64
+      description: governmentLot
+    township:
+      name: township
+      in: query
+      schema:
+        type: integer
+        format: int64
+      description: township
+    townshipDirection:
+      name: townshipDirection
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    range:
+      name: range
+      in: query
+      schema:
+        type: integer
+        format: int64
+      description: range
+    rangeDirection:
+      name: rangeDirection
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    section:
+      name: section
+      in: query
+      schema:
+        type: integer
+        format: int64
+      description: section
+    countyId:
+      name: countyId
+      in: query
+      schema:
+        type: integer
+        format: int64
+      description: countyId

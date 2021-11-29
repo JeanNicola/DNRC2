@@ -1,0 +1,24 @@
+.one-lined {
+    display:flex;
+    gap: 16px;
+}
+
+::ng-deep mat-checkbox {
+    padding-bottom: 17px;
+}
+
+.form-field {
+    display:flex;
+}
+
+.form-field ::ng-deep > *:first-child {
+    flex: 1
+}
+
+.form-field button {
+    margin: 8px 8px 0 8px;
+}
+
+.edit-button {
+    margin-top: 9px;
+}

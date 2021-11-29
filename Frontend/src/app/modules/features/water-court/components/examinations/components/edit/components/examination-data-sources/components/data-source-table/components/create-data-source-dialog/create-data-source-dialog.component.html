@@ -1,0 +1,217 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px">
+  <div style="margin-top: 15px">
+    <ng-container *ngTemplateOutlet="basicFormTemplate"> </ng-container>
+  </div>
+  <!-- Source IS USQ -->
+  <mat-horizontal-stepper
+    *ngIf="currentSourceType === dataSourceTypes.USGS_QUAD_MAPS"
+    [selectedIndex]="selectedStepIndex"
+    [linear]="true"
+    #stepper
+    (selectionChange)="stepping($event)"
+  >
+    <ng-template matStepperIcon="edit" let-index="index">
+      {{ index + 1 }}
+    </ng-template>
+
+    <mat-step
+      [completed]="formWasInitialized && formGroup.valid"
+      label="Search USGS"
+    >
+      <form [formGroup]="usgsSearchForm" class="usgs-search-form">
+        <div
+          class="form-field"
+          *ngFor="let field of usgsSearchColumns; let i = index"
+        >
+          <shared-data-form-field
+            [mode]="mode"
+            [field]="field"
+            (shiftTabEvent)="receiveShiftTab($event, i)"
+          >
+          </shared-data-form-field>
+        </div>
+        <div class="button-container">
+          <button
+            mat-stroked-button
+            color="primary"
+            matTooltip="Search"
+            matStepperNext
+          >
+            Search
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [completed]="!!usgsRow" label="Select USGS">
+      <app-data-table
+        *ngIf="usgsDataFound; else noData"
+        [data]="usgsRows"
+        [columns]="data.usgsColumns"
+        [hideActions]="usgsHideActions"
+        [hideEdit]="true"
+        [hideDelete]="true"
+        [hideHeader]="usgsHideHeader"
+        [clickableRow]="usgsClickableRow"
+        [dblClickableRow]="usgsDblClickableRow"
+        [highlightOneRow]="true"
+        [isInMain]="false"
+        [primarySortColumn]="usgsSortColumn"
+        [primaryDirection]="usgsSortDirection"
+        (sortEvent)="onSortRequest($event)"
+        (rowClickEvent)="onRowClick($event)"
+        (rowDblClickEvent)="onRowDoubleClick($event)"
+      >
+      </app-data-table>
+      <mat-paginator
+        *ngIf="usgsQueryResult && usgsRows?.length"
+        [length]="usgsQueryResult.totalElements"
+        [pageIndex]="usgsQueryParameters.pageNumber - 1"
+        [pageSize]="usgsQueryResult.pageSize"
+        [pageSizeOptions]="usgsPageSizeOptions"
+        [showFirstLastButtons]="true"
+        (page)="onPaging($event)"
+      >
+      </mat-paginator>
+      <div class="button-container">
+        <button
+          mat-stroked-button
+          color="primary"
+          matTooltip="Previous Step"
+          matStepperPrevious
+        >
+          Back
+        </button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <ng-template [ngIf]="formGroup">
+    <button
+      (click)="save()"
+      [matTooltip]="tooltip"
+      mat-mini-fab
+      color="primary"
+      [disabled]="
+        !formGroup.valid ||
+        (!formGroup.dirty && mode !== 'search') ||
+        (!usgsRow && currentSourceType === dataSourceTypes.USGS_QUAD_MAPS) ||
+        (!aerialFormGroup.valid &&
+          [
+            dataSourceTypes.WRS_AERIAL_PHOTO,
+            dataSourceTypes.AERIAL_PHOTO
+          ].includes(currentSourceType)) ||
+        (!waterSurveyFormGroup.valid && dataSourceTypes.WATER_RESOURCE_SURVEY)
+      "
+    >
+      <mat-icon>done</mat-icon>
+    </button>
+  </ng-template>
+
+  <button
+    (click)="close()"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>
+
+<!-- TEMPLATE FOR BASIC FORM -->
+<ng-template #basicFormTemplate>
+  <div class="data-container">
+    <form [formGroup]="formGroup" (keyup)="keyPress($event)">
+      <mat-error>
+        <app-form-errors></app-form-errors>
+      </mat-error>
+      <ng-container *ngFor="let field of displayFields; let i = index">
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          [value]="data?.values !== null ? data.values[field.columnId] : null"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+          (changeEvent)="onInputChangeHandler($event)"
+          (blurEvent)="_onBlur($event)"
+        >
+        </shared-data-form-field>
+      </ng-container>
+      <ng-template
+        [ngIf]="
+          [
+            dataSourceTypes.WRS_AERIAL_PHOTO,
+            dataSourceTypes.AERIAL_PHOTO
+          ].includes(currentSourceType)
+        "
+      >
+        <div [formGroup]="aerialFormGroup" class="aerial-photo-form">
+          <ng-container
+            *ngFor="let field of data.aerialPhotoColumns; let i = index"
+          >
+            <shared-data-form-field
+              [mode]="mode"
+              [field]="field"
+              [value]="
+                data?.values !== null ? data.values[field.columnId] : null
+              "
+              (shiftTabEvent)="receiveShiftTab($event, i)"
+              (changeEvent)="onInputChangeHandler($event)"
+              (blurEvent)="_onBlur($event)"
+            >
+            </shared-data-form-field>
+          </ng-container>
+        </div>
+      </ng-template>
+      <ng-template
+        [ngIf]="currentSourceType === dataSourceTypes.FIELD_INVESTIGATION"
+      >
+        <div [formGroup]="fieldInvestigationFormGroup">
+          <ng-container
+            *ngFor="let field of data.fieldInvestigationColumns; let i = index"
+          >
+            <shared-data-form-field
+              [mode]="mode"
+              [field]="field"
+              [value]="
+                data?.values !== null ? data.values[field.columnId] : null
+              "
+              (shiftTabEvent)="receiveShiftTab($event, i)"
+              (changeEvent)="onInputChangeHandler($event)"
+              (blurEvent)="_onBlur($event)"
+            >
+            </shared-data-form-field>
+          </ng-container>
+        </div>
+      </ng-template>
+      <ng-template
+        [ngIf]="currentSourceType === dataSourceTypes.WATER_RESOURCE_SURVEY"
+      >
+        <div [formGroup]="waterSurveyFormGroup">
+          <ng-container
+            *ngFor="let field of data.waterSurveyColumns; let i = index"
+          >
+            <shared-data-form-field
+              [mode]="mode"
+              [field]="field"
+              [value]="
+                data?.values !== null ? data.values[field.columnId] : null
+              "
+              (shiftTabEvent)="receiveShiftTab($event, i)"
+              (changeEvent)="onInputChangeHandler($event)"
+              (blurEvent)="_onBlur($event)"
+            >
+            </shared-data-form-field>
+          </ng-container>
+        </div>
+      </ng-template>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #noData>
+  <h3 class="data-message">No data found</h3>
+</ng-template>

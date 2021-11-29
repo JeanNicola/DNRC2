@@ -1,0 +1,14 @@
+.fields-container {
+  display: flex;
+  width: 92%;
+  flex-wrap: wrap;
+  justify-content: left;
+
+  > div {
+    margin-right: 10px;
+  }
+
+  .volume-description {
+    width: 100%;
+  }
+}

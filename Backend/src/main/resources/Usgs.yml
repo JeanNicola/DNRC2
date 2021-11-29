@@ -1,0 +1,32 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /usgs-quad-map-values:
+    get:
+      summary: get a page of USGS QUAD MAP values
+      operationId: getUsgsQuadMapsList
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/name'
+      responses:
+        200:
+          description: page of usgs quad map values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsgsPageDto'
+components:
+  parameters:
+    name:
+      name: name
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'

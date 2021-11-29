@@ -1,0 +1,286 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px">
+  <div style="margin-top: 15px">
+    <ng-container *ngTemplateOutlet="basicFormTemplate"> </ng-container>
+    <mat-tab-group #tabs>
+      <mat-tab
+        label="Objectors"
+        *ngIf="currentTabsAvailable.indexOf(dynamicStepsEnum.OBJECTOR) !== -1"
+      >
+        <div style="margin-top: 15px">
+          <ng-container *ngTemplateOutlet="objectorsSearchTemplate">
+          </ng-container>
+        </div>
+        <br />
+        <div *ngIf="showObjectorResults">
+          <app-display-objectors-for-objections
+            [filters]="objectorsSearchForm.value"
+            [selectedObjectorRowIdx]="selectedObjectorRowIdx"
+            (onObjector)="onObjector($event)"
+            (clearSelection)="objectorRow = null; selectedObjectorRowIdx = null"
+          ></app-display-objectors-for-objections>
+        </div>
+      </mat-tab>
+      <mat-tab
+        label="Decrees"
+        *ngIf="currentTabsAvailable.indexOf(dynamicStepsEnum.DECREE) !== -1"
+      >
+        <div style="margin-top: 15px">
+          <ng-container *ngTemplateOutlet="decreesSearchTemplate">
+          </ng-container>
+        </div>
+
+        <br />
+        <div *ngIf="showDecreeResults">
+          <app-display-decrees-for-objections
+            [filters]="decreeBasinSearchForm.value"
+            [selectedDecreeRowIdx]="selectedDecreeRowIdx"
+            (onDecree)="onDecree($event)"
+            (clearSelection)="
+              decreeBasinRow = null;
+              selectedDecreeRowIdx = null;
+              waterRightRow = null;
+              selectedWaterRightRowIdx = null
+            "
+          ></app-display-decrees-for-objections>
+        </div>
+      </mat-tab>
+      <mat-tab
+        label="Water Rights"
+        [disabled]="!decreeBasinRow"
+        *ngIf="
+          currentTabsAvailable.indexOf(dynamicStepsEnum.WATER_RIGHT) !== -1
+        "
+      >
+        <div style="margin-top: 15px">
+          <ng-container *ngTemplateOutlet="waterRightsSearchTemplate">
+          </ng-container>
+        </div>
+        <br />
+        <div *ngIf="showWaterRightResults">
+          <app-display-wr-for-objections
+            [filters]="waterRightSearchForm.value"
+            [basin]="decreeBasinRow?.basin"
+            [selectedWaterRightRowIdx]="selectedWaterRightRowIdx"
+            (onWaterRight)="onWaterRight($event)"
+            (clearSelection)="
+              waterRightRow = null; selectedWaterRightRowIdx = null
+            "
+          ></app-display-wr-for-objections>
+        </div>
+      </mat-tab>
+      <mat-tab
+        label="Applications *"
+        *ngIf="
+          currentTabsAvailable.indexOf(dynamicStepsEnum.APPLICATION) !== -1
+        "
+      >
+        <div style="margin-top: 15px">
+          <ng-container *ngTemplateOutlet="appSearchTemplate"> </ng-container>
+        </div>
+        <br />
+        <div *ngIf="showAppResults">
+          <app-display-apps-for-objections
+            [filters]="appSearchForm.value"
+            [selectedAppRowIdx]="selectedAppRowIdx"
+            (onApplication)="onApplication($event)"
+          ></app-display-apps-for-objections>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <ng-template [ngIf]="formGroup">
+    <button
+      (click)="save()"
+      [matTooltip]="tooltip"
+      mat-mini-fab
+      color="primary"
+      [disabled]="!formGroup.valid || (!formGroup.dirty && mode !== 'search')"
+    >
+      <mat-icon>done</mat-icon>
+    </button>
+  </ng-template>
+
+  <button
+    (click)="close()"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>
+
+<!-- SEARCH BUTTONS TEMPLATE -->
+<ng-template #searchButtonsTemplate>
+  <div class="button-container">
+    <button
+      (click)="handleCurrentStep(currentStep - 1)"
+      mat-stroked-button
+      color="primary"
+      matTooltip="Previous Step"
+      matStepperPrevious
+    >
+      Back
+    </button>
+    <button
+      (click)="handleCurrentStep(currentStep + 1)"
+      mat-stroked-button
+      color="primary"
+      matTooltip="Search"
+      matStepperNext
+    >
+      Search
+    </button>
+  </div>
+</ng-template>
+
+<!-- SEARCH TEMPLATE FOR APPLICATIONS -->
+<ng-template #appSearchTemplate>
+  <div class="search-form-container">
+    <form [formGroup]="appSearchForm" class="search-form">
+      <div
+        class="form-field"
+        *ngFor="let field of appSearchColumns; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+        >
+        </shared-data-form-field>
+      </div>
+    </form>
+    <div class="button-container">
+      <button
+        (click)="onApplicationSearch()"
+        mat-stroked-button
+        color="primary"
+        matTooltip="Search"
+        matStepperNext
+      >
+        Search
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- SEARCH TEMPLATE FOR OBJECTORS -->
+<ng-template #objectorsSearchTemplate>
+  <div class="search-form-container">
+    <form [formGroup]="objectorsSearchForm" class="search-form">
+      <div
+        class="form-field"
+        *ngFor="let field of objectorSearchColumns; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+        >
+        </shared-data-form-field>
+      </div>
+    </form>
+    <div class="button-container">
+      <button
+        (click)="onObjectorSearch()"
+        mat-stroked-button
+        color="primary"
+        matTooltip="Search"
+        matStepperNext
+      >
+        Search
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- SEARCH TEMPLATE FOR DECREES -->
+<ng-template #decreesSearchTemplate>
+  <div class="search-form-container">
+    <form [formGroup]="decreeBasinSearchForm" class="search-form">
+      <div
+        class="form-field"
+        *ngFor="let field of decreeBasinSearchColumns; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+        >
+        </shared-data-form-field>
+      </div>
+    </form>
+    <div class="button-container">
+      <button
+        (click)="onDecreeSearch()"
+        mat-stroked-button
+        color="primary"
+        matTooltip="Search"
+        matStepperNext
+      >
+        Search
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- SEARCH TEMPLATE FOR WATER RIGHTS -->
+<ng-template #waterRightsSearchTemplate>
+  <div class="search-form-container">
+    <form [formGroup]="waterRightSearchForm" class="search-form">
+      <div
+        class="form-field"
+        *ngFor="let field of waterRightSearchColumns; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+        >
+        </shared-data-form-field>
+      </div>
+    </form>
+    <div class="button-container">
+      <button
+        (click)="onWaterRightSearch()"
+        mat-stroked-button
+        color="primary"
+        matTooltip="Search"
+        matStepperNext
+      >
+        Search
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- BASIC FORM TEMPLATE -->
+<ng-template #basicFormTemplate>
+  <form [formGroup]="formGroup" (keyup)="keyPress($event)">
+    <mat-error>
+      <app-form-errors></app-form-errors>
+    </mat-error>
+    <div class="basic-form-container">
+      <div
+        class="form-field"
+        *ngFor="let field of displayFields; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          [value]="data?.values !== null ? data.values[field.columnId] : null"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+          (changeEvent)="_onChange($event)"
+          (blurEvent)="_onBlur($event)"
+        >
+        </shared-data-form-field>
+      </div>
+    </div>
+  </form>
+</ng-template>

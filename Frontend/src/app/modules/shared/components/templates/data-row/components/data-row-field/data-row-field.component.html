@@ -1,0 +1,80 @@
+<div
+  *ngIf="field.type == fieldTypes.Checkbox"
+  class="container"
+  [ngClass]="removePadding ? 'remove-padding' : ''"
+  [ngStyle]="
+    field?.width && {
+      width: field.width + 'px'
+    }
+  "
+>
+  <span class="label">{{ field.title }}</span>
+  <mat-icon *ngIf="dataValue === true">check_box</mat-icon>
+  <mat-icon *ngIf="dataValue !== true">check_box_outline_blank</mat-icon>
+</div>
+<mat-form-field
+  *ngIf="field.type != fieldTypes.Checkbox && !field.showCounter"
+  appearance="outline"
+  [ngClass]="removePadding ? 'remove-padding' : ''"
+  [ngStyle]="
+    field?.width && {
+      width: field.width + 'px'
+    }
+  "
+  [tabIndex]="field.dblClickable && dataValue ? 0 : -1"
+>
+  <mat-label>{{ noTitle ? '' : field.title }}</mat-label>
+  <textarea
+    *ngIf="
+      field.type != fieldTypes.DateTime &&
+      field.type != fieldTypes.DateOrDateTime &&
+      field.type != fieldTypes.Currency &&
+      field.type != fieldTypes.Date
+    "
+    [ngStyle]="getInputStyles()"
+    matInput
+    [cdkTextareaAutosize]="field.type == fieldTypes.TextArea"
+    readonly
+    [value]="dataValue || ' '"
+    [disabled]="isDisabled"
+    tabindex="-1"
+  ></textarea>
+  <input
+    *ngIf="field.type == fieldTypes.DateTime || field.type == fieldTypes.DateOrDateTime"
+    matInput
+    readonly
+    [disabled]="isDisabled"
+    [value]="(dataValue | date: 'MM/dd/y HH:mm') || ' '"
+    tabindex="-1"
+  />
+  <input
+    *ngIf="field.type == fieldTypes.Date"
+    matInput
+    readonly
+    [disabled]="isDisabled"
+    [value]="(getDate(dataValue) | date: 'MM/dd/yyyy') || ' '"
+    tabindex="-1"
+  />
+  <input
+    *ngIf="field.type == fieldTypes.MonthDayDate"
+    matInput
+    readonly
+    [disabled]="isDisabled"
+    [value]="(getDate(dataValue) | date: 'MM/dd') || ' '"
+    tabindex="-1"
+  />
+
+  <input
+    *ngIf="field.type == fieldTypes.Currency"
+    matInput
+    readonly
+    [ngModel]="dataValue || 0 | currency"
+    tabindex="-1"
+  />
+</mat-form-field>
+<div *ngIf="field?.showCounter" class="container">
+  <span class="label">{{ field.title }}</span>
+  <button class="counter-btn" mat-mini-fab matTooltip="View Child Rights">
+    {{ dataValue }}
+  </button>
+</div>

@@ -1,0 +1,87 @@
+<div *ngIf="title" class="edit-header-title">{{ title }}</div>
+<div *ngIf="!data && !error; else loaded" class="loading-container">
+  <p class="edit-header-title">Loading...</p>
+</div>
+<ng-template #loaded>
+  <ng-container *ngIf="data && !error; else failed">
+    <div class="app-edit-header">
+      <div class="data-row">
+        <ng-container *ngFor="let item of displayedColumns">
+          <shared-data-row-field
+            [inputStyles]="{ whiteSpace: 'normal', overflow: 'auto' }"
+            [field]="item"
+            [dataValue]="data[item.columnId]"
+            [removePadding]="true"
+            (keydown.enter)="onFieldDblClickHandler(item)"
+            (keydown.space)="onFieldDblClickHandler(item)"
+            (dblclick)="onFieldDblClickHandler(item)"
+          ></shared-data-row-field>
+        </ng-container>
+        <div class="sub-row-container">
+          <div>
+            <div class="edit-header-sub-title">Contact Point</div>
+            <ng-container *ngFor="let item of contactPointColumns">
+              <shared-data-row-field
+                [inputStyles]="{ whiteSpace: 'normal', overflow: 'auto' }"
+                [field]="item"
+                [dataValue]="data[item.columnId]"
+                [removePadding]="true"
+              ></shared-data-row-field>
+            </ng-container>
+          </div>
+          <div>
+            <div class="edit-header-sub-title">Examiner Data</div>
+            <ng-container *ngFor="let item of examinerColumns">
+              <div *ngIf="item.displayInTable ?? true">
+                <shared-data-row-field
+                  [inputStyles]="{ whiteSpace: 'normal', overflow: 'auto' }"
+                  [field]="item"
+                  [dataValue]="data[item.columnId]"
+                  [removePadding]="true"
+                ></shared-data-row-field>
+              </div>
+            </ng-container>
+          </div>
+          <div>
+            <div class="edit-header-sub-title">Examination Period</div>
+            <ng-container *ngFor="let item of examinerPeriodColumns">
+              <div *ngIf="item.displayInTable ?? true">
+                <shared-data-row-field
+                  [inputStyles]="{ whiteSpace: 'normal', overflow: 'auto' }"
+                  [field]="item"
+                  [dataValue]="data[item.columnId]"
+                  [removePadding]="true"
+                ></shared-data-row-field>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <!-- Button Action -->
+      <div class="data-row-actions">
+        <button
+          mat-mini-fab
+          color="primary"
+          matTooltip="Edit Examination"
+          (click)="onEdit()"
+          [disabled]="!permissions.canPUT || !data?.canEdit"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <app-reports-button
+          class="data-row-actions"
+          [data]="data"
+          [reportConfig]="reports"
+          [title]="reportTitle"
+        ></app-reports-button>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #failed>
+  <div class="loading-container">
+    <p class="edit-header-title">Examination not found.</p>
+  </div>
+</ng-template>

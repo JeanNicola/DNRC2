@@ -1,0 +1,107 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /periods/{periodId}:
+    get:
+      summary: get period of use detail
+      operationId: getPeriodOfUse
+      parameters:
+        - $ref: '#/components/parameters/period-id'
+      responses:
+        200:
+          description: get period of use detail data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PeriodOfUseDto'
+        404:
+          description: period of use not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: update period of use detail
+      operationId: updatePeriodOfUse
+      parameters:
+        - $ref: '#/components/parameters/period-id'
+      requestBody:
+        description: the updated period of use
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PeriodOfUseUpdateDto'
+      responses:
+        200:
+          description: the updated period of use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PeriodOfUseDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: period of use not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: delete period of use
+      operationId: deletePeriodOfUse
+      parameters:
+        - $ref: '#/components/parameters/period-id'
+      responses:
+        204:
+          description: period of use deleted
+        404:
+          description: period of use not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+components:
+  schemas:
+    PeriodOfUseUpdateDto:
+      type: object
+      properties:
+        beginDate:
+          type: string
+          format: date
+          x-message-name: Begin Date
+        endDate:
+          type: string
+          format: date
+          x-message-name: End Date
+        elementOrigin:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Element Origin
+        flowRate:
+          type: number
+          multipleOf: 0.01
+        leaseYear:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 3
+  parameters:
+    period-id:
+      name: periodId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the Period Of Use
+      required: true

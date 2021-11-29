@@ -1,0 +1,16 @@
+<app-ownership-update-table
+    [idArray]="_idArray"
+    (ownerUpdateClick)="onOwnerUpdateClickHandler($event)"
+></app-ownership-update-table>
+<div class="subcontainer">
+    <app-ownership-update-sellers
+        class="subtable"
+        id="subtable1"
+        [idArray]="[selectedOwnerUpdateId]"
+    ></app-ownership-update-sellers>
+    <app-ownership-update-buyers
+        class="subtable"
+        id="subtable2"
+        [idArray]="[selectedOwnerUpdateId]"
+    ></app-ownership-update-buyers>
+</div>

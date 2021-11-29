@@ -1,0 +1,192 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+tags:
+- name: CaseStatus
+  description: Case Status
+paths:
+  /case-status:
+    get:
+      summary: get all the Case Status
+      operationId: getCaseStatuses
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/case-status-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: query
+          name: code
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+        - in: query
+          name: description
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+      responses:
+        200:
+          description: a list of Case Statuses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseStatusPageDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: create a new Case Status
+      operationId: createCaseStatus
+      requestBody:
+        description: The new Case Status
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseStatusDto'
+      responses:
+        201:
+          description: Created a Case Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseStatusDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        409:
+          description: A Case Status  with this code already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /case-status/{code}:
+    delete:
+      summary: delete an existing Case Status
+      operationId: deleteCaseStatus
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+            maxLength: 4
+            pattern: '^[ -~]+$'
+          description: The Case Status Code
+      responses:
+        204:
+          description: deleted the Case Status
+        404:
+          description: No Case Status  was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: change an existing Case Status
+      operationId: changeCaseStatus
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+            maxLength: 4
+            pattern: '^[ -~]+$'
+          description: The Case Status Code
+      requestBody:
+          description: The updated Case Status
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseStatusDto'
+      responses:
+        200:
+          description: Changed the Case Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseStatusDto'
+        301:
+          description: Changed and Moved the Case Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseStatusDto'
+        404:
+          description: No Case Status was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    CaseStatusDto:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 4
+          pattern: '^[ -~]+$'
+        description:
+          type: string
+          maxLength: 40
+          pattern: '^[ -~]+$'
+      required:
+        - code
+        - description
+      example:
+        code: TEST
+        description: Test Example
+    CaseStatusPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/CaseStatusSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseStatusDto'
+    CaseStatusSortColumn:
+      type: string
+      enum: [CODE, DESCRIPTION]
+      default: CODE
+  parameters:
+    case-status-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/CaseStatusSortColumn'

@@ -1,0 +1,55 @@
+<div *ngIf="data">
+  <div class="row-title">
+    <span>Courthouse Filing Information (Historical Filing)</span>
+    <button
+      #editButton
+      *ngIf="showEdit"
+      mat-mini-fab
+      color="primary"
+      matTooltip="Edit"
+      (click)="onEdit(editTypes.COURTHOUSE)"
+      [disabled]="!permissions.canPUT || !canEdit || disableEditCourthouse"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
+
+  <div class="historical-filing">
+    <ng-container *ngFor="let item of historicalFiling">
+      <shared-data-row-field
+        *ngIf="item.displayInTable ?? true"
+        [id]="item.columnId"
+        [field]="item"
+        [dataValue]="displayData[item.columnId]"
+        (click)="clickCell(item)"
+      ></shared-data-row-field>
+    </ng-container>
+  </div>
+
+  <div class="row-title">
+    <span>Decree History</span>
+    <button
+      #editDecreeButton
+      *ngIf="showEdit"
+      mat-mini-fab
+      color="primary"
+      matTooltip="Edit"
+      (click)="onEdit(editTypes.DECREE)"
+      [disabled]="!permissions.canPUT || disableEditDecreeHistory"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
+
+  <div class="decree-history">
+    <ng-container *ngFor="let item of decreeHistory">
+      <shared-data-row-field
+        *ngIf="item.displayInTable ?? true"
+        [id]="item.columnId"
+        [field]="item"
+        [dataValue]="displayData[item.columnId]"
+        (click)="clickCell(item)"
+      ></shared-data-row-field>
+    </ng-container>
+  </div>
+</div>

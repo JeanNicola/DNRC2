@@ -1,0 +1,44 @@
+<p *ngIf="!data">Loading...</p>
+<mat-card *ngIf="data">
+  <shared-data-row-field
+    *ngIf="!distanceAndDirection"
+    [field]="_getColumn('changeDescription')"
+    [dataValue]="data?.changeDescription"
+  ></shared-data-row-field>
+  <div class="proposed-change" *ngIf="distanceAndDirection">
+    <div class="half">
+      <shared-data-row-field
+        [field]="_getColumn('distance')"
+        [dataValue]="data?.distance"
+      ></shared-data-row-field>
+    </div>
+    <div class="half">
+      <shared-data-row-field
+        [field]="_getColumn('directionName')"
+        [dataValue]="data?.directionName"
+      ></shared-data-row-field>
+    </div>
+  </div>
+  <br />
+  <shared-data-row-field
+    [field]="_getColumn('pastUse')"
+    [dataValue]="data?.pastUse"
+    [isDisabled]="!pastUseOfWater"
+  ></shared-data-row-field>
+  <br />
+  <shared-data-row-field
+    [field]="_getColumn('additionalInformation')"
+    [dataValue]="data?.additionalInformation"
+  ></shared-data-row-field>
+  <div class="cd-btn-container">
+    <button
+      mat-mini-fab
+      color="primary"
+      matTooltip="Edit"
+      (click)="onEdit()"
+      [disabled]="!permissions.canPUT"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
+</mat-card>

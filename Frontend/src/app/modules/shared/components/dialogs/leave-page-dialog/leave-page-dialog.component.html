@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>You currently have unsaved edits.</h1>
+<mat-dialog-content class="mat-typography">
+  <p>Are you sure you want to leave?</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="'leave'" color="warn">Yes</button>
+  <button
+    mat-button
+    mat-dialog-close
+    cdkFocusInitial
+    [mat-dialog-close]="'cancel'"
+  >
+    Cancel
+  </button>
+</mat-dialog-actions>

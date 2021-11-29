@@ -1,0 +1,24 @@
+<app-objections-summary
+  *ngIf="summaryData"
+  [data]="summaryData"
+  [applicationId]="appId"
+></app-objections-summary>
+<p class="obj-summary-title">Objections Summary</p>
+<div class="objections-subtables-container">
+  <div class="subtable subtable-left">
+    <app-objections-main
+      [idArray]="[appId]"
+      (objectionEvent)="setObjection($event)"
+      (summaryEvent)="setSummary($event)"
+    ></app-objections-main>
+  </div>
+  <div class="subtable subtable-right">
+    <app-objections-objectors
+      [idArray]="[appId, objectionId]"
+    ></app-objections-objectors>
+    <br />
+    <app-objections-categories
+      [idArray]="[appId, objectionId]"
+    ></app-objections-categories>
+  </div>
+</div>

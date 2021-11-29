@@ -1,0 +1,103 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /applications/{applicationId}/change:
+    get:
+      summary: get change description in application
+      operationId: findChangeByApplicationId
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 10
+
+      responses:
+        200:
+          description: return change description, past use of water, and additional information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeDto'
+
+    put:
+      summary: update a change propose
+      operationId: updateChange
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 10
+      requestBody:
+        description: The change
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeDto'
+      responses:
+        200:
+          description: Updated the change proposal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeDto'
+        301:
+          description: Redirect the change update.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: No Change found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    ChangeDto:
+      type: object
+      properties:
+        changeDescription:
+          type: string
+          pattern: '^[ -~\n]*$'
+          maxLength: 4000
+          x-message-name: Additional Information
+        pastUse:
+          type: string
+          pattern: '^[ -~\n]*$'
+          maxLength: 4000
+          x-message-name: Additional Information
+        additionalInformation:
+          type: string
+          pattern: '^[ -~\n]*$'
+          maxLength: 2000
+          x-message-name: Additional Information
+        direction:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 2
+        directionName:
+          type: string
+          pattern: '^[ -~]*$'
+        distance:
+          type: integer
+          format: int64
+          x-message-name: Distance in feet

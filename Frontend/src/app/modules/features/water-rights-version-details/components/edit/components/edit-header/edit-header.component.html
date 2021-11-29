@@ -1,0 +1,56 @@
+<div *ngIf="title" class="edit-header-title">{{ title }}</div>
+<div *ngIf="!data && !error; else loaded" class="loading-container">
+  <p class="edit-header-title">Loading...</p>
+</div>
+<ng-template #loaded>
+  <div class="app-edit-header" *ngIf="data && !error; else failed">
+    <div class="data-row">
+      <ng-container *ngFor="let item of displayedColumns">
+        <shared-data-row-field
+          (dblclick)="onFieldDblClick(item)"
+          [removePadding]="true"
+          (keydown.enter)="onFieldDblClick(item)"
+          (keydown.space)="onFieldDblClick(item)"
+          [inputStyles]="{ whiteSpace: 'normal', overflow: 'auto' }"
+          [field]="item"
+          [dataValue]="data[item.columnId]"
+          [removePadding]="true"
+        ></shared-data-row-field>
+      </ng-container>
+    </div>
+
+    <!-- Button Action -->
+    <div class="data-row-actions">
+      <button
+        mat-mini-fab
+        color="primary"
+        matTooltip="Edit Water Right Version"
+        (click)="onEdit()"
+        [disabled]="!permissions.canPUT || !canEdit"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button
+        mat-mini-fab
+        color="primary"
+        matTooltip="Go to Application"
+        (click)="onApplicationLink()"
+        [disabled]="!data?.applicationExists"
+      >
+        <mat-icon>text_rotation_none</mat-icon>
+      </button>
+      <app-reports-button
+        class="data-row-actions"
+        [data]="data"
+        [reportConfig]="reports"
+        [title]="reportTitle"
+      ></app-reports-button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #failed>
+  <div class="loading-container">
+    <p class="edit-header-title">Water Right Version not found.</p>
+  </div>
+</ng-template>

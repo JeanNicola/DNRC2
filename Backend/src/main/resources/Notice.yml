@@ -1,0 +1,304 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /applications/{applicationId}/notices:
+    get:
+      summary: get a page of mailing job notices
+      operationId: getNotices
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 10
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/application-mailing-job-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+      responses:
+        200:
+          description: A List of Mailing Job Notices
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationMailingJobPageDto'
+        301:
+          description: Changed and Moved the Mailing Job Notices
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationMailingJobPageDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: No Mailing Job Notices Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /applications/{applicationId}/notices/{noticeId}/water-right-notifications:
+    get:
+      summary: get a page of water rights
+      operationId: getWaterRightNotifications
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 10
+        - in: path
+          name: noticeId
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 10
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-notification-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: A List of Water Right Notifictions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightNotificationPageDto'
+        301:
+          description: Changed and Moved the Water Right Notifications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightNotificationPageDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: No Water Right Notifications Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /applications/{applicationId}/notices/{noticeId}/other-notifications:
+    get:
+      summary: get a page of other party notification
+      operationId: getOtherNotifications
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 10
+        - in: path
+          name: noticeId
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 10
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/other-notification-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: A List of Other Notifications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtherNotificationPageDto'
+        301:
+          description: Changed and Moved the Other Notifications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtherNotificationPageDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: No Other Notifications Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+components:
+  schemas:
+    ApplicationMailingJobPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/ApplicationMailingJobSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationMailingJobDto'
+    WaterRightNotificationPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightNotificationSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WaterRightNotificationDto'
+    OtherNotificationPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/OtherNotificationSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OtherNotificationDto'
+
+
+    ApplicationMailingJobDto:
+      type: object
+      properties:
+        mailingJobId:
+          type: integer
+          format: int64
+          x-message-name: Application ID SEQ
+        dateGenerated:
+          type: string
+          format: date
+    WaterRightNotificationDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        basin:
+          type: string
+          pattern: '^[ -~]+$'
+          x-message-name: Basin number
+          maxLength: 4
+        waterRightNumber:
+          type: integer
+          format: int64
+          x-message-name: Water Right Number
+          maxLength: 10
+        typeDescription:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 30
+        ext:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 3
+        status:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 20
+    OtherNotificationDto:
+      type: object
+      properties:
+        contactId:
+          type: integer
+          format: int64
+          x-message-name: Contact ID
+          maxLength: 10
+        name:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 75
+    ApplicationMailingJobSortColumn:
+      type: string
+      enum: [ MAILINGJOBID, DATEGENERATED ]
+      default: MAILINGJOBID
+    WaterRightNotificationSortColumn:
+      type: string
+      enum: [ BASIN, WATERRIGHTNUMBER, TYPEDESCRIPTION, EXT, STATUS ]
+      default: WATERRIGHTNUMBER
+    OtherNotificationSortColumn:
+      type: string
+      enum: [ CONTACTID, NAME ]
+      default: NAME
+
+  parameters:
+    application-mailing-job-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/ApplicationMailingJobSortColumn'
+    water-right-notification-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightNotificationSortColumn'
+    other-notification-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/OtherNotificationSortColumn'

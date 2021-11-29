@@ -1,0 +1,48 @@
+<div class="results-table-container" *ngIf="waterRightDataFound; else noData">
+  <div class="clear-selection-button">
+    <button
+      (click)="clearSelection.emit(null)"
+      *ngIf="waterRightRows?.length"
+      [disabled]="selectedWaterRightRowIdx == null"
+      matTooltip="Clear Selection"
+      mat-mini-fab
+      color="primary"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <app-data-table
+    [data]="waterRightRows"
+    [selectedRow]="selectedWaterRightRowIdx"
+    [columns]="waterRightSearchDisplayColumns"
+    [hideActions]="waterRightHideActions"
+    [hideEdit]="true"
+    [hideDelete]="true"
+    [hideHeader]="waterRightHideHeader"
+    [clickableRow]="waterRightClickableRow"
+    [dblClickableRow]="waterRightDblClickableRow"
+    [highlightOneRow]="true"
+    [isInMain]="false"
+    [primarySortColumn]="waterRightSortColumn"
+    [primaryDirection]="waterRightSortDirection"
+    (sortEvent)="onSortRequest($event)"
+    (rowClickEvent)="onRowClick($event)"
+    (rowDblClickEvent)="onRowDoubleClick($event)"
+  >
+  </app-data-table>
+</div>
+
+<mat-paginator
+  *ngIf="waterRightQueryResult && waterRightRows?.length"
+  [length]="waterRightQueryResult.totalElements"
+  [pageIndex]="waterRightQueryParameters.pageNumber - 1"
+  [pageSize]="waterRightQueryResult.pageSize"
+  [pageSizeOptions]="waterRightPageSizeOptions"
+  [showFirstLastButtons]="true"
+  (page)="onPaging($event)"
+>
+</mat-paginator>
+
+<ng-template #noData>
+  <h3 class="data-message">No data found</h3>
+</ng-template>

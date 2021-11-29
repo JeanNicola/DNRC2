@@ -1,0 +1,419 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /examinations:
+    get:
+      summary: search examinations
+      operationId: searchExaminations
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/examinations-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/examination-basin'
+        - $ref: '#/components/parameters/examination-water-right-number'
+        - $ref: '#/components/parameters/examination-water-right-type'
+        - $ref: '#/components/parameters/version-type'
+        - $ref: '#/components/parameters/version'
+      responses:
+        200:
+          description: page of examinations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExaminationsSearchPageDto'
+  /examinations/{examinationId}:
+    get:
+      summary: search one Examination
+      operationId: getExamination
+      parameters:
+        - in: path
+          name: examinationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Examination Id
+      responses:
+        200:
+          description: a Examination
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExaminationDetailDto'
+        404:
+          description: Examination not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: Change an existing Examination
+      operationId: updateExamination
+      parameters:
+        - in: path
+          name: examinationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Examination Id
+      requestBody:
+        description: The Examination changes
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExaminationCreationDto'
+      responses:
+        200:
+          description: The changed Examination
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExaminationDetailDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Examination not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /examinations/{examinationId}/data-sources:
+    get:
+      summary: get all data sources of Examination
+      operationId: getExaminationDataSources
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/data-source-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: path
+          name: examinationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Examination Id
+      responses:
+        200:
+          description: a Data Source
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataSourcePageDto'
+        404:
+          description: Examination not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: Create Data Source for a Examination
+      operationId: createDataSourceForExamination
+      parameters:
+        - in: path
+          name: examinationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Examination Id
+      requestBody:
+        description: a new Data Source
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataSourceCreationDto'
+      responses:
+        201:
+          description: the new Data Source
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataSourceDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Examination not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /examinations/{examinationId}/data-sources/{pexmId}:
+    delete:
+      summary: Delete Data Source from an Examination
+      operationId: deleteDataSource
+      parameters:
+        - in: path
+          name: examinationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Examination Id
+        - in: path
+          name: pexmId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Pou Examination Id
+      responses:
+        204:
+          description: Data Source deleted
+        404:
+          description: Examination or Data Source not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+components:
+  schemas:
+    ExaminationsSearchPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/ExaminationsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExaminationsDto'
+    DataSourcePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/DataSourceSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataSourceDto'
+    ExaminationsDto:
+      type: object
+      properties:
+        examinationId:
+          type: integer
+          format: int64
+        waterRightId:
+          type: integer
+          format: int64
+        versionId:
+          type: integer
+          format: int64
+        purposeId:
+          type: integer
+          format: int64
+        completeWaterRightNumber: # Basin, Water Right Number, Ext
+          type: string
+        waterRightTypeCode:
+          type: string
+        waterRightTypeDescription:
+          type: string
+        waterRightStatusCode:
+          type: string
+        waterRightStatusDescription:
+          type: string
+        completeWaterRightVersion: #Version Type Description, Version Id, Version Status Description
+          type: string
+    DataSourceDto:
+      type: object
+      properties:
+        pexmId:
+          type: integer
+          format: int64
+        examinationId:
+          type: integer
+          format: int64
+        purposeId:
+          type: integer
+          format: int64
+        investigationDate:
+          type: string
+          format: date
+        sourceType:
+          type: string
+        sourceTypeDescription:
+          type: string
+        totalExaminedAcres:
+          type: number
+          multipleOf: 0.01
+    DataSourceCreationDto:
+      type: object
+      properties:
+        investigationDate:
+          type: string
+          format: date
+        sourceType:
+          type: string
+        usgs:
+          $ref: '#/components/schemas/UsgsCreationDto'
+        aerialPhoto:
+          $ref: '#/components/schemas/AerialPhotoCreationDto'
+        waterResourceSurvey:
+          $ref: '#/components/schemas/WaterResourceSurveyCreationDto'
+
+    ExaminationCreationDto:
+      type: object
+      properties:
+        beginDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        dnrcId:
+          type: integer
+          format: int64
+    ExaminationDetailDto:
+      type: object
+      properties:
+        isDecreed:
+          type: boolean
+        isVersionLocked:
+          type: boolean
+        isEditableIfDecreed:
+          type: boolean
+        canReexamineDecree:
+          type: boolean
+        canModifySplitDecree:
+          type: boolean
+        canPrintDecreeReport:
+          type: boolean
+        completeWaterRightNumber: # Basin, Water Right Number, Ext
+          type: string
+        examinationId:
+          type: integer
+          format: int64
+        waterRightId:
+          type: integer
+          format: int64
+        purposeId:
+          type: integer
+          format: int64
+        versionNumber:
+          type: integer
+          format: int64
+        versionTypeCode:
+          type: string
+        beginDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        dnrcId:
+          type: integer
+          format: int64
+        cntPos:
+          type: number
+        cntNeg:
+          type: number
+        totalClaimedAcres:
+          type: number
+        waterRightTypeCode:
+          type: string
+        waterRightTypeDescription:
+          type: string
+        waterRightStatusCode:
+          type: string
+        waterRightStatusDescription:
+          type: string
+        name:
+          type: string
+    ExaminationsSortColumn:
+      type: string
+      enum: [COMPLETEWATERRIGHTNUMBER, WATERRIGHTTYPEDESCRIPTION, WATERRIGHTSTATUSDESCRIPTION, COMPLETEWATERRIGHTVERSION]
+      default: COMPLETEWATERRIGHTNUMBER
+    DataSourceSortColumn:
+      type: string
+      enum: [SOURCETYPEDESCRIPTION, INVESTIGATIONDATE]
+      default: SOURCETYPEDESCRIPTION
+    DataSourceTypes:
+      type: string
+      enum: [AER, FLD, USQ, WRS, WAE]
+  parameters:
+    data-source-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/DataSourceSortColumn'
+    examinations-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/ExaminationsSortColumn'
+    examination-basin:
+      name: basin
+      in: query
+      required: true
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    examination-water-right-type:
+      name: waterRightType
+      in: query
+      required: true
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    examination-water-right-number:
+      name: waterRightNumber
+      in: query
+      required: true
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    version:
+      name: version
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'

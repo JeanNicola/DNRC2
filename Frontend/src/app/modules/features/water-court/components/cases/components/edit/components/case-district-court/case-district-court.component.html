@@ -1,0 +1,11 @@
+<div class="district-court-container">
+  <app-court-base-code-table
+    (onCourtSelect)="currentDistrictId = $event"
+  ></app-court-base-code-table>
+  <ng-template [ngIf]="currentDistrictId">
+    <app-district-court-events-code-table
+      [idArray]="[currentCaseNumber, currentDistrictId]"
+    >
+    </app-district-court-events-code-table>
+  </ng-template>
+</div>

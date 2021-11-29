@@ -1,0 +1,48 @@
+<div class="results-table-container" *ngIf="decreeBasinDataFound; else noData">
+  <div class="clear-selection-button">
+    <button
+      (click)="clearSelection.emit(null)"
+      *ngIf="decreeBasinRows?.length"
+      [disabled]="selectedDecreeRowIdx == null"
+      matTooltip="Clear Selection"
+      mat-mini-fab
+      color="primary"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <app-data-table
+    [data]="decreeBasinRows"
+    [selectedRow]="selectedDecreeRowIdx"
+    [columns]="decreeBasinSearchDisplayColumns"
+    [hideActions]="decreeBasinHideActions"
+    [hideEdit]="true"
+    [hideDelete]="true"
+    [hideHeader]="decreeBasinHideHeader"
+    [clickableRow]="decreeBasinClickableRow"
+    [dblClickableRow]="decreeBasinDblClickableRow"
+    [highlightOneRow]="true"
+    [isInMain]="false"
+    [primarySortColumn]="decreeBasinSortColumn"
+    [primaryDirection]="decreeBasinSortDirection"
+    (sortEvent)="onSortRequest($event)"
+    (rowClickEvent)="onRowClick($event)"
+    (rowDblClickEvent)="onRowDoubleClick($event)"
+  >
+  </app-data-table>
+</div>
+
+<mat-paginator
+  *ngIf="decreeBasinQueryResult && decreeBasinRows?.length"
+  [length]="decreeBasinQueryResult.totalElements"
+  [pageIndex]="decreeBasinQueryParameters.pageNumber - 1"
+  [pageSize]="decreeBasinQueryResult.pageSize"
+  [pageSizeOptions]="decreeBasinPageSizeOptions"
+  [showFirstLastButtons]="true"
+  (page)="onPaging($event)"
+>
+</mat-paginator>
+
+<ng-template #noData>
+  <h3 class="data-message">No data found</h3>
+</ng-template>

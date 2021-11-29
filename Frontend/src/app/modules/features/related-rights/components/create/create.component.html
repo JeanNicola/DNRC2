@@ -1,0 +1,64 @@
+<div>
+  <h2 mat-dialog-title class="card-title">{{ title }}</h2>
+  <mat-divider></mat-divider>
+  <mat-dialog-content>
+    <form [formGroup]="basicInformationFormGroup" class="related-rights-form">
+      <div class="form-field" *ngFor="let field of columns; let i = index">
+        <shared-data-form-field
+          *ngIf="!field.list"
+          [mode]="mode"
+          [field]="field"
+          (changeEvent)="_onChange($event)"
+        >
+        </shared-data-form-field>
+      </div>
+    </form>
+    <div>
+      <div class="water-rights-header">
+        <div class="create-sub-title">
+          Water Rights<span style="font-size: 13px; font-weight: 400">
+            (At least two Water Rights are required)</span
+          >
+        </div>
+        <div class="text-buttons-container">
+          <button
+            #createButtonFocus
+            (click)="onInsertWaterRight()"
+            mat-mini-fab
+            color="primary"
+            matTooltip="Add Water Rights"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div>
+        <app-data-table
+          *ngIf="waterRights.length"
+          [data]="waterRightsDataSource"
+          [columns]="waterRightColumns"
+          [permissions]="permissions"
+          [isInMain]="false"
+          hideEdit="true"
+          noSort="true"
+          (deleteEvent)="onDeleteWaterRight($event)"
+        ></app-data-table>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-divider></mat-divider>
+  <mat-dialog-actions align="end">
+    <button
+      mat-mini-fab
+      color="primary"
+      matTooltip="Create Related Right"
+      [disabled]="!basicInformationFormGroup.valid || waterRights?.length < 2"
+      (click)="save()"
+    >
+      <mat-icon>done</mat-icon>
+    </button>
+    <button mat-mini-fab color="warn" matTooltip="Cancel" (click)="close()">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -1,0 +1,17 @@
+.data-message {
+  text-align: center;
+}
+
+.results-table-container {
+  display: flex;
+  justify-content: center;
+
+  > .clear-selection-button {
+    min-width: 40px;
+    margin-top: 10px;
+  }
+
+  > app-data-table {
+    flex: 1;
+  }
+}

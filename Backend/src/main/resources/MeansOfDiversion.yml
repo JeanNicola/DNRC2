@@ -1,0 +1,19 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /means-of-diversions:
+    get:
+      summary: get all the Means of Diversions
+      operationId: getMeansOfDiversions
+      responses:
+        200:
+          description: a list of all the Means of Diversions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'

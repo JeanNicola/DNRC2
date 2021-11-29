@@ -1,0 +1,1134 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /water-right-versions:
+    get:
+      summary: search water right and versions
+      operationId: searchWaterRightVersions
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-version-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+        - $ref: '#/components/parameters/basin'
+        - $ref: '#/components/parameters/water-right-number'
+        - $ref: '#/components/parameters/version'
+      responses:
+        200:
+          description: a page of Water Rights
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightVersionPageDto'
+
+  /water-rights/{waterRightId}/versions:
+    get:
+      summary: get a page of versions attached to a water right
+      operationId: getWaterRightVersions
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-version-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/version'
+        - $ref: '#/components/parameters/versionType'
+        - $ref: '#/components/parameters/water-right-id'
+      responses:
+        200:
+          description: a page of Versions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionPageDto'
+    post:
+      summary: create a new version
+      operationId: createWaterRightVersion
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+      requestBody:
+        description: the new Version
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionCreationDto'
+      responses:
+        201:
+          description: the new version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionDto'
+  /water-rights/{waterRightId}/first-version:
+    post:
+      summary: create the first version
+      operationId: createFirstVersion
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+      requestBody:
+        description: the new Version
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FirstVersionCreationDto'
+      responses:
+        201:
+          description: the new version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionDto'
+  /water-rights/{waterRightId}/versions/{versionNumber}/standardsUpdated:
+    put:
+      summary: edit a version's Standards
+      operationId: editVersionStandards
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      requestBody:
+        description: the new Version
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionUpdateDto'
+      responses:
+        200:
+          description: the updated Version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionDto'
+        400:
+          description: Checking standards not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: the Water Right Version is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/versions/{versionNumber}:
+    put:
+      summary: edit a version
+      operationId: editWaterRightVersion
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      requestBody:
+        description: the new Version
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionUpdateDto'
+      responses:
+        200:
+          description: the updated Version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionDto'
+    get:
+      summary: Get a Water Right Version Detail
+      operationId: getWaterRightVersionDetail
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      responses:
+        200:
+          description: Water Right Version detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionDetailDto'
+
+  /water-rights/{waterRightId}/versions/{versionNumber}/cases:
+    get:
+      summary: Get a Water Right Version Cases
+      operationId: getWaterRightVersionCases
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-version-cases-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: the water right id
+        - in: path
+          name: versionNumber
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: the version number
+      responses:
+        200:
+          description: Water Right Version Cases
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightVersionCasesPageDto'
+
+  /water-rights/{waterRightId}/versions/{versionNumber}/objections:
+    get:
+      summary: Get a page of Water Right Version Objections
+      operationId: getWaterRightVersionObjections
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-version-objections-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      responses:
+        200:
+          description: A page of Water Right Version Objections
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightVersionObjectionsPageDto'
+
+  /water-rights/{waterRightId}/versions/{versionNumber}/objections/{objectionId}/elements:
+    get:
+      summary: Get a page of Water Right Version Objections Elements
+      operationId: getWaterRightVersionObjectionsElements
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-version-objections-elements-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - in: path
+          name: objectionId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: the objection id
+      responses:
+        200:
+          description: A page of Water Right Version Objections Elements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightVersionObjectionsElementsPageDto'
+
+  /water-rights/{waterRightId}/versions/{versionNumber}/objections/{objectionId}/objectors:
+    get:
+      summary: Get a page of Water Right Version Objectors
+      operationId: getWaterRightVersionObjectors
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-version-objectors-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - in: path
+          name: objectionId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: the objection id
+      responses:
+        200:
+          description: A page of Water Right Version Objectors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightVersionObjectorsPageDto'
+
+  /water-rights/{waterRightId}/versions/{versionNumber}/related-rights:
+    get:
+      summary: retrieve a page of the related rights on a water right version
+      operationId: getWaterRightVersionRelatedRights
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/related-right-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      responses:
+        200:
+          description: a page of relationships
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatedRightsPageDto'
+        404:
+          description: water right version does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /water-rights/{waterRightId}/apply-version-standards:
+    post:
+      summary: Apply Standards to Versions
+      operationId: applyVersionStandards
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+      responses:
+        204:
+          description: Finished standards check
+
+  /water-rights/view/versions:
+    get:
+      summary: search water right versions
+      operationId: searchWaterRightByVersions
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-version-search-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+        - $ref: '#/components/parameters/water-right-number'
+        - $ref: '#/components/parameters/version'
+        - $ref: '#/components/parameters/version-type'
+      responses:
+        200:
+          description: a page of Water Rights
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightVersionSearchPageDto'
+
+  /water-rights/{waterRightId}/versions/{versionNumber}/decrees:
+    get:
+      summary: Get a page of Water Right Version Decrees
+      operationId: getWaterRightVersionDecrees
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-version-decree-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      responses:
+        200:
+          description: A page of Water Right Version Decrees
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightVersionDecreesPageDto'
+
+  /water-rights/{waterRightId}/versions/{versionNumber}/purposes:
+    post:
+      summary: create a water right version purpose
+      operationId: createWaterRightVersionPurpose
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      requestBody:
+        description: a new purpose
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaterRightVersionPurposeCreationDto'
+      responses:
+        201:
+          description: the new purpose
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurposeDetailDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: water right version not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /water-rights/{waterRightId}/versions/{versionNumber}/volume:
+    get:
+      summary: get the maximum volume, origin, and description from a version
+      operationId: getVersionVolume
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      responses:
+        200:
+          description: the volume information for the version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionVolumeDto'
+        404:
+          description: water right version not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: update the maximum volume, origin, and description on a version
+      operationId: updateVersionVolume
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      requestBody:
+        description: updates to the maximum volume, origin, and description
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionVolumeDto'
+      responses:
+        201:
+          description: the volume information for the version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionVolumeDto'
+        404:
+          description: water right version not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /water-rights/{waterRightId}/versions/{versionNumber}/acreage:
+    get:
+      summary: get the maximum acres and origin from a version
+      operationId: getVersionAcreage
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      responses:
+        200:
+          description: the acreage information for the version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionAcreageDto'
+        404:
+          description: water right version not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: update the maximum acres and origin on a version
+      operationId: updateVersionAcreage
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      requestBody:
+        description: updates to the maximum acres and origin
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionAcreageDto'
+      responses:
+        201:
+          description: the acreage information for the version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionAcreageDto'
+        404:
+          description: water right version not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /water-rights/{basin}/eligible-water-rights:
+    get:
+      summary: retrieve a list of eligible water rights for objections or counter objections
+      operationId: getEligibleWaterRightVersions
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/eligible-water-right-versions-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/water-number'
+        - in: path
+          name: basin
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: a list of eligible water rights for objections or counter objections
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EligibleWaterRightVersionPageDto'
+        404:
+          description: basin does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+components:
+  schemas:
+    EligibleWaterRightVersionPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/EligibleWaterRightVersionSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'WaterRightVersionDto'
+    EligibleWaterRightVersionSortColumn:
+      type: string
+      enum: [WATERRIGHTNUMBER, BASIN, EXT, WATERRIGHTTYPEDESCRIPTION, WATERRIGHTSTATUSDESCRIPTION]
+      default: WATERRIGHTNUMBER
+    WaterRightVersionCasesPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightVersionCasesSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'WaterRightVersionCaseDto'
+    WaterRightVersionCaseDto:
+      type: object
+      properties:
+        caseNumber:
+          type: integer
+          format: int64
+        waterCourtCase:
+          type: string
+        description:
+          type: string
+        statusDescription:
+          type: string
+        hearingDate:
+          type: string
+          format: date
+        versionNumber:
+          type: integer
+          format: int64
+
+    WaterRightVersionObjectionsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightVersionObjectionsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'WaterRightVersionObjectionsDto'
+    WaterRightVersionObjectionsDto:
+      allOf:
+        - $ref: '#/components/schemas/ObjectionDto'
+        - type: object
+          properties:
+            objectionTypeDescription:
+              type: string
+            objectionStatusDescription:
+              type: string
+
+    WaterRightVersionObjectionsElementsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightVersionObjectionsElementsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'WaterRightVersionObjectionsElementsDto'
+    WaterRightVersionObjectionsElementsDto:
+      type: object
+      properties:
+        elementType:
+          type: string
+        elementTypeDescription:
+          type: string
+        elementObjectionId:
+          type: integer
+          format: int64
+        elementObjectionRemark:
+          type: string
+
+    WaterRightVersionObjectorsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightVersionObjectorsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectorDto'
+
+    WaterRightVersionDecreesPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightVersionDecreeSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'WaterRightVersionDecreeDto'
+
+    WaterRightVersionDecreeDto:
+      type: object
+      properties:
+        decreeId:
+          type: integer
+          format: int64
+        description:
+          type: string
+        basin:
+          type: string
+        eventDate:
+          type: string
+          format: date
+        missedInDecree:
+          type: boolean
+
+    WaterRightVersionSearchPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightVersionSearchSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'WaterRightVersionSearchDto'
+    WaterRightVersionSearchDto:
+      type: object
+      properties:
+        waterRightId:
+          type: integer
+          format: int64
+        waterRightNumber:
+          type: integer
+          format: int64
+        basin:
+          type: string
+        ext:
+          type: string
+        typeDescription:
+          type: string
+        statusDescription:
+          type: string
+        versionCount:
+          type: integer
+          format: int64
+
+    WaterRightVersionPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightVersionSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'WaterRightVersionDto'
+    WaterRightVersionDto:
+      type: object
+      properties:
+        waterRightId:
+          type: integer
+          format: int64
+        waterRightNumber:
+          type: integer
+          format: int64
+        basin:
+          type: string
+        ext:
+          type: string
+        waterRightTypeDescription:
+          type: string
+        waterRightStatusCode:
+          type: string
+        waterRightStatusDescription:
+          type: string
+        version:
+          type: integer
+          format: int64
+        completeWaterRightNumber:
+          type: string
+        priorityDate:
+          type: string
+          format: date-time
+        enforceablePriorityDate:
+          type: string
+          format: date-time
+        completeVersion:
+          type: string
+        operatingAuthority:
+          type: string
+          format: date
+        versionType:
+          type: string
+        versionTypeDescription:
+          type: string
+        versionStatusDescription:
+          type: string
+    VersionPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightVersionSortColumn'
+        anyStandardsApplied:
+          type: boolean
+        results:
+          type: array
+          items:
+            $ref: 'VersionDto'
+    VersionDetailDto:
+      allOf:
+        - $ref: '#/components/schemas/VersionDto'
+        - type: object
+          properties:
+            isDecreed:
+              type: boolean
+            isVersionLocked:
+              type: boolean
+            isEditableIfDecreed:
+              type: boolean
+            canReexamineDecree:
+              type: boolean
+            canModifySplitDecree:
+              type: boolean
+            applicationTypeCodes:
+              type: array
+              items:
+                type: string
+            completeWaterRightNumber:
+              type: string
+            completeVersion:
+              type: string
+            canPrintDecreeReport:
+              type: boolean
+            canCompact:
+              type: boolean
+            waterRightNumber:
+              type: integer
+              format: int64
+              x-message-name: Water Right Id
+              maxLength: 10
+            ext:
+              type: string
+              pattern: '^[ -~]+$'
+              maxLength: 3
+            basin:
+              type: string
+              pattern: '^[ -~]+$'
+              x-message-name: Basin number
+              maxLength: 4
+            applicationExists:
+              type: boolean
+            singleApplication:
+              type: integer
+              format: int64
+    VersionDto:
+      type: object
+      properties:
+        version:
+          type: integer
+          format: int64
+        waterRightId:
+          type: integer
+          format: int64
+        scanned:
+          type: boolean
+        operatingAuthority:
+          type: string
+          format: date
+        versionTypeCode:
+          type: string
+        versionTypeDescription:
+          type: string
+        versionStatusCode:
+          type: string
+        versionStatusDescription:
+          type: string
+        waterRightTypeCode:
+          type: string
+        waterRightTypeDescription:
+          type: string
+        waterRightStatusCode:
+          type: string
+        waterRightStatusDescription:
+          type: string
+        flowRate:
+          type: string
+        volume:
+          type: number
+          format: double
+        acres:
+          type: number
+          format: double
+        priorityDate:
+          type: string
+          format: date-time
+        enforceablePriorityDate:
+          type: string
+          format: date-time
+        standardsUpdated:
+          type: boolean
+
+    WaterRightVersionPurposeCreationDto:
+      type: object
+      properties:
+        purposeCode:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        irrigationCode:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        clarification:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 100
+        purposeOrigin:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        purposeVolume:
+          type: number
+          multipleOf: 0.01
+        animalUnits:
+          type: number
+          multipleOf: 0.1
+        household:
+          type: integer
+        climaticCode:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        rotation:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+        modifiedByThisChange:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+        placesOfUse:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlaceOfUseCreationDto'
+        periodsOfUse:
+          type: array
+          items:
+            $ref: '#/components/schemas/PeriodOfUseCreationDto'
+      required:
+        - purposeCode
+        - purposeOrigin
+
+    VersionCreationDto:
+      type: object
+      properties:
+        versionTypeCode:
+          type: string
+      required:
+        - typeCode
+    
+    FirstVersionCreationDto:
+      type: object
+      properties:
+        versionStatusCode:
+          type: string
+        operatingAuthority:
+          type: string
+          format: date
+      required:
+        - versionStatusCode
+
+    VersionUpdateDto:
+      type: object
+      properties:
+        standardsUpdated:
+          type: boolean
+        versionTypeCode:
+          type: string
+        versionStatusCode:
+          type: string
+        operatingAuthority:
+          type: string
+          format: date
+      required:
+        - standardsUpdated
+
+    VersionVolumeDto:
+      type: object
+      properties:
+        volume:
+          type: number
+          format: double
+        volumeOriginCode:
+          type: string
+        volumeOriginDescription:
+          type: string
+        volumeDescription:
+          type: string
+
+    VersionAcreageDto:
+      type: object
+      properties:
+        acres:
+          type: number
+          format: double
+        acresOriginCode:
+          type: string
+        acresOriginDescription:
+          type: string
+
+    WaterRightVersionCasesSortColumn:
+      type: string
+      enum: [CASENUMBER, WATERCOURTCASE, DESCRIPTION, STATUSDESCRIPTION, HEARINGDATE, VERSIONNUMBER]
+      default: CASENUMBER
+    WaterRightVersionObjectionsSortColumn:
+      type: string
+      enum: [ID, OBJECTIONTYPE, OBJECTIONTYPEDESCRIPTION, DATERECEIVED, LATE, STATUS, OBJECTIONSTATUSDESCRIPTION]
+      default: STATUS
+    WaterRightVersionObjectionsElementsSortColumn:
+      type: string
+      enum: [ELEMENTTYPE, ELEMENTTYPEDESCRIPTION, ELEMENTOBJECTIONID, ELEMENTOBJECTIONREMARK]
+      default: ELEMENTTYPEDESCRIPTION
+    WaterRightVersionObjectorsSortColumn:
+      type: string
+      enum: [CONTACTID, NAME]
+      default: NAME
+    WaterRightVersionDecreeSortColumn:
+      type: string
+      enum: [DECREEID, DESCRIPTION, BASIN, EVENTDATE]
+      default: DECREEID
+    WaterRightVersionSortColumn:
+      type: string
+      enum: [WATERRIGHTNUMBER, BASIN, EXT, WATERRIGHTTYPEDESCRIPTION, WATERRIGHTSTATUSDESCRIPTION, VERSION, VERSIONSTATUSDESCRIPTION, SCANNED, OPERATINGAUTHORITY, FLOWRATE, VOLUME, PRIORITYDATE, STANDARDSUPDATED, COMPLETEWATERRIGHTNUMBER, COMPLETEVERSION, VERSIONTYPEDESCRIPTION]
+      default: WATERRIGHTNUMBER
+    WaterRightVersionSearchSortColumn:
+      type: string
+      enum: [WATERRIGHTNUMBER, BASIN, EXT, TYPEDESCRIPTION, STATUSDESCRIPTION]
+      default: WATERRIGHTNUMBER
+
+  parameters:
+
+    water-right-version-cases-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightVersionCasesSortColumn'
+    water-right-version-objections-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightVersionObjectionsSortColumn'
+    water-right-version-objections-elements-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightVersionObjectionsElementsSortColumn'
+    water-right-version-objectors-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightVersionObjectorsSortColumn'
+    water-right-version-decree-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightVersionDecreeSortColumn'
+    water-right-version-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightVersionSortColumn'
+    water-right-version-search-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightVersionSearchSortColumn'
+    eligible-water-right-versions-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/EligibleWaterRightVersionSortColumn'
+    basin:
+      name: basin
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    water-right-number:
+      name: waterRightNumber
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    version:
+      name: version
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    versionType:
+      name: versionType
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    version-number:
+      name: versionNumber
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the version number
+      required: true

@@ -1,0 +1,23 @@
+<div class="remarks-version-container">
+  <app-remarks-table
+    [canEdit]="canEdit"
+    [isDecreed]="isDecreed"
+    [isEditableIfDecreed]="isEditableIfDecreed"
+    [idArray]="[waterRightId, versionId]"
+    (selectRemark)="onRemarkSelect($event)"
+  ></app-remarks-table>
+  <div class="child-container" *ngIf="selectedRemark">
+    <app-variables-table
+      [idArray]="[selectedRemark]"
+      [canEdit]="canEdit"
+      [isDecreed]="isDecreed"
+      [isEditableIfDecreed]="isEditableIfDecreed"
+      (variableUpdate)="onVariableUpdate()"
+    >
+    </app-variables-table>
+    <app-full-text
+      [idArray]="[selectedRemark]"
+      [variableUpdate]="variableUpdate"
+    ></app-full-text>
+  </div>
+</div>

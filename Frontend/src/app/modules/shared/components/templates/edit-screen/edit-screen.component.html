@@ -1,0 +1,47 @@
+<div class="responsive-container">
+  <div class="sticky-wrapper">
+    <div class="fixed-header">
+      <ng-template #header></ng-template>
+    </div>
+  </div>
+  <div *ngIf="dataWasFound && !error" class="responsive-body">
+    <mat-card class="responsive-card">
+      <mat-card-action>
+        <div class="accordion-open-close-buttons">
+          <button
+            (click)="accordion.openAll()"
+            mat-raised-button
+            color="primary"
+            matTooltip="Open All"
+          >
+            Open All
+          </button>
+          <button
+            (click)="accordion.closeAll()"
+            mat-raised-button
+            color="warn"
+            matTooltip="Close All"
+          >
+            Close All
+          </button>
+        </div>
+      </mat-card-action>
+      <mat-card-content>
+        <mat-accordion multi #accordion="matAccordion">
+          <mat-expansion-panel
+            *ngFor="let accordion of pageDefinition.accordions; let i = index"
+            [disabled]="accordion.disabled"
+            (opened)="openedAccordion(i)"
+            (closed)="closedAccordion(i)"
+            [ngClass]="{'condensed': accordion.condensed }"
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title>{{ accordion?.title }}</mat-panel-title>
+            </mat-expansion-panel-header>
+            <ng-template matExpansionPanelContent #dynamic></ng-template>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

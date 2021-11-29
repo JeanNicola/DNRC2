@@ -1,0 +1,393 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /water-rights/{waterRightId}/versions/{versionNumber}/measurement-reports:
+    get:
+      summary: Get the Measurement Reports of a Water Right Version
+      operationId: getVersionMeasurementReports
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/version-measurement-report-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of measurements for one water right version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionMeasurementReportsPageDto'
+    post:
+      summary: Add a new Measurement Report
+      operationId: createMeasurementReport
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      requestBody:
+        description: The new Measurement Report
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionMeasurementReportDto'
+      responses:
+        201:
+          description: Sucessfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionMeasurementReportDto'
+        400:
+          description: Validation failed
+        404:
+          description: the water right version does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/versions/{versionNumber}/measurement-reports/{remarkId}:
+    put:
+      summary: Update a Measurement Report
+      operationId: updateMeasurementReport
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/remark-id'
+      requestBody:
+        description: The updated Measurement Report
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionMeasurementReportDto'
+      responses:
+        200:
+          description: Sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionMeasurementReportDto'
+        400:
+          description: Validation failed
+        404:
+          description: the water right version does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete a Measurement Report
+      operationId: deleteMeasurementReport
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/remark-id'
+      responses:
+        204:
+          description: Sucessfully deleted
+        404:
+          description: the water right version does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/versions/{versionNumber}/measurement-reports/{remarkId}/comments:
+    get:
+      summary: Get the Comments of a Measurement Report
+      operationId: getVersionMeasurementComments
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/remark-id'
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of comments for one measurement report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentsPageDto'
+  /water-rights/{waterRightId}/versions/{versionNumber}/measurement-reports/{remarkId}/comments/{dataId}:
+    put:
+      summary: Update a Comment
+      operationId: updateVersionMeasurementComment
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/remark-id'
+        - in: path
+          name: dataId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated Comment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentDto'
+      responses:
+        200:
+          description: the comment was updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentDto'
+  /water-rights/{waterRightId}/versions/{versionNumber}/measurement-reports/{remarkId}/measurements:
+    get:
+      summary: Get the Measurements of a Measurement Report
+      operationId: getVersionMeasurements
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/remark-id'
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/measurement-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of measurements for one measurement report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeasurementsPageDto'
+    post:
+      summary: Add a new Measurement
+      operationId: createMeasurement
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/remark-id'
+      requestBody:
+        description: The new Measurement
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeasurementDto'
+      responses:
+        201:
+          description: Sucessfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeasurementDto'
+        400:
+          description: Validation failed
+        404:
+          description: the water right version does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/versions/{versionNumber}/measurement-reports/{remarkId}/measurements/{measurementId}:
+    put:
+      summary: Update a Measurement
+      operationId: updateMeasurement
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/remark-id'
+        - $ref: '#/components/parameters/measurement-id'
+      requestBody:
+        description: The updated Measurement
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeasurementDto'
+      responses:
+        200:
+          description: Sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeasurementDto'
+        400:
+          description: Validation failed
+        404:
+          description: the water right version does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete a Measurement
+      operationId: deleteMeasurement
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/remark-id'
+        - $ref: '#/components/parameters/measurement-id'
+      responses:
+        204:
+          description: Sucessfully deleted
+        404:
+          description: the water right version does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    VersionMeasurementReportsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/VersionMeasurementReportSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/VersionMeasurementReportDto'
+    VersionMeasurementReportDto:
+      type: object
+      properties:
+        remarkId:
+          type: integer
+          format: int64
+        remarkCode:
+          type: string
+        reportTypeCode:
+          type: string
+        reportTypeDescription:
+          type: string
+        effectiveDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+      required:
+        - remarkCode
+        - reportTypeCode
+        - effectiveDate
+    CommentsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommentDto'
+    CommentDto:
+      type: object
+      properties:
+        commentId:
+          type: integer
+          format: int64
+        comment:
+          type: string
+        commentType:
+          type: string
+          enum: [STRING, DATE, NUMERIC]
+        maxLength:
+          type: integer
+          format: int64
+    MeasurementsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/MeasurementSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MeasurementDto'
+    MeasurementDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        year:
+          type: integer
+        flowRate:
+          type: number
+          format: double
+        unit:
+          type: string
+        volume:
+          type: number
+          format: double
+      required:
+        - year
+    VersionMeasurementReportSortColumn:
+      type: string
+      enum: [REMARKCODE, REPORTTYPEDESCRIPTION, EFFECTIVEDATE, ENDDATE]
+      default: EFFECTIVEDATE
+    MeasurementSortColumn:
+      type: string
+      enum: [YEAR, FLOWRATE, UNIT, VOLUME]
+      default: YEAR
+  parameters:
+    version-measurement-report-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/VersionMeasurementReportSortColumn'
+    measurement-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/MeasurementSortColumn'
+    remark-id:
+      name: remarkId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the remark id
+      required: true
+    measurement-id:
+      name: measurementId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the remark id
+      required: true

@@ -1,0 +1,33 @@
+<ng-container *ngIf="!isProduction; else prod">
+  <div class="dev-content">
+    <p>Home Page</p>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="showError">
+  <div class="error-content">
+    <p>
+      The application is experiencing issues initializing and cannot run
+      properly.
+    </p>
+    <p>Please open a ticket with the Help Desk to get this resolved.</p>
+    <button
+      style="margin-top: 20px"
+      mat-raised-button
+      color="warn"
+      type="button"
+      matTooltip="Return to Login"
+      (click)="onErrorButtonClick()"
+    >
+      Return to Login
+    </button>
+  </div>
+</ng-container>
+
+<ng-template #prod>
+  <div class="prod-content">
+    <p class="title">DNRC WRIS Production Environment</p>
+    <p class="subTitle">(Database: {{ dbEnv }})</p>
+    <!-- <img class="logo" src="assets/images/nrc_logo.jpg" alt="dnrc_logo" /> -->
+  </div>
+</ng-template>

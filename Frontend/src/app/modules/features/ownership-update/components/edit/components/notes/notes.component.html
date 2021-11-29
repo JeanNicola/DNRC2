@@ -1,0 +1,22 @@
+<p *ngIf="!data">Loading...</p>
+<mat-card *ngIf="data" style="margin-top: 20px">
+  <br />
+  <div class="notes-container">
+    <shared-data-row-field
+      style="width: 95%"
+      [field]="_getColumn('notes')"
+      [dataValue]="data?.notes"
+    ></shared-data-row-field>
+    <div class="cd-btn-container">
+      <button
+        mat-mini-fab
+        color="primary"
+        matTooltip="Edit"
+        (click)="onEdit()"
+        [disabled]="!permissions.canPUT"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
+  </div>
+</mat-card>

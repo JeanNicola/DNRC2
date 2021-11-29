@@ -1,0 +1,146 @@
+<div *ngIf="data; else loading" style="margin: 10px">
+  <div [formGroup]="form">
+    <table
+      formArrayName="customers"
+      table-striped
+      table-hover
+      table-active
+      class="mat-elevation-z{{ zHeight }}"
+      mat-table
+      [dataSource]="data"
+      matSort
+      (matSortChange)="onSortData($event)"
+      [matSortActive]="
+        !!primarySortColumn
+          ? primarySortColumn
+          : columns[0].noSort
+          ? ''
+          : columns[0].columnId
+      "
+      [matSortDirection]="
+        noSort ? '' : !!primaryDirection ? primaryDirection : 'asc'
+      "
+      matSortDisableClear
+      multiTemplateDataRows
+    >
+      <!-- Create the data columns using the Column-->
+      <ng-container *ngFor="let column of columns; let columnsIndex = index">
+        <ng-container matColumnDef="{{ column.columnId }}">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [disabled]="column.noSort || noSort"
+            [ngClass]="isInMain ? 'extraTop' : ''"
+            [ngStyle]="columnStyles"
+            [width]="column?.width || 'auto'"
+          >
+            {{ column.title }}
+          </th>
+
+          <td
+            [width]="column?.width || 'auto'"
+            [ngClass]="
+              (column?.showCounter && element[column?.counterRef]) >= 0
+                ? 'counter-container'
+                : ''
+            "
+            [class.icon-container]="column.type.toString() == 'checkbox'"
+            mat-cell
+            *matCellDef="let element; let i = dataIndex"
+          >
+            <div
+              class="cell-container"
+              [ngClass]="{
+                'flex-space-between':
+                  columnsIndex == displayedColumns.length - 1
+              }"
+            >
+              <span
+                [class.material-icons]="column.type.toString() == 'checkbox'"
+                >{{
+                  formatCellText(
+                    element[column.columnId],
+                    column.type.toString()
+                  )
+                }}
+              </span>
+              <div
+                *ngIf="columnsIndex == displayedColumns.length - 1"
+                style="margin: 5px 15px 0 0"
+              >
+                <div [formGroupName]="i" class="checkbox-container">
+                  <mat-checkbox
+                    formControlName="checked"
+                    class="field-checkbox"
+                    (click)="onCheckboxClickHandler($event, i)"
+                    (keyup.enter)="onCheckboxClickHandler($event, i)"
+                    (keyup.space)="onCheckboxClickHandler($event, i)"
+                  ></mat-checkbox>
+                </div>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+      </ng-container>
+
+      <ng-container matColumnDef="expandedDetail">
+        <td
+          mat-cell
+          *matCellDef="let row"
+          [attr.colspan]="displayedColumns.length"
+        >
+          <div
+            class="row element-detail"
+            [@detailExpand]="row.isExpanded ? 'expanded' : 'collapsed'"
+          >
+            <ng-template [ngIf]="row.isExpanded">
+              <ng-container
+                *ngTemplateOutlet="expandChildRef; context: { row: row }"
+              ></ng-container>
+            </ng-template>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container *ngIf="!hideHeader">
+        <tr
+          mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></tr>
+      </ng-container>
+      <tr
+        mat-row
+        #row
+        *matRowDef="let row; columns: displayedColumns; let i = dataIndex"
+        class="element-row"
+        [tabIndex]="dblClickableRow || expandChildRef ? 0 : -1"
+        [ngClass]="[
+          selectedRow == i && highlightOneRow ? 'selected' : '',
+          clickableRow ? 'pointer' : ''
+        ]"
+        [ngStyle]="selectedRow == i && highlightOneRow ? selectedRowStyles : {}"
+        (click)="row.isExpanded = !row.isExpanded"
+        (dblclick)="dblclickRow($event, i)"
+        (click)="clickRow($event, i)"
+        (keydown.enter)="
+          dblclickRow($event, i);
+          clickRow($event, i);
+          row.isExpanded = !row.isExpanded
+        "
+      ></tr>
+      <!-- This attribute is to be inserted into the above tag 
+                to highlight the row whenever it's been clicked on-->
+      <!-- [ngClass]="{ 'selected': row.isExpanded }" -->
+      <tr
+        mat-row
+        *matRowDef="let row; columns: ['expandedDetail']"
+        class="detail-row"
+      ></tr>
+    </table>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading">Loading...</div>
+</ng-template>

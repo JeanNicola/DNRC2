@@ -1,0 +1,38 @@
+.card {
+  margin-top: 16px;
+}
+
+.heading {
+  width: 860px;
+  margin: auto;
+}
+
+.title {
+  margin-left: 10px;
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.partitioned {
+  display: flex;
+  width: 100%;
+
+  .partition:first-of-type {
+    flex-basis: 60%;
+    padding-right: 20px;
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-right-color: rgba(0, 0, 0, 0.12);
+  }
+
+  .partition:last-of-type {
+    margin-left: 20px;
+    width: 700px;
+  }
+}
+
+.loading {
+  width: -webkit-fill-available;
+  text-align: center;
+}

@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px">
+  <div class="review-geocodes-information">
+    <div class="geocodes-row">
+      <app-water-right-row
+        [data]="data.values"
+        [displayData]="data.values"
+      ></app-water-right-row>
+    </div>
+    <mat-tab-group #tabs>
+      <mat-tab label="Geocodes">
+        <app-geocodes-table
+          style="width: 100%"
+          [waterRightId]="data.values.waterRightId"
+        ></app-geocodes-table>
+      </mat-tab>
+      <mat-tab label="Owners">
+        <app-owners-table
+          style="width: 100%"
+          [waterRightId]="data.values.waterRightId"
+        ></app-owners-table>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <button
+    [mat-dialog-close]="null"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Close"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>

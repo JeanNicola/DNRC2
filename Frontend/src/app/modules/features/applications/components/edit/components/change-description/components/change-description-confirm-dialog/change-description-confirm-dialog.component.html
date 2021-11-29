@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Confirm updating the current record</h1>
+<mat-dialog-content class="mat-typography">
+  <p>
+    Distance and Direction must be filled out. Are you sure you want to update
+    this record without this information?
+  </p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="'confirm'" color="warn">
+    Confirm
+  </button>
+  <button mat-button [mat-dialog-close]="null" cdkFocusInitial>Cancel</button>
+</mat-dialog-actions>

@@ -1,0 +1,37 @@
+.selected-decree-fields {
+  display: flex;
+
+  > div {
+    margin-right: 10px;
+  }
+}
+
+.update-sub-title {
+  font-weight: 500;
+}
+
+.search-decree-basin {
+  display: flex;
+  align-items: center;
+  padding-bottom: 1.34375em;
+
+  > div {
+    width: -webkit-fill-available;
+    margin-right: 10px;
+    ::ng-deep {
+      .mat-form-field-wrapper {
+        padding-bottom: 0;
+      }
+    }
+  }
+}
+
+.selected-decrees-container {
+  display: flex;
+  align-items: center;
+  padding-bottom: 20px;
+
+  ::ng-deep .mat-form-field-wrapper {
+    padding: 0;
+  }
+}

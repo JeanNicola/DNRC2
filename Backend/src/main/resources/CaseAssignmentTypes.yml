@@ -1,0 +1,206 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+tags:
+- name: CaseAssignment
+  description: Case Assignment Types
+paths:
+  /case-assignment-types:
+    get:
+      summary: get all the Case Assignment Types
+      operationId: getCases
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/sortcolumn'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: query
+          name: code
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+        - in: query
+          name: assignmentType
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+        - in: query
+          name: program
+          schema:
+            type: string
+      responses:
+        200:
+          description: a list of Case Assignment Types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseAssignmentTypePageDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: create a new Case Assignment Type
+      operationId: createCase
+      requestBody:
+        description: The new Case Assignment Type
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseAssignmentTypeDto'
+      responses:
+        201:
+          description: Created a Case Assignment Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseAssignmentTypeDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        409:
+          description: A Case Assignment Type with this code already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /case-assignment-types/{code}:
+    delete:
+      summary: delete an existing Case Assignment Type
+      operationId: deleteCase
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Case Assignment Type Code
+      responses:
+        204:
+          description: deleted the Case Assignment Type
+        404:
+          description: No Case Assignment Type with that Code was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: change an existing Case Assignment Type
+      operationId: changeCase
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Case Assignment Type Code
+      requestBody:
+          description: The updated Case Assignment Type
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseAssignmentTypeDto'
+      responses:
+        200:
+          description: Changed the Case Assignment Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseAssignmentTypeDto'
+        301:
+          description: Changed and Moved the Case Assignment Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseAssignmentTypeDto'
+        404:
+          description: No Case Assignment Type was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    CaseAssignmentTypeDto:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 4
+          pattern: '^[ -~]+$'
+        assignmentType:
+          x-message-name: Assignment Type
+          type: string
+          maxLength: 30
+          pattern: '^[ -~]+$'
+        program:
+          type: string
+          enum: [NA, WC, BTH]
+          x-message-name: Program Code
+        programDescription:
+          type: string
+          x-message-name: Program Description
+      required:
+        - code
+        - assignmentType
+        - program
+      example:
+        code: TEST
+        assignmentType: Test Example
+        program: BTH
+    CaseAssignmentTypePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/SortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseAssignmentTypeDto'
+    SortColumn:
+      type: string
+      enum: [CODE, ASSIGNMENTTYPE, PROGRAMDESCRIPTION]
+      default: CODE
+  parameters:
+    sortcolumn:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/SortColumn'

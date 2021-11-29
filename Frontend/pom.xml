@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>gov.mt</groupId>
+    <artifactId>wris</artifactId>
+    <!--
+      This version MUST match the parent <version>.
+	  If that value changes, so MUST this one.
+    -->
+    <version>1.0.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>wris-frontend</artifactId>
+  <name>wris-frontend</name>
+  <!-- <version>0.0.1</version> -->
+  <version>BUILD</version>
+  <description>Water Rights Information System - Frontend User Interface</description>
+
+  <!-- This sets the build environment. To set, pass in "-P {dev|qa|uat|test|prod}" on the mvn command line -->
+  <profiles>
+    <profile>
+      <id>local</id>
+      <activation>
+          <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <build-env>local</build-env>
+        <fileVersion>1.0-SNAPSHOT</fileVersion>
+      </properties>
+    </profile>
+    <profile>
+      <id>dev</id>
+      <properties>
+        <build-env>dev</build-env>
+        <fileVersion>1.0-SNAPSHOT</fileVersion>
+      </properties>
+    </profile>
+    <profile>
+      <id>qa</id>
+      <properties>
+        <build-env>qa</build-env>
+        <fileVersion>1.0-SNAPSHOT</fileVersion>
+      </properties>
+    </profile>
+    <profile>
+      <id>uat</id>
+      <properties>
+        <build-env>uat</build-env>
+        <fileVersion>1.0-SNAPSHOT</fileVersion>
+      </properties>
+    </profile>
+    <profile>
+      <id>test</id>
+      <properties>
+        <build-env>test</build-env>
+        <!--
+            Set this to the type of change being compiled:
+            - <blank> - normal release
+            - PATCH - bugfix
+            - SNAPSHOT - in development
+        -->
+        <change-type></change-type>
+        <fileVersion>${maven.build.timestamp}${change-type}</fileVersion>
+      </properties>
+    </profile>
+    <profile>
+      <id>prod</id>
+      <properties>
+        <build-env>prod</build-env>
+        <!--
+            Set this to the type of change being compiled:
+            - <blank> - normal release
+            - PATCH - bugfix
+            - SNAPSHOT - in development
+        -->
+    	  <change-type></change-type>
+        <fileVersion>${maven.build.timestamp}${change-type}</fileVersion>
+      </properties>
+    </profile>
+  </profiles>
+
+  <properties>
+	  <change-type></change-type>
+      <!-- Global prpoerties defined in the parent pom.xml -->
+      <maven-jar-plugin-version>3.2.0</maven-jar-plugin-version>
+      <maven-assembly-plugin-vesion>3.3.0</maven-assembly-plugin-vesion>
+  </properties>
+
+  <build>
+      <plugins>
+          <!-- Turn off default JAR creation - not needed -->
+          <plugin>
+              <artifactId>maven-jar-plugin</artifactId>
+              <version>${maven-jar-plugin-version}</version>
+              <executions>
+                  <execution>
+                      <id>default-jar</id>
+                      <phase>none</phase>
+                  </execution>
+              </executions>
+          </plugin>
+
+          <!-- Frontend Maven Plugin configuration
+                  Download Node and NPM to compile Angular -->
+          <plugin>
+              <groupId>com.github.eirslett</groupId>
+              <artifactId>frontend-maven-plugin</artifactId>
+              <version>${frontend-maven-version}</version>
+              <configuration>
+                  <nodeVersion>${node-version}</nodeVersion>
+                  <!-- <npmVersion>${npm-version}</npmVersion> -->
+                  <installDirectory>node</installDirectory>
+              </configuration>
+              <executions>
+                  <!-- Run npm clean script-->
+                  <execution>
+                      <id>ng-clean</id>
+                      <goals>
+                          <goal>npm</goal>
+                      </goals>
+                      <phase>clean</phase>
+                      <configuration>
+                          <arguments>run-script clean</arguments>
+                      </configuration>
+                  </execution>
+
+                  <!-- Install Node and NPM -->
+                  <execution>
+                      <id>install node and npm</id>
+                      <goals>
+                          <goal>install-node-and-npm</goal>
+                      </goals>
+                      <phase>generate-resources</phase>
+                  </execution>
+
+                  <!-- Install project dependencies -->
+                  <execution>
+                      <id>npm-install</id>
+                      <goals>
+                          <goal>npm</goal>
+                      </goals>
+                  </execution>
+
+                  <!-- Run package.json's build scripts
+                          Build scripts will be run for local, dev, and uat for now
+                          These will all be placed in unique directories defined in package.json -->
+                  <execution>
+                      <id>npm-build</id>
+                      <goals>
+                          <goal>npm</goal>
+                      </goals>
+                      <configuration>
+                          <arguments>run-script build:${build-env}</arguments>
+                      </configuration>
+                      <phase>compile</phase>
+                  </execution>
+              </executions>
+          </plugin>
+
+          <!-- Create the zipfile for deployment 
+              Each "build" output directory will be packaged into the appropriate zip file -->
+          <plugin>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <version>${maven-assembly-plugin-vesion}</version>
+              <configuration>
+                  <appendAssemblyId>true</appendAssemblyId>
+                  <finalName>${project.name}-${fileVersion}</finalName>
+                  <descriptors>
+                      <descriptor>${basedir}/zip-assembly.xml</descriptor>
+                  </descriptors>
+              </configuration>
+              <executions>
+                  <execution>
+                      <id>create-packages</id>
+                      <phase>package</phase>
+                      <goals>
+                          <goal>single</goal>
+                      </goals>
+                  </execution>
+              </executions>
+          </plugin>
+          <!-- Move the deployment artifacts to the parent directory for ease in finding -->
+          <plugin>
+              <artifactId>maven-resources-plugin</artifactId>
+              <executions>
+                  <execution>
+                      <id>copy-deployment</id>
+                      <phase>package</phase>
+                      <goals>
+                          <goal>copy-resources</goal>
+                      </goals>
+                      <configuration>
+                          <outputDirectory>${project.parent.basedir}/deploy</outputDirectory>
+                          <overwrite>true</overwrite>
+                          <resources>
+                              <resource>
+                                  <directory>target</directory>
+                                  <includes>
+                                      <include>${project.name}-${fileVersion}-${build-env}.zip</include>
+                                  </includes>
+                              </resource>
+                          </resources>
+                      </configuration>
+                  </execution>
+              </executions>
+          </plugin>        
+      </plugins>
+  </build>
+</project>

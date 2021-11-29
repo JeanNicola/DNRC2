@@ -1,0 +1,494 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /water-rights:
+    get:
+      summary: search water rights
+      operationId: searchWaterRights
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+        - $ref: '#/components/parameters/basin'
+        - $ref: '#/components/parameters/water-right-number'
+        - $ref: '#/components/parameters/ext'
+        - $ref: '#/components/parameters/type-code'
+        - $ref: '#/components/parameters/status-code'
+        - $ref: '#/components/parameters/sub-basin'
+        - $ref: '#/components/parameters/water-reservation-id'
+        - $ref: '#/components/parameters/conservation-district-number'
+        - in: query
+          name: countActiveChangeAuthorizationVersions
+          schema:
+            type: boolean
+            default: false
+          description: whether or not to return the count of active Change Authorizations attached to each water right
+      responses:
+        200:
+          description: a page of Water Rights
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightPageDto'
+
+    post:
+      summary: create a water right
+      operationId: createWaterRight
+      requestBody:
+        description: the new Water Right
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaterRightCreationDto'
+      responses:
+        201:
+          description: the newly created Water Right
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightDto'
+
+  /geocodes/{geocodeId}:
+    get:
+      summary: get the formated geocode along with it's water rights
+      operationId: getGeocodeWaterRights
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/geocode-water-right-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+        - in: path
+          name: geocodeId
+          required: true
+          schema:
+            type: string
+          description: the unformatted geocode
+      responses:
+        200:
+          description: the geocode with a page of water rights
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeocodeWaterRightPageDto'
+
+  /water-rights/{waterRightId}:
+    get:
+      summary: get the water right information
+      operationId: getWaterRight
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+      responses:
+        200:
+          description: the water right
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightViewDto'
+    put:
+      summary: update a water right
+      operationId: updateWaterRight
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+      requestBody:
+        description: the updated Water Right
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaterRightUpdateDto'
+      responses:
+        200:
+          description: the water right
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightViewDto'
+  /water-rights/{waterRightId}/child-rights:
+    get:
+      summary: get a page of child rights
+      operationId: getChildRights
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/child-right-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+        - $ref: '#/components/parameters/water-right-id'
+      responses:
+        200:
+          description: the page of child rights
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChildRightPageDto'
+components:
+  schemas:
+    WaterRightDto:
+      type: object
+      properties:
+        waterRightId:
+          type: integer
+          format: int64
+        waterRightNumber:
+          type: integer
+          format: int64
+        completeWaterRightNumber:
+          type: string
+          pattern: '^[ -~]+$'
+        basin:
+          type: string
+        subBasin:
+          type: string
+        ext:
+          type: string
+        typeCode:
+          type: string
+        typeDescription:
+          type: string
+        statusCode:
+          type: string
+        statusDescription:
+          type: string
+        dividedOwnership:
+          type: boolean
+        severed:
+          type: boolean
+        conservationDistrictNumber:
+          type: string
+        conservationDistrictDate:
+          type: string
+          format: date-time
+        waterReservationId:
+          type: integer
+          format: int64
+        activeChangeAuthorizationVersions:
+          type: integer
+          format: int64
+
+    WaterRightPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'WaterRightDto'
+
+    WaterRightViewDto:
+      type: object
+      properties:
+        waterRightId:
+          type: integer
+          format: int64
+        waterRightNumber:
+          type: integer
+          format: int64
+        basin:
+          type: string
+        subBasin:
+          type: string
+        ext:
+          type: string
+        typeCode:
+          type: string
+        typeDescription:
+          type: string
+        statusCode:
+          type: string
+        statusDescription:
+          type: string
+        dividedOwnership:
+          type: boolean
+        severed:
+          type: boolean
+        conservationDistrictNumber:
+          type: string
+        conservationDistrictDate:
+          type: string
+          format: date-time
+        waterReservationId:
+          type: integer
+          format: int64
+        originalWaterRightId:
+          type: integer
+          format: int64
+        originalWaterRightNumber:
+          type: integer
+          format: int64
+        originalBasin:
+          type: string
+        originalExt:
+          type: string
+        originalTypeDescription:
+          type: string
+        originalStatusDescription:
+          type: string
+        canCompactType:
+          type: boolean
+        originalHasChange:
+          type: boolean
+        childRightCount:
+          type: integer
+          format: int64
+        isDecreed:
+          type: boolean
+        isEditableIfDecreed:
+          type: boolean
+        subcompactId:
+          type: integer
+          format: int64
+        compactId:
+          type: integer
+          format: int64
+        compact:
+          type: string
+        subcompact:
+          type: string
+        createdDate:
+          type: string
+          format: date
+    WaterRightUpdateDto:
+      type: object
+      properties:
+        basin:
+          type: string
+        subBasin:
+          type: string
+        ext:
+          type: string
+        typeCode:
+          type: string
+        dividedOwnership:
+          type: boolean
+        severed:
+          type: boolean
+        conservationDistrictNumber:
+          type: string
+        conservationDistrictDate:
+          type: string
+          format: date-time
+        waterReservationId:
+          type: integer
+          format: int64
+        originalWaterRightId:
+          type: integer
+          format: int64
+        subcompactId:
+          type: integer
+          format: int64
+    GeocodeWaterRightPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/GeocodeWaterRightSortColumn'
+        formattedGeocode:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: 'GeocodeWaterRightDto'
+    GeocodeWaterRightDto:
+      type: object
+      properties:
+        waterRightId:
+          type: integer
+          format: int64
+        waterRightNumber:
+          type: integer
+          format: int64
+        basin:
+          type: string
+        ext:
+          type: string
+        typeCode:
+          type: string
+        typeDescription:
+          type: string
+        statusCode:
+          type: string
+        statusDescription:
+          type: string
+        beginDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        valid:
+          type: boolean
+        comments:
+          type: string
+    WaterRightCreationDto:
+      type: object
+      properties:
+        basin:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        typeCode:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        contactIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          minLength: 1
+      required:
+        - basin
+        - typeCode
+        - contactIds
+    ChildRightDto:
+      type: object
+      properties:
+        waterRightId:
+          type: integer
+          format: int64
+        waterRightNumber:
+          type: integer
+          format: int64
+        basin:
+          type: string
+        ext:
+          type: string
+        typeDescription:
+          type: string
+        statusDescription:
+          type: string
+    ChildRightPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/ChildRightSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'ChildRightDto'
+    WaterRightSortColumn:
+      type: string
+      enum: [COMPLETEWATERRIGHTNUMBER, WATERRIGHTNUMBER, SUBBASIN, BASIN, EXT, TYPEDESCRIPTION, STATUSCODE, STATUSDESCRIPTION, CONSERVATIONDISTRICTNUMBER, CONSERVATIONDISTRICTDATE, WATERRESERVATIONID]
+      default: WATERRIGHTNUMBER
+
+    GeocodeWaterRightSortColumn:
+      type: string
+      enum: [WATERRIGHTNUMBER, BASIN, EXT, TYPEDESCRIPTION, STATUSCODE, STATUSDESCRIPTION, BEGINDATE, ENDDATE, VALID, COMMENTS]
+      default: WATERRIGHTNUMBER 
+
+    ChildRightSortColumn:
+      type: string
+      enum: [WATERRIGHTNUMBER, BASIN, EXT, TYPEDESCRIPTION, STATUSDESCRIPTION]
+      default: WATERRIGHTNUMBER 
+  parameters:
+    water-right-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightSortColumn'
+    child-right-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/ChildRightSortColumn'
+    geocode-water-right-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/GeocodeWaterRightSortColumn'
+    type-code:
+      name: typeCode
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    status-code:
+      name: statusCode
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    sub-basin:
+      name: subBasin
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    water-reservation-id:
+      name: waterReservationId
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    conservation-district-number:
+      name: conservationDistrictNumber
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    version:
+      name: version
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    version-type:
+      name: versionType
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    water-right-id:
+      name: waterRightId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: the water right id

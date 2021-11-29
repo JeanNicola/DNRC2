@@ -1,0 +1,404 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /water-rights/{waterRightId}/versions/{versionNumber}/reservoirs:
+    get:
+      summary: Get Reservoirs for Water Right Version
+      operationId: getWaterRightVersionReservoirs
+      parameters:
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Water Right Id
+        - in: path
+          name: versionNumber
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: the version number
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-version-reservoirs-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of Reservoirs for a Water Right Version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightVersionReservoirsPageDto'
+    post:
+      summary: Add Reservoir to a Water Right Version
+      operationId: addVersionReservoir
+      parameters:
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Water Right Id
+        - in: path
+          name: versionNumber
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: the version number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservoirCreationDto'
+      responses:
+        204:
+          description: successfully created
+        400:
+          description: Invalid Legal Land Description information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: This Version does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/versions/{versionNumber}/reservoirs/{reservoirId}:
+    put:
+      summary: Update a Reservoir attached to a Water Right Version
+      operationId: updateVersionReservoir
+      parameters:
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Water Right Id
+        - in: path
+          name: versionNumber
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: the version number
+        - in: path
+          name: reservoirId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Reservoir Id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservoirCreationDto'
+      responses:
+        204:
+          description: successfully updated
+        400:
+          description: Invalid Legal Land Description information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: This Version or Reservoir does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete a Reservoir
+      operationId: deleteVersionReservoir
+      parameters:
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Water Right Id
+        - in: path
+          name: versionNumber
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: the version number
+        - in: path
+          name: reservoirId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Reservoir Id
+      responses:
+        204:
+          description: successfully deleted
+  /water-rights/{waterRightId}/versions/{versionNumber}/pods/all:
+    get:
+      summary: Get all the pods attached to this version
+      operationId: getAllVersionPODs
+      parameters:
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Water Right Id
+        - in: path
+          name: versionNumber
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: the version number
+      responses:
+        200:
+          description: all the PODs attached to the Version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllPodsDto'
+components:
+  schemas:
+    WaterRightVersionReservoirsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightVersionReservoirsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'WaterRightVersionReservoirsDto'
+    WaterRightVersionReservoirsDto:
+      type: object
+      properties:
+        reservoirId:
+          type: integer
+          format: int64
+        podId:
+          type: integer
+          format: int64
+        podNumber:
+          type: integer
+          format: int64
+        reservoirName:
+          type: string
+        reservoirTypeCode:
+          type: string
+        reservoirTypeDescription:
+          type: string
+        currentCapacity:
+          type: number
+          format: double
+          multipleOf: 0.01
+        enlargedCapacity:
+          type: number
+          format: double
+          multipleOf: 0.01
+        maxDepth:
+          type: number
+          format: double
+          multipleOf: 0.01
+        damHeight:
+          type: number
+          format: double
+          multipleOf: 0.01
+        surfaceArea:
+          type: number
+          format: double
+          multipleOf: 0.01
+        elevation:
+          type: number
+          format: double
+          multipleOf: 0.1
+        reservoirOriginCode:
+          type: string
+        reservoirOriginDescription:
+          type: string
+        completeLegalLandDescription:
+          type: string
+        governmentLot:
+          type: integer
+          format: int64
+        description40:
+          type: string
+        description80:
+          type: string
+        description160:
+          type: string
+        description320:
+          type: string
+        section:
+          type: integer
+          format: int64
+        township:
+          type: integer
+          format: int64
+        townshipDirection:
+          type: string
+        range:
+          type: integer
+          format: int64
+        rangeDirection:
+          type: string
+        countyId:
+          type: integer
+          format: int64
+        changed:
+          type: boolean
+    ReservoirCreationDto:
+      type: object
+      properties:
+        podId:
+          type: integer
+          format: int64
+        reservoirName:
+          type: string
+        reservoirTypeCode:
+          type: string
+        currentCapacity:
+          type: number
+          format: double
+          multipleOf: 0.01
+        enlargedCapacity:
+          type: number
+          format: double
+          multipleOf: 0.01
+        maxDepth:
+          type: number
+          format: double
+          multipleOf: 0.01
+        damHeight:
+          type: number
+          format: double
+          multipleOf: 0.01
+        surfaceArea:
+          type: number
+          format: double
+          multipleOf: 0.01
+        elevation:
+          type: number
+          format: double
+          multipleOf: 0.1
+        reservoirOriginCode:
+          type: string
+        changed:
+          type: boolean
+        legalLandDescriptionId:
+          type: integer
+          format: int64
+        governmentLot:
+          type: integer
+          format: int64
+        description40:
+          type: string
+        description80:
+          type: string
+        description160:
+          type: string
+        description320:
+          type: string
+        section:
+          type: integer
+          format: int64
+        township:
+          type: integer
+          format: int64
+        townshipDirection:
+          type: string
+        range:
+          type: integer
+          format: int64
+        rangeDirection:
+          type: string
+        countyId:
+          type: integer
+          format: int64
+      required:
+        - reservoirOriginCode
+        - reservoirTypeCode
+        - countyId
+    AllPodsDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PodsDto'
+    PodsDto:
+      type: object
+      properties:
+        podId:
+          type: integer
+          format: int64
+        podNumber:
+          type: integer
+          format: int64
+        legalLandDescriptionId:
+          type: integer
+          format: int64
+        governmentLot:
+          type: integer
+          format: int64
+        description40:
+          type: string
+        description80:
+          type: string
+        description160:
+          type: string
+        description320:
+          type: string
+        section:
+          type: integer
+          format: int64
+        township:
+          type: integer
+          format: int64
+        townshipDirection:
+          type: string
+        range:
+          type: integer
+          format: int64
+        rangeDirection:
+          type: string
+        countyId:
+          type: integer
+          format: int64
+    WaterRightVersionReservoirsSortColumn:
+      type: string
+      enum: [RESERVOIRID, PODID, RESERVOIRNAME, ONSTREAM, CURRENTCAPACITY, ENLARGEDCAPACITY, MAXDEPTH, DAMHEIGHT, SURFACEAREA, ELEVATION, RESERVOIRORIGINDESCRIPTION, COMPLETELEGALLANDDESCRIPTION]
+      default: RESERVOIRNAME
+  parameters:
+    water-right-version-reservoirs-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightVersionReservoirsSortColumn'

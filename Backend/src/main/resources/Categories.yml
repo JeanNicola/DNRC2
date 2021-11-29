@@ -1,0 +1,107 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+tags:
+- name: Categories
+  description: Categories
+paths:
+  /applications/{applicationId}/objections/{objectionId}/criteria:
+    get:
+      summary: get all the Categories
+      operationId: getCategories
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: objectionId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/category-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a list of Categories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriesPageDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    CategoryDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          x-message-name: Category ID
+        categoryTypeCode:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+          x-message-name: Category Type Code
+        categoryTypeDescription:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 20
+          x-message-name: Category Type Description
+        determinationDate:
+          type: string
+          format: date
+          x-message-name: Determination Date
+      example:
+        id: 0
+        categoryTypeCode: 0000
+        categoryTypeDescription: description
+    CategoriesPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/CategorySortColumn'
+        results:
+           type: array
+           items:
+             $ref: '#/components/schemas/CategoryDto'
+    CategorySortColumn:
+      type: string
+      enum: [ID, CATEGORYTYPECODE, CATEGORYTYPEDESCRIPTION, DETERMINATIONDATE]
+      default: DETERMINATIONDATE
+  parameters:
+    category-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/CategorySortColumn'

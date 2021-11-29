@@ -1,0 +1,22 @@
+<form [formGroup]="parentForm" class="form">
+  <input
+    type="file"
+    (change)="onFileSelect($event)"
+    style="display: none"
+    [accept]="field.fileMimeType ?? ''"
+    #fileUpload
+  />
+  <input
+    matInput
+    type="input"
+    style="display: none"
+    [formControlName]="field.columnId"
+  />
+  <button mat-raised-button color="primary" (click)="fileUpload.click()">
+    Choose File
+  </button>
+  <div class="file-message">{{file?.name ?? 'No File Chosen'}}</div>
+  <mat-error>
+    <shared-data-field-errors [field]="field"></shared-data-field-errors>
+  </mat-error>
+</form>

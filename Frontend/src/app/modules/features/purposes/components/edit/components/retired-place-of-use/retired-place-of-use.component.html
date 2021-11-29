@@ -1,0 +1,26 @@
+<div class="main-container">
+  <div class="place-of-use-container">
+    <app-retired-place-of-use-table
+      (selectPlaceOfUse)="onPlaceOfUseSelect($event)"
+      [purposeId]="purposeId"
+      [waterRightTypeCode]="waterRightTypeCode"
+      [waterRightStatusCode]="waterRightStatusCode"
+      [isDecreed]="isDecreed"
+      [isEditableIfDecreed]="isEditableIfDecreed"
+      [canEdit]="canEdit"
+      [reloadDataObservable]="reloadRetiredPlacesOfUse.asObservable()"
+    ></app-retired-place-of-use-table>
+  </div>
+  <div class="subdivisions-container">
+    <app-subdivision-information
+      (insert)="reloadRetiredPlacesOfUse.next(null)"
+      (delete)="reloadRetiredPlacesOfUse.next(null)"
+      [idArray]="[purposeId, placeId]"
+      [countyId]="selectedPlaceOfUse?.countyId"
+      [isRetired]="true"
+      [isDecreed]="isDecreed"
+      [isEditableIfDecreed]="isEditableIfDecreed"
+      [canEdit]="canEdit"
+    ></app-subdivision-information>
+  </div>
+</div>

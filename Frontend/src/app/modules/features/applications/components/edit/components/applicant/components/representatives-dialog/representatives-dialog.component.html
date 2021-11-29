@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>{{data?.title ?? 'View / Edit Representatives'}}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px">
+  <h3>
+    <b>Applicant:</b> {{ data.applicantData.fullName }} (#{{
+      data.applicantData.contactId
+    }})
+  </h3>
+  <app-representatives
+    [readOnly]="data.readOnly"
+    [idArray]="data.idArray"
+    [appData]="data.appData"
+    [applicantData]="data.applicantData"
+  ></app-representatives>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <button
+    [mat-dialog-close]="null"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Close"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>

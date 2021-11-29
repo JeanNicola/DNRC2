@@ -1,0 +1,47 @@
+<div class="results-table-container" *ngIf="objectorDataFound; else noData">
+  <div class="clear-selection-button">
+    <button
+      (click)="clearSelection.emit(null)"
+      *ngIf="objectorRows?.length"
+      [disabled]="selectedObjectorRowIdx == null"
+      matTooltip="Clear Selection"
+      mat-mini-fab
+      color="primary"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <app-data-table
+    [data]="objectorRows"
+    [selectedRow]="selectedObjectorRowIdx"
+    [columns]="objectorsDisplayColumns"
+    [hideActions]="objectorHideActions"
+    [hideEdit]="true"
+    [hideDelete]="true"
+    [hideHeader]="objectorHideHeader"
+    [clickableRow]="objectorClickableRow"
+    [dblClickableRow]="objectorDblClickableRow"
+    [highlightOneRow]="true"
+    [isInMain]="false"
+    [primarySortColumn]="objectorSortColumn"
+    [primaryDirection]="objectorSortDirection"
+    (sortEvent)="onSortRequest($event)"
+    (rowClickEvent)="onRowClick($event)"
+    (rowDblClickEvent)="onRowDoubleClick($event)"
+  >
+  </app-data-table>
+</div>
+<mat-paginator
+  *ngIf="objectorQueryResult && objectorRows?.length"
+  [length]="objectorQueryResult.totalElements"
+  [pageIndex]="objectorQueryParameters.pageNumber - 1"
+  [pageSize]="objectorQueryResult.pageSize"
+  [pageSizeOptions]="objectorPageSizeOptions"
+  [showFirstLastButtons]="true"
+  (page)="onPaging($event)"
+>
+</mat-paginator>
+
+<ng-template #noData>
+  <h3 class="data-message">No data found</h3>
+</ng-template>

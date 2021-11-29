@@ -1,0 +1,69 @@
+<div>
+  <h2 mat-dialog-title class="card-title">{{ title }}</h2>
+  <mat-divider></mat-divider>
+  <mat-dialog-content *ngIf="!loaded">
+    <h2>Loading...</h2>
+  </mat-dialog-content>
+  <mat-dialog-content *ngIf="loaded">
+    <div class="data-container">
+      <form class="contacts-form" [formGroup]="formGroup">
+        <div class="form-field" *ngFor="let field of columns; let i = index">
+          <shared-data-form-field
+            *ngIf="!field.list && field.columnId != 'address'"
+            (changeEvent)="_onChange($event)"
+            [mode]="mode"
+            [field]="field"
+          >
+          </shared-data-form-field>
+          <div *ngIf="field.list && field.columnId == 'addresses'">
+            <div class="create-text-container">
+              <div class="create-sub-title">Addresses</div>
+              <div class="text-buttons-container">
+                <button
+                  #focus
+                  mat-mini-fab
+                  (click)="displayAddressesInsertDialog()"
+                  color="primary"
+                  matTooltip="Add New Address"
+                >
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            </div>
+            <div style="margin: 20px 0">
+              <app-data-table
+                *ngIf="addresses?.length"
+                (editEvent)="displayAddressesEditDialog($event, false)"
+                (deleteEvent)="displayAddressesDeleteDialog($event, false)"
+                [data]="dataSourceForAddress"
+                [columns]="getColumn(field.columnId).list"
+                [permissions]="permissions"
+                noSort="true"
+              ></app-data-table>
+            </div>
+
+            <div *ngIf="!addresses.length">
+              At least one address is required.
+            </div>
+            <mat-divider></mat-divider>
+          </div>
+        </div>
+      </form>
+    </div>
+  </mat-dialog-content>
+  <mat-divider></mat-divider>
+  <mat-dialog-actions align="end">
+    <button
+      mat-mini-fab
+      color="primary"
+      matTooltip="Create Contact"
+      [disabled]="!formGroup.valid || !addresses?.length"
+      (click)="getContactDto()"
+    >
+      <mat-icon>done</mat-icon>
+    </button>
+    <button mat-mini-fab color="warn" matTooltip="Cancel" (click)="close()">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </mat-dialog-actions>
+</div>

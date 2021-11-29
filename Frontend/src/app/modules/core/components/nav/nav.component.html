@@ -1,0 +1,62 @@
+<div id="env" [style.background-color]="envColor">
+  {{ dbEnvironment }}
+</div>
+<div class="nav-menu">
+  <div class="logo-area">
+    <a routerLink="/wris">
+      <img class="logo" src="assets/images/nrc_logo.jpg" alt="dnrc_logo" />
+    </a>
+    <span>WRIS</span>
+  </div>
+  <nav>
+    <ng-container *ngFor="let route of menu.routes">
+      <a
+        *ngIf="route.path"
+        [routerLink]="route.path"
+        [class.active-link]="route.active"
+      >
+        {{ route.name }}
+      </a>
+      <button
+        *ngIf="!route.path && route.menu"
+        mat-button
+        [matMenuTriggerFor]="dropdown"
+        [class.active-link]="route.menu.active"
+      >
+        {{ route.name }}
+      </button>
+      <mat-menu #dropdown class="subMenu" yPosition="below">
+        <ng-container *ngFor="let route of route.menu?.routes">
+          <a
+            *ngIf="route.path"
+            mat-menu-item
+            [routerLink]="route.path"
+            [class.active-link]="route.active"
+          >
+            {{ route.name }}
+          </a>
+          <a
+            *ngIf="!route.path && route.menu"
+            mat-menu-item
+            [matMenuTriggerFor]="sidemenu"
+            [class.active-link]="route.menu.active"
+          >
+            {{ route.name }}
+          </a>
+          <mat-menu #sidemenu class="subMenu">
+            <a
+              *ngFor="let route of route.menu?.routes"
+              mat-menu-item
+              [routerLink]="route.path"
+              [class.active-link]="route.active"
+            >
+              {{ route.name }}
+            </a>
+          </mat-menu>
+        </ng-container>
+      </mat-menu>
+    </ng-container>
+  </nav>
+
+  <div app-login-menu class="login-menu"></div>
+</div>

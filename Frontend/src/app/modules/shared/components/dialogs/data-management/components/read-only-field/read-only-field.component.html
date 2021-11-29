@@ -1,0 +1,34 @@
+<!-- For fields not including DateTime Picker -->
+<mat-form-field
+  [appearance]="'outline'"
+  [ngStyle]="{ width: '-webkit-fill-available' }"
+>
+  <mat-label>{{ field.title }}</mat-label>
+  <!-- Input HTML -->
+  <!-- If the dialog is search and the type is TextArea, use Input -->
+  <input
+    *ngIf="field.type != fieldTypes.TextArea"
+    matInput
+    [type]="'text'"
+    value="{{
+      field.type.toString() == 'datetime'
+        ? (field.value | date: dateTimeFormatString)
+        : field.type.toString() == 'date'
+        ? (field.value | date: dateFormatString)
+        : field.value
+    }}"
+    readonly
+    onfocus="select()"
+  />
+
+  <!-- TextArea HTML -->
+  <!-- if the dialog is search, use Input instead of TextArea -->
+  <textarea
+    *ngIf="field.type == fieldTypes.TextArea"
+    matInput
+    cdkTextareaAutosize
+    [value]="field.value"
+    readonly
+    onfocus="select()"
+  ></textarea>
+</mat-form-field>

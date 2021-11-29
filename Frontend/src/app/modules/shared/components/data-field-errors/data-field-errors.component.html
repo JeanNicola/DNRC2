@@ -1,0 +1,127 @@
+<!-- Show the appropriate error if a validation fails -->
+<ng-template [ngIf]="form.get(field.columnId).errors?.required">
+  {{
+    field.customErrorMessages?.required
+      ? field.customErrorMessages.required
+      : 'Required'
+  }}&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.minlength">
+  Minimum length is
+  {{ form.get(field.columnId).errors?.minlength.requiredLength }}&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.maxlength">
+  Maximum length is
+  {{ form.get(field.columnId).errors?.maxlength.requiredLength }}&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.pattern">
+  {{
+    patternError(form.get(field.columnId).errors?.pattern.requiredPattern)
+  }}&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.min">
+  Minimum value is {{ form.get(field.columnId).errors.min.min }}&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.max">
+  Maximum value is {{ form.get(field.columnId).errors.max.max }}&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.matchToSelectArray">
+  Invalid value&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.matDatepickerParse">
+  Invalid date&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.currency">
+  Invalid dollar amount&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.isNumber?.notANumber">
+  Invalid number&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.isNumber?.decimalPlaces">
+  At most {{ form.get(field.columnId).errors?.isNumber?.decimalPlaces }} decimal
+  places are allowed&nbsp;&nbsp;
+</ng-template>
+<ng-template
+  [ngIf]="form.get(field.columnId).errors?.isNumber?.decimalPlaces === 0"
+>
+  No decimal places are allowed&nbsp;&nbsp;
+</ng-template>
+<ng-template
+  [ngIf]="
+    form.get(field.columnId).errors?.isNumber?.digitsPlaces !== null &&
+    form.get(field.columnId).errors?.isNumber?.digitsPlaces !== undefined &&
+    !form.get(field.columnId).errors?.isNumber?.decimalPlaces
+  "
+>
+  At most {{ form.get(field.columnId).errors?.isNumber?.digitsPlaces }} digits
+  are allowed&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.preventNewLineCharacter">
+  Line breaks are not allowed&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.afterDate">
+  Date must be on or after
+  {{ form.get(field.columnId).errors.afterDate.minDate }}&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.dateAfterToday">
+  Date must be after today&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.beforeDate">
+  Date must be on or before
+  {{ form.get(field.columnId).errors.beforeDate.maxDate }}&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.dateBeforeToday">
+  Date must be today or earlier&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.dateTime">
+  {{ form.get(field.columnId).errors.dateTime.message }}&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.matchStateCountyIdToId">
+  First two (2) digits do not correlate to a county&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.integer">
+  Only values 0-9 allowed&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.aerialPhotoDate">
+  Invalid Date&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.email">
+  Please enter a valid email address&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.nonNegativeNumber">
+  Negative numbers aren't allowed&nbsp;&nbsp;
+</ng-template>
+<ng-template
+  [ngIf]="form.get(field.columnId).errors?.requireOtherFieldIfNonNull"
+>
+  Required&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.invalidTime">
+  Invalid Time&nbsp;&nbsp;
+</ng-template>
+<ng-template
+  [ngIf]="form.get(field.columnId).errors?.requireOtherFieldsIfAnyNonNull"
+>
+  Required&nbsp;&nbsp;
+</ng-template>
+<ng-template
+  [ngIf]="form.get(field.columnId).errors?.notAllowedIfAnyOtherFieldsNonNull"
+>
+  Not Allowed while {{ form.get(field.columnId).errors.title }} has a value
+  &nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.beforeOtherField">
+  Must be on or before {{ form.get(field.columnId).errors.title }}&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.afterOtherField">
+  Must be on or after {{ form.get(field.columnId).errors.title }}&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.isNotGeocode">
+  Must be a properly formatted Geocode&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.invalidGeocodeLength">
+  Geocode must have 17 characters&nbsp;&nbsp;
+</ng-template>
+<ng-template [ngIf]="form.get(field.columnId).errors?.errorMessage">
+  {{ form.get(field.columnId).errors?.errorMessage }}&nbsp;&nbsp;
+</ng-template>

@@ -1,0 +1,35 @@
+<div class="content">
+  <mat-card>
+    <mat-card-title> <div class="card-title">Case Summary</div></mat-card-title>
+    <mat-card-content *ngIf="data">
+      <div class="data-row">
+        <ng-container *ngFor="let field of columns">
+          <shared-data-row-field
+            *ngIf="field.columnId == 'caseId'"
+            [field]="field"
+            [dataValue]="data[field.columnId]"
+            (dblclick)="onIdDoubleClick()"
+            (keyup.enter)="onIdDoubleClick()"
+          ></shared-data-row-field>
+          <shared-data-row-field
+            *ngIf="field.columnId != 'caseId'"
+            [field]="field"
+            [dataValue]="data[field.columnId]"
+          ></shared-data-row-field>
+        </ng-container>
+        <div class="data-row-actions">
+          <button
+            mat-mini-fab
+            color="primary"
+            matTooltip="Insert"
+            (click)="onInsert()"
+            #firstInsert
+            [disabled]="!permissions?.canPOST || data.caseId"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

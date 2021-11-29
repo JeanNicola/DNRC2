@@ -1,0 +1,36 @@
+.child-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 16px;
+
+  > div:first-child {
+    width: 55%;
+  }
+}
+
+.summary {
+  margin-top: 16px;
+}
+
+.details-header {
+  padding-top: 16px;
+}
+.details-header h3 {
+  font-weight: 500;
+}
+
+.left,
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+h3 {
+  margin: 24px 16px 0;
+  font-weight: 550;
+  font-size: 12pt;
+}

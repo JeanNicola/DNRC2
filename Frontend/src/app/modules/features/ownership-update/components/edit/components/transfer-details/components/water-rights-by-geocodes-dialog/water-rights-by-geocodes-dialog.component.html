@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px">
+  <div *ngIf="ownershipUpdateId">
+    <app-insert-multiple-water-rights
+      [ownershipUpdateId]="ownershipUpdateId"
+      (onRowStateChanged)="onRowStateChangedHandler($event)"
+      (onRowDoubleClickEvent)="onRowDoubleClick($event)"
+      [serviceToUse]="data.values.service"
+    ></app-insert-multiple-water-rights>
+  </div>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <button
+    (click)="save()"
+    type="button"
+    matTooltip="Add Water Rights"
+    mat-mini-fab
+    color="primary"
+    [disabled]="selectedWaterRightsCount === 0"
+  >
+    <mat-icon>done</mat-icon>
+  </button>
+  <button
+    (click)="close()"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>
+<ng-template #noData>
+  <h3 class="data-message">No data found</h3>
+</ng-template>

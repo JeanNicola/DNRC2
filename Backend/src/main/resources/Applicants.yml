@@ -1,0 +1,215 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /applications/{applicationId}/applicants:
+    get:
+      summary: get a page of Applicants
+      operationId: getApplicants
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/applicant-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: a list of Applicants
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicantsPageDto'
+    post:
+      summary: create a new Applicant
+      operationId: createApplicant
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new Applicant
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicantDto'
+      responses:
+        201:
+          description: The new Applicant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicantDto'
+  /applications/{applicationId}/applicants/{ownerId}:
+    put:
+      summary: change an existing Applicant
+      operationId: changeApplicant
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: ownerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new Applicant 
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicantDto'
+      responses:
+        200:
+          description: Changed the Applicant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicantDto'
+        301:
+          description: Changed and Moved the Applicant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicantDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: No Applicant found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: delete an Applicant
+      operationId: deleteApplicant
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: ownerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: deleted the Applicant
+        404:
+          description: No Applicant with that Code was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    ApplicantDto:
+      type: object
+      properties:
+        ownerId:
+          type: integer
+          format: int64
+          x-message-name: Owner ID
+        contactId:
+          type: integer
+          format: int64
+          x-message-name: Contact ID
+        representativeCount:
+          type: integer
+          format: int64
+          x-message-name: Number of representatives
+        latestRepresentativeEndDate:
+          type: string
+          format: date
+          x-message-name: The latest representative end date
+        lastName:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 50
+          x-message-name: Last Name
+        firstName:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 20
+          x-message-name: First Name
+        middleInitial:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 2
+          x-message-name: Middle Initial
+        suffix:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 3
+          x-message-name: Suffix
+        beginDate:
+          type: string
+          format: date
+          x-message-name: Begin Date
+        endDate:
+          type: string
+          format: date
+          x-message-name: End Date
+      required:
+        - contactId
+        - beginDate
+    ApplicantsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/ApplicantSortColumn'
+        results:
+           type: array
+           items:
+             $ref: '#/components/schemas/ApplicantDto'
+    ApplicantSortColumn:
+      type: string
+      enum: [CONTACTID, FULLNAME, SUFFIX, BEGINDATE, ENDDATE]
+      default: CONTACTID
+  parameters:
+    applicant-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/ApplicantSortColumn'

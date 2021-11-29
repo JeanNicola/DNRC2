@@ -1,0 +1,325 @@
+<div>
+  <h2 mat-dialog-title class="card-title">{{ title }}</h2>
+  <mat-divider></mat-divider>
+  <!-- RENDER STEPPER ON INSERT MODE -->
+  <mat-dialog-content style="margin-top: 10px">
+    <mat-horizontal-stepper
+      *ngIf="
+        data.mode === dialogModesEnum.Insert &&
+        data.values?.waterRightTypeCode === 'GWCT' &&
+        [
+          purposeTypes.IRRIGATION,
+          purposeTypes.LAWN_AND_GARDEN,
+          purposeTypes.DOMESTIC,
+          purposeTypes.MULTIPLE_DOMESTIC,
+          purposeTypes.STOCK
+        ].includes(currentPurposeCodeValue)
+      "
+      [selectedIndex]="selectedStepIndex"
+      [linear]="true"
+      #stepper
+      (selectionChange)="handleCurrentStep($event.selectedIndex)"
+    >
+      <ng-template matStepperIcon="edit" let-index="index">
+        {{ index + 1 }}
+      </ng-template>
+
+      <mat-step
+        [completed]="formWasInitialized && formGroup.valid"
+        label="Add basic information"
+      >
+        <ng-container *ngTemplateOutlet="basicFormTemplate"> </ng-container>
+      </mat-step>
+      <mat-step
+        *ngIf="
+          [purposeTypes.IRRIGATION, purposeTypes.LAWN_AND_GARDEN].includes(
+            currentPurposeCodeValue
+          )
+        "
+        [completed]="currentStep >= 1"
+        label="Add Places Of Use"
+      >
+        <ng-container *ngTemplateOutlet="acreagesTemplate"> </ng-container>
+      </mat-step>
+      <mat-step
+        *ngIf="
+          [
+            purposeTypes.DOMESTIC,
+            purposeTypes.MULTIPLE_DOMESTIC,
+            purposeTypes.STOCK
+          ].includes(currentPurposeCodeValue)
+        "
+        [completed]="currentStep >= 1"
+        label="Add Periods"
+      >
+        <ng-container *ngTemplateOutlet="periodsTemplate"> </ng-container>
+      </mat-step>
+    </mat-horizontal-stepper>
+    <!-- RENDER ONLY BASIC FORM ON UPDATE MODE -->
+    <ng-template
+      [ngIf]="
+        data.mode === dialogModesEnum.Update ||
+        (data.mode === dialogModesEnum.Insert &&
+          (data.values?.waterRightTypeCode !== 'GWCT' ||
+            ![
+              purposeTypes.IRRIGATION,
+              purposeTypes.LAWN_AND_GARDEN,
+              purposeTypes.DOMESTIC,
+              purposeTypes.MULTIPLE_DOMESTIC,
+              purposeTypes.STOCK
+            ].includes(currentPurposeCodeValue)))
+      "
+    >
+      <ng-container *ngTemplateOutlet="basicFormTemplate"> </ng-container>
+    </ng-template>
+  </mat-dialog-content>
+  <mat-divider></mat-divider>
+  <mat-dialog-actions align="end" *ngIf="formGroup">
+    <button
+      mat-mini-fab
+      color="primary"
+      [matTooltip]="data.mode === dialogModesEnum.Insert ? 'Create' : 'Update'"
+      [disabled]="!formGroup.valid"
+      (click)="getPurposeDto()"
+    >
+      <mat-icon>done</mat-icon>
+    </button>
+    <button mat-mini-fab color="warn" matTooltip="Cancel" (click)="close()">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </mat-dialog-actions>
+</div>
+
+<!-- TEMPLATE FOR PERIODS -->
+<ng-template #periodsTemplate>
+  <div class="periods-header">
+    <div class="create-sub-title">Periods</div>
+    <div class="text-buttons-container">
+      <button
+        #addPeriodButton
+        (click)="onInsertPeriod()"
+        mat-mini-fab
+        color="primary"
+        matTooltip="Add New Period"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div>
+    <app-data-table
+      *ngIf="periods.length"
+      [data]="periodsDataSource"
+      [columns]="data.periodColumns"
+      [permissions]="acreageAndPeriodPermissions"
+      [isInMain]="false"
+      (deleteEvent)="onDeletePeriod($event)"
+      (editEvent)="onEditPeriod($event)"
+      noSort="true"
+    ></app-data-table>
+  </div>
+  <div *ngIf="!periods.length" class="no-data-message">
+    Add Periods to this Purpose
+  </div>
+  <div class="button-container">
+    <button
+      (click)="handleCurrentStep(currentStep - 1)"
+      mat-stroked-button
+      color="primary"
+      matTooltip="Previous Step"
+      matStepperPrevious
+    >
+      Back
+    </button>
+  </div>
+</ng-template>
+
+<!-- TEMPLATE FOR ACREAGES -->
+<ng-template #acreagesTemplate>
+  <div class="acreages-header">
+    <div class="create-sub-title">Places Of Use</div>
+    <div class="text-buttons-container">
+      <button
+        #addNewPlaceOfUse
+        (click)="onInsertAcreage()"
+        mat-mini-fab
+        color="primary"
+        matTooltip="Add New Place Of Use"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div>
+    <app-data-table
+      *ngIf="placesOfUse.length"
+      [data]="placesOfUseDataSource"
+      [columns]="data.placeOfUseColumns"
+      [permissions]="acreageAndPeriodPermissions"
+      [isInMain]="false"
+      (deleteEvent)="onDeleteAcreage($event)"
+      (editEvent)="onEditAcreage($event)"
+      noSort="true"
+    ></app-data-table>
+  </div>
+  <div *ngIf="!placesOfUse.length" class="no-data-message">
+    Add a Place Of Use to this Purpose
+  </div>
+  <div class="button-container">
+    <button
+      (click)="handleCurrentStep(currentStep - 1)"
+      mat-stroked-button
+      color="primary"
+      matTooltip="Previous Step"
+      matStepperPrevious
+    >
+      Back
+    </button>
+  </div>
+</ng-template>
+
+<!-- TEMPLATE FOR BASIC PURPOSE FORM -->
+<ng-template #basicFormTemplate>
+  <div class="data-container purpose-form">
+    <form class="purposes-form" [formGroup]="formGroup">
+      <ng-template ngFor let-field [ngForOf]="displayFields" let-i="index">
+        <div
+          class="form-field"
+          *ngIf="basicPurposeColumnIds.includes(field.columnId)"
+        >
+          <shared-data-form-field
+            [value]="data?.values !== null ? data.values[field.columnId] : null"
+            [mode]="mode"
+            [field]="field"
+            (changeEvent)="onInputChangeHandler($event)"
+          >
+          </shared-data-form-field>
+        </div>
+        <!-- Show Irrigation Type IF PurposeCode === 'IRRIGATION' -->
+        <div
+          class="form-field"
+          *ngIf="
+            field.columnId === 'irrigationCode' &&
+            (currentPurposeCodeValue === purposeTypes.IRRIGATION ||
+              (data.mode === dialogModesEnum.Update &&
+                data.values[field.columnId] &&
+                !typeChanged))
+          "
+        >
+          <shared-data-form-field
+            [value]="data?.values !== null ? data.values[field.columnId] : null"
+            [mode]="mode"
+            [field]="field"
+          >
+          </shared-data-form-field>
+        </div>
+        <!-- Show Climatic Area IF PurposeCode === 'IRRIGATION' || PurposeCode === 'LAWN_AND_GARDEN' -->
+        <div
+          class="form-field"
+          *ngIf="
+            field.columnId === 'climaticCode' &&
+            ([purposeTypes.IRRIGATION, purposeTypes.LAWN_AND_GARDEN].includes(
+              currentPurposeCodeValue
+            ) ||
+              (data.mode === dialogModesEnum.Update &&
+                data.values[field.columnId] &&
+                !typeChanged))
+          "
+        >
+          <shared-data-form-field
+            [value]="data?.values !== null ? data.values[field.columnId] : null"
+            [mode]="mode"
+            [field]="field"
+          >
+          </shared-data-form-field>
+        </div>
+        <!-- Show Crop Rotation IF PurposeCode === 'IRRIGATION' -->
+        <div
+          *ngIf="
+            field.columnId === 'rotation' &&
+            (currentPurposeCodeValue === purposeTypes.IRRIGATION ||
+              (data.mode === dialogModesEnum.Update &&
+                data.values[field.columnId] &&
+                !typeChanged))
+          "
+        >
+          <shared-data-form-field
+            [value]="data?.values !== null ? data.values[field.columnId] : null"
+            [mode]="mode"
+            [field]="field"
+          >
+          </shared-data-form-field>
+        </div>
+        <!-- Show Animal Units IF PurposeCode === 'COMMERCIAL' || PurposeCode === 'FISH_AND_WILDLIFE' || PurposeCode === 'OTHER_PURPOSE' || PurposeCode === 'STOCK' || PurposeCode === 'WILDLIFE' || PurposeCode === 'WILDLIFE_WATERFOWL' -->
+        <div
+          *ngIf="
+            field.columnId === 'animalUnits' &&
+            ([
+              purposeTypes.COMMERCIAL,
+              purposeTypes.FISH_AND_WILDLIFE,
+              purposeTypes.OTHER_PURPOSE,
+              purposeTypes.STOCK,
+              purposeTypes.WILDLIFE,
+              purposeTypes.WILDLIFE_WATERFOWL
+            ].includes(currentPurposeCodeValue) ||
+              (data.mode === dialogModesEnum.Update &&
+                data.values[field.columnId] &&
+                !typeChanged))
+          "
+        >
+          <shared-data-form-field
+            [value]="data?.values !== null ? data.values[field.columnId] : null"
+            [mode]="mode"
+            [field]="field"
+          >
+          </shared-data-form-field>
+        </div>
+        <!-- Show Household Units IF PurposeCode === 'DOMESTIC' || PurposeCode === 'MULTIPLE_DOMESTIC' -->
+        <div
+          *ngIf="
+            field.columnId === 'household' &&
+            ([purposeTypes.DOMESTIC, purposeTypes.MULTIPLE_DOMESTIC].includes(
+              currentPurposeCodeValue
+            ) ||
+              (data.mode === dialogModesEnum.Update &&
+                data.values[field.columnId] &&
+                !typeChanged))
+          "
+        >
+          <shared-data-form-field
+            [value]="data?.values !== null ? data.values[field.columnId] : null"
+            [mode]="mode"
+            [field]="field"
+          >
+          </shared-data-form-field>
+        </div>
+      </ng-template>
+    </form>
+  </div>
+  <div
+    *ngIf="
+      data.mode === dialogModesEnum.Insert &&
+      data.values?.waterRightTypeCode === 'GWCT' &&
+      [
+        purposeTypes.IRRIGATION,
+        purposeTypes.LAWN_AND_GARDEN,
+        purposeTypes.DOMESTIC,
+        purposeTypes.MULTIPLE_DOMESTIC,
+        purposeTypes.STOCK
+      ].includes(currentPurposeCodeValue)
+    "
+    class="button-container"
+    style="margin-top: 15px"
+  >
+    <button
+      [disabled]="!formWasInitialized || !formGroup.valid"
+      (click)="handleCurrentStep(currentStep + 1)"
+      mat-stroked-button
+      color="primary"
+      matTooltip="Next Step"
+      matStepperNext
+    >
+      Next
+    </button>
+  </div>
+</ng-template>

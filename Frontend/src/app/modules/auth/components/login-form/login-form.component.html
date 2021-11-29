@@ -1,0 +1,48 @@
+<div class="wrapper login-wrapper">
+  <form
+    [formGroup]="loginForm"
+    #loginDirective="ngForm"
+    (ngSubmit)="login(loginForm)"
+  >
+    <mat-form-field appearance="outline">
+      <mat-label required>User Name</mat-label>
+      <input
+        matInput
+        formControlName="username"
+        required
+        #username
+        oninput="this.value = this.value.toUpperCase()"
+      />
+      <mat-error *ngIf="loginForm.controls.username.errors?.required">
+        Username is required
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input matInput formControlName="password" type="password" required />
+      <mat-error *ngIf="loginForm.controls.username.errors?.required">
+        Password is required
+      </mat-error>
+    </mat-form-field>
+    <div class="button-row">
+      <button
+        color="primary"
+        [disabled]="!loginForm.valid"
+        mat-raised-button
+        type="submit"
+        matTooltip="Login to application"
+      >
+        Login
+      </button>
+      <button
+        color="primary"
+        mat-raised-button
+        type="button"
+        (click)="resetForm()"
+        matTooltip="Reset login credentials"
+      >
+        Reset
+      </button>
+    </div>
+  </form>
+</div>

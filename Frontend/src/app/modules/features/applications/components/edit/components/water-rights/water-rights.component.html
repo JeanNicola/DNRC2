@@ -1,0 +1,16 @@
+<mat-card>
+  <mat-card-title>Water Rights Summary</mat-card-title>
+  <mat-card-content>
+    <app-water-rights-summary
+      [idArray]="idArray"
+      [appTypeCode]="appTypeCode"
+      [waterRightChange]="waterRightChanged.asObservable()"
+    ></app-water-rights-summary>
+  </mat-card-content>
+</mat-card>
+<br />
+<app-water-rights-table
+  (numWaterRightsChanged)="onWaterRightsChanged($event)"
+  [idArray]="idArray"
+  [appTypeCode]="appTypeCode"
+></app-water-rights-table>

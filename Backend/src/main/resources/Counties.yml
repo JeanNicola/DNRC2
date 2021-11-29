@@ -1,0 +1,145 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+tags:
+- name: Counties
+  description: Counties of Montana
+paths:
+  /counties:
+    get:
+      summary: get all the Counties of Montana
+      operationId: getCounties
+      parameters:
+        - in: query
+          name: all
+          schema:
+            type: boolean
+            default: false
+          description: include all counties, not just those in Montana
+      responses:
+        200:
+          description: a list of Counties
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountiesResponseDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /counties/water-survey:
+    get:
+      summary: get all the Water Survey Counties of Montana
+      operationId: getWaterSurveyCounties
+      responses:
+        200:
+          description: a list of Counties
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterSurveyCountiesResponseDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /counties/district-court/{districtCourt}:
+    get:
+      summary: get all counties for a district court
+      operationId: getDistrictCourtCounties
+      parameters:
+        - $ref: '#/components/parameters/district-court'
+      responses:
+        200:
+          description: a list of counties in a district court
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountiesResponseDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+components:
+  schemas:
+    WaterSurveyCountyDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        dnrcId:
+          type: integer
+          format: int64
+        surveyId:
+          type: integer
+          format: int64
+        yr:
+          type: number
+        name:
+          type: string
+          maxLength: 34
+          pattern: '^[ -~]+$'
+        stateCode:
+          x-message-name: State Code
+          type: string
+      required:
+        - id
+        - name
+        - fipsCode
+        - stateCountyNumber
+    CountyDto:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+          maxLength: 34
+          pattern: '^[ -~]+$'
+        fipsCode:
+          x-message-name: Fips Code
+          type: string
+          maxLength: 5
+          pattern: '^[ -~]+$'
+        stateCountyNumber:
+          x-message-name: State County Number
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 2
+        stateCode:
+          x-message-name: State Code
+          type: string
+      required:
+        - id
+        - name
+        - fipsCode
+        - stateCountyNumber
+      example:
+        id: 0
+        name: Test Example
+        fipsCode: TEST1
+    CountiesResponseDto:
+      type: object
+      properties:
+        results:
+           type: array
+           items:
+             $ref: '#/components/schemas/CountyDto'
+    WaterSurveyCountiesResponseDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WaterSurveyCountyDto'

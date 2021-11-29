@@ -1,0 +1,92 @@
+<div class="content">
+  <mat-card>
+    <mat-card-title>
+      <div class="title-container">
+        <div class="title-buttons-container" *ngIf="areDropdownsPopulated">
+          <button
+            mat-mini-fab
+            color="primary"
+            matTooltip="Search"
+            (click)="onSearch()"
+            *ngIf="searchable"
+          >
+            <mat-icon>search</mat-icon>
+          </button>
+          <button
+            mat-mini-fab
+            color="primary"
+            matTooltip="Add Applicant"
+            (click)="onInsert()"
+            [disabled]="!permissions?.canPOST"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-card-title>
+    <mat-card-content>
+      <div class="data-container">
+        <h2 *ngIf="!rows?.length && dataMessage" class="data-message">
+          {{ dataMessage }}
+        </h2>
+        <app-applicant-table
+          *ngIf="rows?.length"
+          [data]="rows"
+          [columns]="columns"
+          [permissions]="permissions"
+          [hideActions]="hideActions"
+          [hideEdit]="hideEdit"
+          [hideDelete]="hideDelete"
+          [hideHeader]="hideHeader"
+          [expandChildRef]="expandRef"
+          [clickableRow]="clickableRow"
+          [zHeight]="zHeight"
+          [primarySortColumn]="primarySortColumn"
+          [primaryDirection]="sortDirection"
+          [dblClickableRow]="dblClickableRow"
+          (sortEvent)="onSortRequest($event)"
+          (editEvent)="onEdit(data.results[$event])"
+          (deleteEvent)="onDelete($event)"
+          (rowDblClickEvent)="onRowDoubleClick(data.results[$event])"
+          (representativesEvent)="onRepresentatives($event)"
+        >
+        </app-applicant-table>
+      </div>
+      <div
+        class="title-buttons-container"
+        *ngIf="areDropdownsPopulated && !!rows && rows.length > 5"
+      >
+        <button
+          mat-mini-fab
+          color="primary"
+          matTooltip="Search"
+          (click)="onSearch()"
+          *ngIf="searchable"
+        >
+          <mat-icon>search</mat-icon>
+        </button>
+        <button
+          mat-mini-fab
+          color="primary"
+          matTooltip="Insert"
+          (click)="onInsert()"
+          [disabled]="!permissions?.canPOST"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+      <div *ngIf="paging">
+        <mat-paginator
+          *ngIf="data && rows?.length"
+          [length]="data.totalElements"
+          [pageIndex]="queryParameters.pageNumber - 1"
+          [pageSize]="data.pageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          [showFirstLastButtons]="true"
+          (page)="onPaging($event)"
+        >
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

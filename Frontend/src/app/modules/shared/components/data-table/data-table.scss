@@ -1,0 +1,164 @@
+@import 'src/sass/variables';
+
+table {
+  width: 100%;
+  box-shadow: 0px 3px 14px 2px rgb(0 0 0 / 10%);
+
+  tr.element-row:focus-within {
+    background-color: $dnrc-mt-green-selected;
+  }
+
+  tr.element-row:hover:not(:focus) {
+    background-color: $dnrc-mt-green-hover;
+  }
+
+  tr.mat-header-row > th {
+    white-space: pre-line;
+    word-wrap: break-word;
+  }
+
+  tr.element-row > td {
+    white-space: pre-line;
+    word-wrap: break-word;
+    max-width: $table-cell-max-width;
+    vertical-align: top;
+    padding-top: 6px;
+  }
+
+  // Fix for Checkbox icons not lining up with text
+  tr.element-row > td.icon-container {
+    padding-bottom: 12px;
+
+    div {
+      justify-content: center;
+    }
+  }
+
+  .mat-header-cell,
+  .mat-cell {
+    margin: 0 8px 0 8px;
+    padding: 0 8px 0 8px;
+  }
+
+  .mat-header-cell {
+    font-family: inherit;
+    font-weight: 900;
+    font-size: 120%;
+    white-space: pre-wrap;
+  }
+
+  .extraTop {
+    top: $sticky-height !important;
+  }
+
+  tr.pointer {
+    cursor: pointer;
+  }
+
+  tr.selected {
+    background-color: $dnrc-mt-green-selected;
+  }
+
+  tr.detail-row {
+    height: 0;
+  }
+
+  .element-detail {
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    box-shadow: inset 0px 0px 10px $dnrc-mt-green-transparent;
+    border-radius: 15px;
+  }
+
+  th.mat-header-cell.table-actions {
+    text-align: center;
+  }
+}
+
+.loading {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+}
+
+table tr.element-row > td.table-actions {
+  margin-left: 20px;
+  text-align: center;
+  padding-top: 0px;
+}
+
+// Prevent action buttons from wrapping
+.table-row-actions {
+  display: flex;
+  justify-content: center;
+}
+
+button,
+a button {
+  opacity: 0;
+  transition: opacity 0.25s cubic-bezier(0, 0, 0.2, 1);
+}
+
+button:active,
+button:focus,
+a button:active,
+a button:focus {
+  opacity: 1;
+  outline: 2px solid $dnrc-mt-green-selected;
+}
+tr:hover > td > div > button,
+tr:focus-within > td > div > button {
+  opacity: 0.6;
+  outline: 2px solid $dnrc-mt-green-hover;
+}
+
+button:hover:not(:focus),
+a button:hover:not(:focus) {
+  opacity: 1;
+  outline: 2px solid $dnrc-mt-green-hover;
+}
+
+mat-icon.data-table-expansion {
+  cursor: default;
+  vertical-align: middle;
+}
+
+.info-btn {
+  background-color: white;
+  color: black;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  ::ng-deep .mat-button-wrapper {
+    transform: scale(2);
+  }
+}
+
+.counter-btn {
+  background-color: white;
+  color: black;
+}
+
+.counter-container {
+  cursor: pointer;
+  padding-top: 0px !important;
+}
+
+.counter-btn.active {
+  opacity: 1;
+}
+
+.cell-container {
+  display: flex;
+  align-items: center;
+}
+
+.cell-container > span {
+  max-width: 100%;
+}
+
+.cell-container > button {
+  margin: 0 auto;
+}

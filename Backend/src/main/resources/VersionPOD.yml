@@ -1,0 +1,954 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /water-rights/{waterRightId}/versions/{versionNumber}/pods:
+    get:
+      summary: retrieve a page of water right version PODs
+      operationId: getVersionPODs
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/version-pod-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of PODs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionPodPageDto'
+    post:
+      summary: create a new Point of Diversion
+      operationId: createVersionPod
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PodCreationDto'
+      responses:
+        201:
+          description: successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PodDto'
+        400:
+          description: bad legal land description
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Water Right Version not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/versions/{versionNumber}/flow-rate-summary:
+    get:
+      summary: retrieve the Flow Rate Summary
+      operationId: getFlowRateSummary
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      responses:
+        200:
+          description: the flow rate summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowRateSummaryDto'
+    put:
+      summary: edit the Flow Rate Summary
+      operationId: editFlowRateSummary
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FlowRateSummaryDtoResults'
+      responses:
+        200:
+          description: the flow rate summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowRateSummaryDto'
+  /water-rights/{waterRightId}/versions/{versionNumber}/pods/{podId}:
+    get:
+      summary: retrieve the details for a dto
+      operationId: getPodDetails
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+      responses:
+        200:
+          description: a page of PODs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PodDetailsDto'
+    delete:
+      summary: deleting a Point of Diversion
+      operationId: deletePod
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+      responses:
+        204:
+          description: succesfully deleted
+  /water-rights/{waterRightId}/versions/{versionNumber}/pods/{podId}/copy:
+    post:
+      summary: copy a Point of Diversion
+      operationId: copyVersionPod
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PodCopyDto'
+      responses:
+        201:
+          description: successfully copied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PodDto'
+        400:
+          description: unsuccessfully copied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Water Right Version not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/versions/{versionNumber}/pods/{podId}/details:
+    put:
+      summary: update the POD details section
+      operationId: updatePodDetails
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PodDetailsUpdateDto'
+      responses:
+        # returning nothing in these updates
+        # since we're changing part of the main object, not using the return value anyway,
+        # and we don't want to return the incoming updateDto straight, may be misleading
+        204:
+          description: saved the POD details
+        400:
+          description: bad legal land description
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Point of Diversion not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/versions/{versionNumber}/pods/{podId}/address:
+    put:
+      summary: update the POD address
+      operationId: updatePodAddress
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PodAddressUpdateDto'
+      responses:
+        204: # see above
+          description: a page of PODs
+        404:
+          description: Zip Code does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/versions/{versionNumber}/pods/{podId}/subdivision:
+    put:
+      summary: edit the Subdivision Info of a Point of Diversion
+      operationId: editSubdivisionInfo
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubdivisionUpdateDto'
+      responses:
+        204: # see above
+          description: successfully saved
+        404:
+          description: The Point of Diversion does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/versions/{versionNumber}/pods/{podId}/well-data:
+    put:
+      summary: update the Point of Diversion Well Data
+      operationId: updateWellData
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WellDataUpdateDto'
+      responses:
+        204: # see above
+          description: successfully updated
+        404:
+          description: Point of Diversion not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/versions/{versionNumber}/pods/{podId}/source:
+    put:
+      summary: update a POD's source
+      operationId: updatePodSource
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PodSourceUpdateDto'
+      responses:
+        204:
+          description: the newly added Enforcements
+  /water-rights/{waterRightId}/versions/{versionNumber}/pods/{podId}/periods:
+    get:
+      summary: get the Period of Diversions for a POD
+      operationId: getPeriodOfDiversions
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/period-of-diversion-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+      responses:
+        200:
+          description: a page of Period of Diversions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PeriodOfDiversionPageDto'
+        404:
+          description: Water Right Version is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: add a Period of Diversion to a POD
+      operationId: addPeriodOfDiversion
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PeriodOfDiversionDto'
+      responses:
+        200:
+          description: the newly added Enforcements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PeriodOfDiversionDto'
+        404:
+          description: Water Right Version is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/versions/{versionNumber}/pods/{podId}/periods/{periodId}:
+    put:
+      summary: update a Period of Diversion on a POD
+      operationId: updatePeriodOfDiversion
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+        - $ref: '#/components/parameters/period-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PeriodOfDiversionDto'
+      responses:
+        200:
+          description: the newly added Enforcements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PeriodOfDiversionDto'
+        404:
+          description: Water Right Version or Period of Diversion is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: deleting a Period of Diversion from a POD
+      operationId: deletePeriodOfDiversion
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+        - $ref: '#/components/parameters/period-id'
+      responses:
+        204:
+          description: the newly added Enforcements
+  /water-rights/{waterRightId}/versions/{versionNumber}/pods/{podId}/enforcements:
+    get:
+      summary: get the Enforcements for a POD
+      operationId: getEnforcements
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/enforcement-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of Enforcements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PodEnforcementsPageDto'
+    post:
+      summary: add an Enforcements to a POD
+      operationId: addEnforcement
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PodEnforcementDto'
+      responses:
+        200:
+          description: the newly added Enforcements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PodEnforcementDto'
+  /water-rights/{waterRightId}/versions/{versionNumber}/pods/{podId}/enforcements/{areaId}/{enforcementNumber}:
+    put:
+      summary: update an Enforcement attached to a POD
+      operationId: updateEnforcement
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+        - $ref: '#/components/parameters/area-id'
+        - $ref: '#/components/parameters/enforcement-number'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PodEnforcementDto'
+      responses:
+        200:
+          description: a page of Enforcements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PodEnforcementDto'
+    delete:
+      summary: delete an Enforcement attached to a POD
+      operationId: deleteEnforcement
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pod-id'
+        - $ref: '#/components/parameters/area-id'
+        - $ref: '#/components/parameters/enforcement-number'
+      responses:
+        204:
+          description: a page of Enforcements
+components:
+  schemas:
+    PodSourceUpdateDto:
+      type: object
+      properties:
+        sourceOriginCode:
+          type: string
+        unnamedTributary:
+          type: boolean
+        sourceId:
+          type: integer
+          format: int64
+        majorTypeCode:
+          type: string
+        minorTypeCode:
+          type: string
+    PodCreationDto:
+      type: object
+      properties:
+        # Legal Land Description
+        governmentLot:
+          type: integer
+          format: int64
+        description40:
+          type: string
+        description80:
+          type: string
+        description160:
+          type: string
+        description320:
+          type: string
+        section:
+          type: integer
+          format: int64
+        township:
+          type: integer
+          format: int64
+        townshipDirection:
+          type: string
+        range:
+          type: integer
+          format: int64
+        rangeDirection:
+          type: string
+        countyId:
+          type: integer
+          format: int64
+        # Source
+        sourceOriginCode:
+          type: string
+        unnamedTributary:
+          type: boolean
+        sourceId:
+          type: integer
+          format: int64
+        majorTypeCode:
+          type: string
+        # Means of Diversion
+        podOriginCode:
+          type: string
+        meansOfDiversionCode:
+          type: string
+        podTypeCode:
+          type: string
+      required:
+        - section
+        - township
+        - townshipDirection
+        - range
+        - rangeDirection
+        - countyId
+        - sourceOriginCode
+        - unnamedTributary
+        - sourceId
+        - podOriginCode
+        - majorTypeCode
+        - podTypeCode
+    PodCopyDto:
+      type: object
+      properties:
+        podId:
+          type: integer
+          format: int64
+      required:
+        - podId
+    PodAddressUpdateDto:
+      type: object
+      properties:
+        addressLine:
+          type: string
+        zipCodeId:
+          type: integer
+          format: int64
+    WellDataUpdateDto:
+      type: object
+      properties:
+        wellDepth:
+          type: number
+          format: double
+        staticWaterLevel:
+          type: number
+          format: double
+        castingDiameter:
+          type: number
+          format: double
+        flowing:
+          type: boolean
+        pumpSize:
+          type: number
+          format: double
+        waterTemp:
+          type: number
+          format: double
+        testRate:
+          type: number
+          format: double
+    SubdivisionUpdateDto:
+      type: object
+      properties:
+        subdivisionCode:
+          type: string
+        lot:
+          type: string
+        block:
+          type: string
+        tract:
+          type: string
+    PodEnforcementsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/EnforcementSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PodEnforcementDto'
+    PodEnforcementDto:
+      type: object
+      properties:
+        areaId:
+          type: string
+        enforcementNumber:
+          type: string
+          maxLength: 20
+          pattern: '^[ -~]*$'
+          x-message-name: "Enf #"
+        comments:
+          type: string
+          maxLength: 4000
+          pattern: '^[ -~\n]*$'
+          x-message-name: Enf Comment
+      required:
+        - areaId
+        - enforcementNumber
+    PeriodOfDiversionPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/PeriodOfDiversionSortColumn'
+        maxFlowRate:
+          type: number
+          format: double
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PeriodOfDiversionDto'
+    PeriodOfDiversionDto:
+      type: object
+      properties:
+        periodId:
+          type: integer
+          format: int64
+        beginDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        diversionOriginCode:
+          type: string
+        diversionOriginDescription:
+          type: string
+        flowRateSummary:
+          type: string
+        flowRate:
+          type: number
+          format: double
+        flowRateUnit:
+          type: string
+      required:
+        - beginDate
+        - endDate
+        - diversionOriginCode
+    PodDetailsDto:
+      type: object
+      properties:
+        results:
+          type: object
+          properties:
+            podNumber:
+              type: integer
+              format: int64
+          # POD Origin
+            podOriginCode:
+              type: string
+            podOriginDescription:
+              type: string
+          # Means of Diversion
+            meansOfDiversionCode:
+              type: string
+            meansOfDiversionDescription:
+              type: string
+            diversionTypeCode:
+              type: string
+            diversionTypeDescription:
+              type: string
+            ditchId:
+              type: integer
+              format: int64
+            ditchName:
+              type: string
+            podTypeCode:
+              type: string
+            podTypeDescription:
+              type: string
+            transitory:
+              type: boolean
+          # Legal Land Description
+            legalLandDescriptionId:
+              type: integer
+              format: int64
+            legalLandDescription:
+              type: string
+            governmentLot:
+              type: integer
+              format: int64
+            description40:
+              type: string
+            description80:
+              type: string
+            description160:
+              type: string
+            description320:
+              type: string
+            section:
+              type: integer
+              format: int64
+            township:
+              type: integer
+              format: int64
+            townshipDirection:
+              type: string
+            range:
+              type: integer
+              format: int64
+            rangeDirection:
+              type: string
+            countyId:
+              type: integer
+              format: int64
+            modified:
+              type: boolean
+            xCoordinate:
+              type: number
+              format: double
+            yCoordinate:
+              type: number
+              format: double
+          # Source
+            sourceOriginCode:
+              type: string
+            sourceOriginDescription:
+              type: string
+            unnamedTributary:
+              type: boolean
+            sourceName:
+              type: string
+            sourceId:
+              type: integer
+              format: int64
+            majorTypeCode:
+              type: string
+            majorTypeDescription:
+              type: string
+            minorTypeCode:
+              type: string
+            minorTypeDescription:
+              type: string
+          # Subdivision Info
+            subdivisionCode:
+              type: string
+            dnrcName:
+              type: string
+            dorName:
+              type: string
+            lot:
+              type: string
+            block:
+              type: string
+            tract:
+              type: string
+          # Well Data
+            wellDepth:
+              type: number 
+              format: double
+            staticWaterLevel:
+              type: number
+              format: double
+            castingDiameter:
+              type: number
+              format: double
+            flowing:
+              type: boolean
+            pumpSize:
+              type: number
+              format: double 
+            waterTemp:
+              type: number
+              format: double
+            testRate:
+              type: number
+              format: double
+          # Property Address
+            addressId:
+              type: integer
+              format: int64
+            fullAddress:
+              type: string
+            addressLine:
+              type: string
+            zipCodeId:
+              type: integer
+              format: int64
+            zipCode:
+              type: string 
+            cityName:
+              type: string
+    PodDetailsUpdateDto:
+      type: object
+      properties:
+        podOriginCode:
+          type: string
+        meansOfDiversionCode:
+          type: string
+        ditchId:
+          type: integer
+          format: int64
+        podTypeCode:
+          type: string
+        governmentLot:
+          type: integer
+          format: int64
+        description40:
+          type: string
+        description80:
+          type: string
+        description160:
+          type: string
+        description320:
+          type: string
+        section:
+          type: integer
+          format: int64
+        township:
+          type: integer
+          format: int64
+        townshipDirection:
+          type: string
+        range:
+          type: integer
+          format: int64
+        rangeDirection:
+          type: string
+        countyId:
+          type: integer
+          format: int64
+        modified:
+          type: boolean
+        xCoordinate:
+          type: number
+          format: double
+        yCoordinate:
+          type: number
+          format: double
+        transitory:
+          type: boolean
+      required:
+        - podOriginCode
+        - meansOfDiversionCode
+        - podTypeCode
+        - transitory
+        - countyId
+    FlowRateSummaryDto:
+      type: object
+      properties:
+        results:
+          $ref: '#/components/schemas/FlowRateSummaryDtoResults'
+    FlowRateSummaryDtoResults:
+      type: object
+      properties:
+        flowRateSummary:
+          type: string
+        flowRate:
+          type: number
+          format: double
+        flowRateUnit:
+          type: string
+        originCode:
+          type: string
+        originDescription:
+          type: string
+        flowRateDescription:
+          type: string
+          maxLength: 350
+          pattern: '^[ -~\n]*$'
+          x-message-name: Flow Rate Description
+      required:
+        - originCode
+    VersionPodPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/VersionPodSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PodDto'
+    PodDto:
+      type: object
+      properties:
+        podId:
+          type: integer
+          format: int64
+        podNumber:
+          type: integer
+          format: int64
+        majorTypeDescription:
+          type: string
+        legalLandDescription:
+          type: string
+        meansOfDiversionDescription:
+          type: string
+    EnforcementSortColumn:
+      type: string
+      enum: [ AREAID, ENFORCEMENTNUMBER, COMMENTS]
+      default: AREAID
+    PeriodOfDiversionSortColumn:
+      type: string
+      enum: [ BEGINDATE, ENDDATE, DIVERSIONORIGINDESCRIPTION, FLOWRATESUMMARY]
+      default: ENDDATE
+    VersionPodSortColumn:
+      type: string
+      enum: [ PODNUMBER, MAJORTYPEDESCRIPTION, LEGALLANDDESCRIPTION, MEANSOFDIVERSIONDESCRIPTION]
+      default: PODNUMBER
+  parameters:
+    enforcement-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/EnforcementSortColumn'
+    period-of-diversion-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/PeriodOfDiversionSortColumn'
+    version-pod-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/VersionPodSortColumn'
+    pod-id:
+      name: podId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the pod id
+      required: true
+    area-id:
+      name: areaId
+      in: path
+      schema:
+        type: string
+      description: the enforcement area id
+      required: true
+    enforcement-number:
+      name: enforcementNumber
+      in: path
+      schema:
+        type: string
+      description: the enforcement number
+      required: true
+    period-id:
+      name: periodId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: period id
+      required: true

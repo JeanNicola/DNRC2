@@ -1,0 +1,308 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /ownership-updates/{ownershipUpdateId}/office:
+    get:
+      summary: get the responsible office
+      operationId: getOwnershipUpdateResponsibleOffice
+      parameters:
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: the responsible office for the Ownership Update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsibleOfficeDto'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: change the Responsible Office
+      operationId: editOwnershipUpdateResponsibleOffice
+      parameters:
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated office
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResponsibleOfficeDto'
+      responses:
+        200:
+          description: The new Office
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsibleOfficeDto'
+  /ownership-updates/{ownershipUpdateId}/processor:
+    get:
+      summary: get the current processor 
+      operationId: getOwnershipUpdateProcessor
+      parameters:
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: the processor for the ownership update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessorDto'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: change the Processor
+      operationId: editOwnershipUpdateProcessor
+      parameters:
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated Processor
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessorDto'
+      responses:
+        200:
+          description: The new Processor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessorDto'
+  /ownership-updates/{ownershipUpdateId}/locations:
+    get:
+      summary: get a page of offices
+      operationId: getOwnershipUpdateOffices
+      parameters:
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/office-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+      responses:
+        200:
+          description: the offices for the ownership update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficePageDto'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: attach a new office
+      operationId: addOwnershipUpdateOffice
+      parameters:
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new office
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfficeCreationDto'
+      responses:
+        201:
+          description: The new Office
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficeDto'
+  /ownership-updates/{ownershipUpdateId}/locations/{officeXrefId}:
+    put:
+      summary: edit an attached office
+      operationId: editOwnershipUpdateOffice
+      parameters:
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: officeXrefId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated office
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfficeDto'
+      responses:
+        200:
+          description: The new Office
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficeDto'
+    delete:
+      summary: delete an attached office
+      operationId: deleteOwnershipUpdateOffice
+      parameters:
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: officeXrefId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: The office was deleted
+  /ownership-updates/{ownershipUpdateId}/staff:
+    get:
+      summary: get a page of staff
+      operationId: getOwnershipUpdateStaff
+      parameters:
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/staff-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+      responses:
+        200:
+          description: the staff for the ownership update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffPageDto'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: attach a new staff member
+      operationId: addOwnershipUpdateStaff
+      parameters:
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new staff member
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffCreationDto'
+      responses:
+        201:
+          description: The new Staff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffDto'
+  /ownership-updates/{ownershipUpdateId}/staff/{staffXrefId}:
+    put:
+      summary: edit an attached staff
+      operationId: editOwnershipUpdateStaff
+      parameters:
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: staffXrefId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated staff
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffDto'
+      responses:
+        200:
+          description: The updated Office
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffDto'
+    delete:
+      summary: delete an attached staff
+      operationId: deleteOwnershipUpdateStaff
+      parameters:
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: staffXrefId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: The staff member was removed

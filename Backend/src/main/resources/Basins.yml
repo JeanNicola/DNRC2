@@ -1,0 +1,66 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /basins/all:
+    get:
+      summary: a list of all Basins
+      operationId: getBasins 
+      responses:
+        200:
+          description: a list of Basins
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllBasinsDto'
+  /sub-basins:
+    get:
+      summary: a list of all sub-basins
+      operationId: getSubBasins
+      responses:
+        200:
+          description: a list of Sub Basins
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllSubBasinsDto'
+components:
+  schemas:
+    AllBasinsDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BasinDto'
+    BasinDto:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 4
+          pattern: '^[ -~]+$'
+        description:
+          type: string
+          maxLength: 70
+          pattern: '^[ -~]+$'
+    AllSubBasinsDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubBasinDto'
+    SubBasinDto:
+      type: object
+      properties:
+        code:
+          type: string
+        parent:
+          type: string
+        description:
+          type: string

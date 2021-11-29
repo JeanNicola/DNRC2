@@ -1,0 +1,82 @@
+<div *ngIf="title" class="edit-header-title">{{ title }}</div>
+<div *ngIf="!data && !error; else loaded" class="loading-container">
+  <p class="edit-header-title">Loading...</p>
+</div>
+<ng-template #loaded>
+  <ng-container *ngIf="data && !error; else failed">
+    <div class="data-row app-edit-header">
+      <div class="one-lined">
+        <ng-container *ngFor="let item of firstColumns">
+          <shared-data-row-field
+            *ngIf="item.displayInTable != null ? item.displayInTable : true"
+            [field]="item"
+            [dataValue]="displayData[item.columnId]"
+            (click)="clickCell(item)"
+          ></shared-data-row-field>
+        </ng-container>
+        <div class="data-row-actions">
+          <button
+            #editButton
+            *ngIf="showEdit"
+            mat-mini-fab
+            color="primary"
+            matTooltip="Edit"
+            (click)="onEdit()"
+            [disabled]="!permissions.canPUT || disableEdit"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-mini-fab
+            color="warn"
+            matTooltip="Delete Mailing Job"
+            (click)="onDelete()"
+            [disabled]="!permissions.canDELETE"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button
+            mat-mini-fab
+            color="primary"
+            matTooltip="Generate Labels"
+            (click)="onGenerateLabels()"
+            [disabled]="!permissions.canPUT || disableGenerate"
+          >
+            <mat-icon>article</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="row-title sub-title">
+        <span>Application Being Noticed</span>
+      </div>
+      <div class="one-lined">
+        <ng-container *ngFor="let item of secondColumns">
+          <shared-data-row-field
+            *ngIf="item.displayInTable != null ? item.displayInTable : true"
+            [field]="item"
+            [dataValue]="displayData[item.columnId]"
+            (click)="clickCell(item)"
+          ></shared-data-row-field>
+        </ng-container>
+        <div class="data-row-actions">
+          <button
+            #editApplicationButton
+            *ngIf="showEdit"
+            mat-mini-fab
+            color="primary"
+            matTooltip="Edit"
+            (click)="onApplicationEdit()"
+            [disabled]="!permissions.canPUT || disableEdit"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #failed>
+    <div class="loading-container">
+      <p class="edit-header-title">Mailing Job not found.</p>
+    </div>
+  </ng-template>
+</ng-template>

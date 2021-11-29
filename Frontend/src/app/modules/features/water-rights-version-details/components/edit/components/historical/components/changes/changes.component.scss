@@ -1,0 +1,28 @@
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  shared-data-row-field {
+    width: 20%;
+  }
+
+  shared-data-row-field:nth-of-type(2) {
+    width: 30%;
+  }
+}
+
+.row-title {
+  display: flex;
+  width: 100%;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.row-title button {
+  height: fit-content;
+}

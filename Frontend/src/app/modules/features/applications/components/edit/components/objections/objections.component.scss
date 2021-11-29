@@ -1,0 +1,26 @@
+.obj-summary-title {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  padding-left: 16px;
+}
+
+.objections-subtables-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 20px;
+
+  ::ng-deep mat-card {
+    width: -webkit-fill-available;
+    width: -moz-available;
+  }
+}
+
+.subtable {
+  width: 49%;
+}
+
+.subtable-left {
+  margin-right: 20px;
+}

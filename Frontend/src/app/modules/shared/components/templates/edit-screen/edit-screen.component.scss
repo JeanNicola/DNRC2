@@ -1,0 +1,13 @@
+.accordion-open-close-buttons {
+  display: flex;
+  justify-content: flex-end;
+
+  button {
+    margin: 5px 5px 10px;
+  }
+}
+
+.condensed ::ng-deep .mat-expansion-panel-body {
+  padding-left: 8px;
+  padding-right: 8px;
+}

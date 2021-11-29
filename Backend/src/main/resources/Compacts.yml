@@ -1,0 +1,81 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /sub-compacts:
+    get:
+      summary: search subcompacts
+      operationId: searchSubcompacts
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/subcompact-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: query
+          name: subcompact
+          schema:
+            type: string
+          description: subcompact name to search for
+        - in: query
+          name: compact
+          schema:
+            type: string
+          description: compact name to search for
+      responses:
+        200:
+          description: a page of Subcompacts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubcompactPageDto'
+components:
+  schemas:
+    SubcompactDto:
+      type: object
+      properties:
+        subcompactId:
+          type: integer
+          format: int64
+        subcompact:
+          type: string
+        compact:
+          type: string
+    SubcompactPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/SubcompactSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'SubcompactDto'
+    SubcompactSortColumn:
+      type: string
+      enum: [SUBCOMPACT, COMPACT]
+      default: COMPACT
+  parameters:
+    subcompact-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/SubcompactSortColumn'

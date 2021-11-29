@@ -1,0 +1,143 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /mailing-jobs/{mailingJobId}/water-rights:
+    get:
+      summary: get Water Rights attached to a Mailing Job
+      operationId: getMailingJobWaterRights
+      parameters:
+        - $ref: '#/components/parameters/mailing-job-id'
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/job-water-right-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: The Water Rights attached to a Mailing Job
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobWaterRightPageDto'
+        404:
+          description: This Mailing Job does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: Attach a Water Right to Mailing Jobs
+      operationId: addJobWaterRight
+      parameters:
+        - $ref: '#/components/parameters/mailing-job-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobWaterRightCreationDto'
+      responses:
+        204:
+          description: successfully created
+        404:
+          description: Mailing Job or Water Right not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /mailing-jobs/{mailingJobId}/water-rights/{waterRightId}:
+    delete:
+      summary: Remove a Water Right from a Mailing Job
+      operationId: removeJobWaterRight
+      parameters:
+        - $ref: '#/components/parameters/mailing-job-id'
+        - $ref: '#/components/parameters/water-right-id'
+      responses:
+        204:
+          description: successfully created
+  /mailing-jobs/{mailingJobId}/import-water-rights:
+    post:
+      summary: Import Water Right to Mailing Jobs
+      operationId: importJobWaterRights
+      parameters:
+        - $ref: '#/components/parameters/mailing-job-id'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+                - file
+      responses:
+        201:
+          description: successfully imported
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Mailing Job not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    JobWaterRightCreationDto:
+      type: object
+      properties:
+        waterRightId:
+          type: integer
+          format: int64
+      required:
+        - waterRightId
+    JobWaterRightPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/JobWaterRightSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobWaterRightDto'
+    JobWaterRightDto:
+      type: object
+      properties:
+        waterRightId:
+          type: integer
+          format: int64
+        completeWaterRightNumber:
+          type: string
+        waterRightTypeDescription:
+          type: string
+        waterRightStatusDescription:
+          type: string
+    JobWaterRightSortColumn:
+      type: string
+      enum: [ COMPLETEWATERRIGHTNUMBER, WATERRIGHTTYPEDESCRIPTION, WATERRIGHTSTATUSDESCRIPTION ]
+      default: COMPLETEWATERRIGHTNUMBER
+  parameters:
+    job-water-right-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/JobWaterRightSortColumn'

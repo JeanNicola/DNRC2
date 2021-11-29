@@ -1,0 +1,19 @@
+:host ::ng-deep button {
+  .mat-icon {
+    transform: scale(0.65);
+  }
+}
+
+.checkbox-container {
+  padding-left: 2px;
+}
+
+input,
+textarea {
+  text-transform: uppercase;
+}
+
+mat-form-field {
+  width: -webkit-fill-available;
+  width: -moz-available;
+}

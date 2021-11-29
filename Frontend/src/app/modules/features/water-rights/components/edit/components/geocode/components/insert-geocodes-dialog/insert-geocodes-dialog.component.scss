@@ -1,0 +1,61 @@
+@import 'src/sass/variables';
+
+.one-lined {
+  display: flex;
+  justify-content: space-around;
+}
+
+.marginedRight {
+  display: inline-block;
+  margin-right: 8px;
+  flex: 1;
+}
+.marginedLeft {
+  display: inline-block;
+  margin-left: 8px;
+  flex: 1;
+}
+
+::ng-deep table th {
+  top: -11px !important;
+}
+
+mat-dialog-content {
+  display: flex;
+  flex-direction: row;
+}
+
+form {
+  padding-top: 22px;
+}
+
+.side {
+  display: inline-block;
+  flex: 1 1 auto;
+  overflow: auto;
+  margin: 0 12px;
+  padding-top: 8px;
+}
+
+.side:first-of-type {
+  border-right: solid 1px $dnrc-mt-navy;
+  padding-right: 8px;
+}
+
+.side:last-of-type {
+  margin: 0 20px;
+}
+
+.helpText {
+  text-align: center;
+  font-style: italic;
+}
+
+#addButton {
+  float: right;
+  margin-bottom: 12px;
+}
+
+.form-field:first-of-type {
+  margin-bottom: 4px;
+}

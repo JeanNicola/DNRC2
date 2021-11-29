@@ -1,0 +1,303 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /water-rights/{waterRightId}/office:
+    get:
+      summary: get the child rights
+      operationId: getWaterRightResponsibleOffice
+      parameters:
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: the water right id
+      responses:
+        200:
+          description: the responsible office for the water right
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsibleOfficeDto'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: change the Responsible Office
+      operationId: editWaterRightResponsibleOffice
+      parameters:
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated office
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResponsibleOfficeDto'
+      responses:
+        200:
+          description: The new Office
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsibleOfficeDto'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/locations:
+    get:
+      summary: get a page of offices
+      operationId: getWaterRightOffices
+      parameters:
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/office-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+      responses:
+        200:
+          description: the offices for the application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficePageDto'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: attach a new office
+      operationId: addWaterRightOffice
+      parameters:
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new office
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfficeCreationDto'
+      responses:
+        201:
+          description: The new Office
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficeDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/locations/{officeXrefId}:
+    put:
+      summary: edit an attached office
+      operationId: editWaterRightOffice
+      parameters:
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: officeXrefId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated office
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfficeDto'
+      responses:
+        200:
+          description: The new Office
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficeDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: delete an attached office
+      operationId: deleteWaterRightOffice
+      parameters:
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: officeXrefId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: The office was deleted
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/staff:
+    get:
+      summary: get a page of staff
+      operationId: getWaterRightStaff
+      parameters:
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/staff-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+      responses:
+        200:
+          description: the staff for the water right
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffPageDto'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: attach a new staff member
+      operationId: addWaterRightStaff
+      parameters:
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new staff member
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffCreationDto'
+      responses:
+        201:
+          description: The new Staff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffDto'
+  /water-rights/{waterRightId}/staff/{staffXrefId}:
+    put:
+      summary: edit an attached staff
+      operationId: editWaterRightStaff
+      parameters:
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: staffXrefId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated staff
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffDto'
+      responses:
+        200:
+          description: The updated Office
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffDto'
+    delete:
+      summary: delete an attached staff
+      operationId: deleteWaterRightStaff
+      parameters:
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: staffXrefId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: The staff member was removed

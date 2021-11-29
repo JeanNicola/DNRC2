@@ -1,0 +1,822 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /applications:
+    get:
+      summary: get a page of Applications
+      operationId: searchApplications
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/application-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+        - $ref: '#/components/parameters/basin'
+        - $ref: '#/components/parameters/application-id'
+        - $ref: '#/components/parameters/application-type-code'
+      responses:
+        200:
+          description: a list of Applications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationSearchPageDto'
+    post:
+      summary: create a new Application
+      operationId: createApplication
+      requestBody:
+        description: The new Application
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationCreationDto'
+      responses:
+        201:
+          description: The new Application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationDto'
+
+  /applications/{applicationId}/related-applications:
+    get:
+      summary: get a page of Related Applications
+      operationId: getAllRelatedApplications
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 10
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/related-application-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a list of related application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatedApplicationPageDto'
+  /applications/view/owner:
+    get:
+      summary: get a page of Applicants with a page of Applications
+      operationId: searchApplicationsByOwner
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/application-owner-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+        - $ref: '#/components/parameters/basin'
+        - $ref: '#/components/parameters/application-id'
+        - $ref: '#/components/parameters/application-type-code'
+        - $ref: '#/components/parameters/owner-contact-id'
+        - $ref: '#/components/parameters/owner-last-name'
+        - $ref: '#/components/parameters/owner-first-name'
+        - $ref: '#/components/parameters/rep-contact-id'
+        - $ref: '#/components/parameters/rep-last-name'
+        - $ref: '#/components/parameters/rep-first-name'
+      responses:
+        200:
+          description: a list of Owners with their Applications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationOwnerSearchPageDto'
+  /applications/view/owner/{contactId}:
+    get:
+      summary: get a page of Applications for a particular owner
+      operationId: getOwnersApplications
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/owner-application-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+        - in: path
+          name: contactId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The Contact ID of the applicant
+        - $ref: '#/components/parameters/basin'
+        - $ref: '#/components/parameters/application-id'
+        - $ref: '#/components/parameters/application-type-code'
+        - $ref: '#/components/parameters/rep-contact-id'
+        - $ref: '#/components/parameters/rep-last-name'
+        - $ref: '#/components/parameters/rep-first-name'
+      responses:
+        200:
+          description: a page of Applications for an owner
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnerApplicationRepPageDto'
+  /applications/view/representatives:
+    get:
+      summary: get a page of Representatives with a page of Applications
+      operationId: searchApplicationsByRepresentative
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/application-rep-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+        - $ref: '#/components/parameters/basin'
+        - $ref: '#/components/parameters/application-id'
+        - $ref: '#/components/parameters/application-type-code'
+        - $ref: '#/components/parameters/rep-contact-id'
+        - $ref: '#/components/parameters/rep-last-name'
+        - $ref: '#/components/parameters/rep-first-name'
+      responses:
+        200:
+          description: a list of Representatives with their Applications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationRepSearchPageDto'
+  /applications/view/representatives/{repContactID}:
+    get:
+      summary: get a page of Applications for a particular representative
+      operationId: getRepresentativesApplications
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/rep-application-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+        - in: path
+          name: repContactID
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The Contact ID of the representative
+        - $ref: '#/components/parameters/basin'
+        - $ref: '#/components/parameters/application-id'
+        - $ref: '#/components/parameters/application-type-code'
+      responses:
+        200:
+          description: a page of Applications for an representative
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepApplicationOwnerPageDto'
+  /applications/{id}:
+    get:
+      summary: get a specific Application
+      operationId: getApplication
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The Application Id
+      responses:
+        200:
+          description: Get the Application Header data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationDto'
+    put:
+      summary: change an existing Application
+      operationId: changeApplication
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The Application Id
+      requestBody:
+        description: The updated Application
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationUpdateDto'
+      responses:
+        200:
+          description: Changed the Application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationDto'
+  /applications/{applicationId}/auto-complete:
+    post:
+      summary: Transfer the application number to be the water right number for a new water right
+      operationId: autoComplete
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The Application Id
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        201:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationAutoCompleteDto'
+#        400:
+#          description: Please specify a basin before performing the transfer
+#          content:
+#            text/plain:
+#              schema:
+#                type: string
+#                example: Please specify a basin before performing the transfer
+#        401:
+#          description: A form received event is required for the auto-complete function
+#          content:
+#            text/plain:
+#              schema:
+#                type: string
+#                example: A form received event is required for the auto-complete function
+#        402:
+#          description: At least one application owner is required for the auto-complete function
+#          content:
+#            text/plain:
+#              schema:
+#                type: string
+#                example: At least one application owner is required for the auto-complete function
+#        403:
+#          description: No value for Auto-Complete.  Please contact DBA
+#          content:
+#            text/plain:
+#              schema:
+#                type: string
+#                example: No value for Auto-Complete.  Please contact DBA
+  /applications/eligible-applications:
+    get:
+      summary: get all the Objections
+      operationId: getEligibleApplications
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/eligible-applications-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/application-id'
+      responses:
+        200:
+          description: a list of eligible applications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EligibleApplicationsSearchPageDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    ApplicationSearchPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/ApplicationSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'ApplicationSearchResultDto'
+    ApplicationSearchResultDto:
+      type: object
+      properties:
+        basin:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        applicationId:
+          type: integer
+          format: int64
+        applicationTypeCode:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        applicationTypeDescription:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 70
+          x-message-name: Application Type Description
+        dateTimeReceived:
+          type: string
+          format: date-time
+        contactId:
+          type: integer
+          format: int64
+        ownerName:
+          type: string
+          pattern: '^[ -~]+$'
+        ownerLastName:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 50
+        ownerFirstName:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 20
+        officeId:
+          type: number
+        objection:
+          type: string
+          pattern: '^[ -~]*$'
+    ApplicationOwnerSearchPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/ApplicationOwnerSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'ApplicationOwnerSearchResultDto'
+    ApplicationOwnerSearchResultDto:
+      type: object
+      properties:
+        contactId:
+          type: integer
+          format: int64
+        ownerName:
+          type: string
+          pattern: '^[ -~]+$'
+        applications:
+          $ref: 'OwnerApplicationRepPageDto'
+    OwnerApplicationRepPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/OwnerApplicationSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'OwnerApplicationRepListDto'
+    OwnerApplicationRepListDto:
+      type: object
+      properties:
+        basin:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        applicationId:
+          type: integer
+          format: int64
+        applicationTypeCode:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        applicationTypeDescription:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 70
+          x-message-name: Application Type Description
+        dateTimeReceived:
+          type: string
+          format: date-time
+        contactId:
+          type: integer
+          format: int64
+        repName:
+          type: string
+          pattern: '^[ -~]+$'
+    ApplicationRepSearchPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/ApplicationRepSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'ApplicationRepSearchResultDto'
+    ApplicationRepSearchResultDto:
+      type: object
+      properties:
+        repContactId:
+          type: integer
+          format: int64
+        repName:
+          type: string
+          pattern: '^[ -~]+$'
+        applications:
+          $ref: 'RepApplicationOwnerPageDto'
+    RepApplicationOwnerPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/RepApplicationSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'RepApplicationOwnerListDto'
+    RepApplicationOwnerListDto:
+      type: object
+      properties:
+        basin:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        applicationId:
+          type: integer
+          format: int64
+        applicationTypeCode:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        applicationTypeDescription:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 70
+          x-message-name: Application Type Description
+        dateTimeReceived:
+          type: string
+          format: date-time
+        contactId:
+          type: integer
+          format: int64
+        name:
+          type: string
+          pattern: '^[ -~]+$'
+    ApplicationCreationDto:
+      type: object
+      properties:
+        basin:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        applicationTypeCode:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+          x-message-name: Application Type Code
+        applicationTypeDescription:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 70
+          x-message-name: Application Type Description
+        dateTimeReceived:
+          type: string
+          format: date-time
+          x-message-name: Date and Time Received
+        contactIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+      required:
+        - basin
+        - applicationTypeCode
+        - dateTimeReceived
+        - contactIds
+    ApplicationUpdateDto:
+      type: object
+      properties:
+        basin:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        applicationTypeCode:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+          x-message-name: Application Type Code
+        applicationTypeDescription:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 70
+          x-message-name: Application Type Description
+        dateTimeReceived:
+          type: string
+          format: date-time
+          x-message-name: Date and Time Received
+      required:
+        - basin
+        - applicationTypeCode
+        - dateTimeReceived
+    ApplicationDto:
+      type: object
+      properties:
+        basin:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        applicationId:
+          type: integer
+          format: int64
+        applicationTypeCode:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+          x-message-name: Application Type Code
+        applicationTypeDescription:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 70
+          x-message-name: Application Type Description
+        issued:
+          type: string
+          format: date-time
+        reissued:
+          type: string
+          format: date-time
+        hasAutoCompleteCode:
+          type: boolean
+          x-message-name: Has Autocomplete '#/components/schemas/ApplicationOwnerSearchPageDto'
+        hasGeocode:
+          type: boolean
+        caseReport:
+          type: boolean
+        dateTimeReceived:
+          type: string
+          format: date-time
+          x-message-name: Date and Time Received
+        filingFee:
+          type: number
+          format: float
+          x-message-name: Filing Fee
+        feeStatus:
+          type: string
+        applicants:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicantDto'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventDto'
+        officeId:
+          type: number
+
+    ApplicationAutoCompleteDto:
+      type: object
+      properties:
+        waterRightId:
+          type: integer
+          format: int64
+    EventDto:
+      type: object
+      properties:
+        typeCode:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        date:
+          type: string
+          format: date-time
+        responseDueDate:
+          type: string
+          format: date-time
+          x-message-name: Response Due Date
+        comment:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 800
+    RelatedApplicationPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/RelatedApplicationSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedApplicationDto'
+    RelatedApplicationSortColumn:
+      type: string
+      enum: [ APPLICATIONID, TYPEDESCRIPTION, DATERECEIVED ]
+      default: DATERECEIVED
+    RelatedApplicationDto:
+      type: object
+      properties:
+        applicationId:
+          type: integer
+          format: int64
+          x-message-name: Application ID SEQ
+        typeCode:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        typeDescription:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 50
+        dateReceived:
+          type: string
+          format: date
+    ApplicationSortColumn:
+      type: string
+      enum: [ BASIN, APPLICATIONID, APPLICATIONTYPECODE, APPLICATIONTYPEDESCRIPTION, DATETIMERECEIVED ]
+      default: APPLICATIONID
+    ApplicationOwnerSortColumn:
+      type: string
+      enum: [ CONTACTID, OWNERNAME ]
+      default: CONTACTID
+    OwnerApplicationSortColumn:
+      type: string
+      enum: [ APPLICATIONID, BASIN, APPLICATIONTYPECODE, APPLICATIONTYPEDESCRIPTION, DATETIMERECEIVED, REPCONTACTID, REPNAME ]
+      default: APPLICATIONID
+    ApplicationRepSortColumn:
+      type: string
+      enum: [ REPCONTACTID, REPNAME ]
+      default: REPCONTACTID
+    RepApplicationSortColumn:
+      type: string
+      enum: [ APPLICATIONID, BASIN, APPLICATIONTYPECODE, APPLICATIONTYPEDESCRIPTION, DATETIMERECEIVED, CONTACTID, NAME]
+      default: APPLICATIONID
+  parameters:
+    application-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/ApplicationSortColumn'
+    application-owner-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/ApplicationOwnerSortColumn'
+    owner-application-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/OwnerApplicationSortColumn'
+    application-rep-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/ApplicationRepSortColumn'
+    rep-application-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/RepApplicationSortColumn'
+    related-application-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/RelatedApplicationSortColumn'
+    basin:
+      name: basin
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    application-id:
+      name: applicationId
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    application-type-code:
+      name: applicationTypeCode
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    owner-contact-id:
+      name: ownerContactId
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    owner-last-name:
+      name: ownerLastName
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    owner-first-name:
+      name: ownerFirstName
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    rep-contact-id:
+      name: repContactId
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    rep-last-name:
+      name: repLastName
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    rep-first-name:
+      name: repFirstName
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'

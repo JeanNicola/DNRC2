@@ -1,0 +1,47 @@
+.selected-application-fields {
+  display: flex;
+
+  > div {
+    margin-right: 10px;
+  }
+}
+
+.selected-application-fields {
+  flex-wrap: wrap;
+}
+
+.selected-application-field {
+  width: 40%;
+}
+
+.selected-application-field:last-child {
+  width: 100%;
+}
+
+.update-sub-title {
+  font-weight: 500;
+}
+
+.search-application {
+  display: flex;
+  align-items: center;
+  padding-bottom: 1.34375em;
+
+  > div {
+    width: -webkit-fill-available;
+    margin-right: 10px;
+    ::ng-deep {
+      .mat-form-field-wrapper {
+        padding-bottom: 0;
+      }
+    }
+  }
+}
+
+.selected-applications-container {
+  display: flex;
+
+  button {
+    margin-top: 10px;
+  }
+}

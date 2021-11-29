@@ -1,0 +1,21 @@
+.one-lined {
+    display:flex;
+    gap: 0 16px;
+    flex-wrap: wrap;
+}
+
+::ng-deep .checkbox-container {
+    padding-top: 17px;
+}
+
+.form-field {
+    display:flex;
+}
+
+.data-message {
+    text-align: center;
+}
+
+.create-form > div:first-child {
+    margin-top: 16px;
+}

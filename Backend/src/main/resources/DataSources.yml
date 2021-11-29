@@ -1,0 +1,744 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /data-sources/{pexmId}:
+    get:
+      summary: search one Data Source
+      operationId: getDataSourceDetails
+      parameters:
+        - in: path
+          name: pexmId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: a Data Source record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataSourceDto'
+    put:
+      summary: Change an existing Data Source
+      operationId: updateDataSource
+      parameters:
+        - in: path
+          name: pexmId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Pou Examination Id
+      requestBody:
+        description: The Data Source changes
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataSourceCreationDto'
+      responses:
+        200:
+          description: The changed Data Source
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataSourceDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Examination or Data Source not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /data-sources/{pexmId}/exam-info-values:
+    get:
+      summary: get exam info values of a Data Source
+      operationId: getExamInfoValues
+      parameters:
+        - in: path
+          name: pexmId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Exam Info Values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllReferencesDto'
+  /data-sources/{pexmId}/usgs-quads:
+    get:
+      summary: get all usgs quad maps of a Data Source
+      operationId: getUsgsQuadMaps
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/usgs-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/data-source-id'
+      responses:
+        200:
+          description: page of usgs quads
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsgsPageDto'
+        404:
+          description: Usgs not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: Create Usgs Quad Map for a Data Source
+      operationId: createUsgsQuadMap
+      parameters:
+        - in: path
+          name: pexmId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Data Source Id
+      requestBody:
+        description: a new Usgs Quad Map
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsgsCreationDto'
+      responses:
+        201:
+          description: the new Usgs Quad Map
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsgsDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Data Source not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /data-sources/{pexmId}/usgs-quads/{utmpId}:
+    delete:
+      summary: Delete Usgs Quad Map from a Data Source
+      operationId: deleteUsgsQuadMap
+      parameters:
+        - in: path
+          name: pexmId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Pou Examination Id
+        - in: path
+          name: utmpId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Usgs Id
+      responses:
+        204:
+          description: Usgs deleted
+        404:
+          description: Data Source or Usgs Quad Map not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /data-sources/{pexmId}/aerial-photos:
+    get:
+      summary: get all aerial photos of a Data Source
+      operationId: getAerialPhotos
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/aerial-photo-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/data-source-id'
+      responses:
+        200:
+          description: page of Aerial Photos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AerialPhotoPageDto'
+        404:
+          description: Data Source not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: Create Aerial Photo for a Data Source
+      operationId: createAerialPhoto
+      parameters:
+        - $ref: '#/components/parameters/data-source-id'
+      requestBody:
+        description: a new Aerial Photo
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AerialPhotoCreationDto'
+      responses:
+        201:
+          description: the new Aerial Photo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AerialPhotoDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Data Source not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /data-sources/{pexmId}/aerial-photos/{aerialId}:
+    put:
+      summary: Change an existing Aerial Photo
+      operationId: updateAerialPhoto
+      parameters:
+        - $ref: '#/components/parameters/data-source-id'
+        - $ref: '#/components/parameters/aerial-id'
+      requestBody:
+        description: The Aerial Photo changes
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AerialPhotoCreationDto'
+      responses:
+        200:
+          description: The changed Aerial Photo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AerialPhotoDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Data Source or Aerial Photo not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete Aerial Photo from a Data Source
+      operationId: deleteAerialPhoto
+      parameters:
+        - $ref: '#/components/parameters/data-source-id'
+        - $ref: '#/components/parameters/aerial-id'
+      responses:
+        204:
+          description: Aerial Photo deleted
+        404:
+          description: Data Source or Aerial Photo not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /data-sources/{pexmId}/water-resource-surveys:
+    get:
+      summary: get all Water Resource Surveys of a Data Source
+      operationId: getWaterSurveys
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-survey-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/data-source-id'
+      responses:
+        200:
+          description: page of Water Resource Surveys
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterResourceSurveyPageDto'
+        404:
+          description: Data Source not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: Create Water Resource Survey for a Data Source
+      operationId: createWaterSourceSurvey
+      parameters:
+        - $ref: '#/components/parameters/data-source-id'
+      requestBody:
+        description: a new Water Resource Survey
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaterResourceSurveyCreationDto'
+      responses:
+        201:
+          description: the new Water Resource Survey
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterResourceSurveyDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Data Source not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /data-sources/{pexmId}/parcels:
+    get:
+      summary: get all Parcels of a Data Source
+      operationId: getParcels
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/parcel-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/data-source-id'
+      responses:
+        200:
+          description: page of Parcels
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParcelPageDto'
+        404:
+          description: Data Source not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /data-sources/{pexmId}/parcels/{placeId}:
+    put:
+      summary: Change an existing Parcel
+      operationId: updateParcel
+      parameters:
+        - $ref: '#/components/parameters/data-source-id'
+        - $ref: '#/components/parameters/place-id'
+      requestBody:
+        description: The Parcel changes
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParcelUpdateDto'
+      responses:
+        200:
+          description: The changed Parcel
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParcelDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Data Source or Parcel not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete Parcel from a Data Source
+      operationId: deleteParcel
+      parameters:
+        - $ref: '#/components/parameters/data-source-id'
+        - $ref: '#/components/parameters/place-id'
+      responses:
+        204:
+          description: Parcel deleted
+        404:
+          description: Data Source or Parcel not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /data-sources/{pexmId}/water-resource-surveys/{surveyId}:
+    delete:
+      summary: Delete Water Resource Survey from a Data Source
+      operationId: deleteWaterResourceSurvey
+      parameters:
+        - $ref: '#/components/parameters/data-source-id'
+        - $ref: '#/components/parameters/survey-id'
+      responses:
+        204:
+          description: Water Resource Survey deleted
+        404:
+          description: Data Source or Water Resource Survey not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /data-sources/{pexmId}/populate-parcel-records:
+    post:
+      summary: Populate Parcels into Data Source
+      operationId: populateParcels
+      parameters:
+        - $ref: '#/components/parameters/data-source-id'
+      responses:
+        201:
+          description: Parcels were created
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Data Source not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    UsgsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/UsgsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsgsDto'
+    AerialPhotoPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/AerialPhotoSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AerialPhotoDto'
+    WaterResourceSurveyPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterResourceSurveySortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WaterResourceSurveyDto'
+    UsgsCreationDto:
+      type: object
+      properties:
+        utmpId:
+          type: integer
+          format: int64
+    ParcelPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/ParcelSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParcelDto'
+    ParcelDto:
+      type: object
+      properties:
+        placeId:
+          type: integer
+          format: int64
+        acreage:
+          type: number
+          multipleOf: 0.01
+        examinedAcreage:
+          type: number
+          multipleOf: 0.01
+        legalId:
+          type: integer
+          format: int64
+        countyId:
+          type: integer
+          format: int64
+        completeLegalLandDescription:
+          type: string
+        governmentLot:
+          type: integer
+          format: int64
+        description40:
+          type: string
+        description80:
+          type: string
+        description160:
+          type: string
+        description320:
+          type: string
+        section:
+          type: integer
+          format: int64
+        township:
+          type: integer
+          format: int64
+        townshipDirection:
+          type: string
+        range:
+          type: integer
+          format: int64
+        rangeDirection:
+          type: string
+        examInfo:
+          type: string
+        surveyId:
+          type: integer
+          format: int64
+        aerialId:
+          type: integer
+          format: int64
+    ParcelUpdateDto:
+      type: object
+      properties:
+        examinedAcreage:
+          type: number
+          multipleOf: 0.01
+        surveyId:
+          type: integer
+          format: int64
+        aerialId:
+          type: integer
+          format: int64
+    UsgsDto:
+      type: object
+      properties:
+        utmpId:
+          type: integer
+          format: int64
+        pexmId:
+          type: integer
+          format: int64
+        examinationId:
+          type: integer
+          format: int64
+        name:
+          type: string
+    WaterResourceSurveyDto:
+      type: object
+      properties:
+        surveyId:
+          type: integer
+          format: int64
+        pexmId:
+          type: integer
+          format: int64
+        examinationId:
+          type: integer
+          format: int64
+        countyId:
+          type: integer
+          format: int64
+        countyName:
+          type: string
+        year:
+          type: number
+    WaterResourceSurveyCreationDto:
+      type: object
+      properties:
+        surveyId:
+          type: integer
+          format: int64
+    AerialPhotoDto:
+      type: object
+      properties:
+        aerialId:
+          type: integer
+          format: int64
+        pexmId:
+          type: integer
+          format: int64
+        examinationId:
+          type: integer
+          format: int64
+        typeCode:
+          type: string
+        aerialPhotoNumber:
+          type: string
+        aerialPhotoDate:
+          type: string
+    AerialPhotoCreationDto:
+      type: object
+      properties:
+        typeCode:
+          type: string
+        aerialPhotoNumber:
+          type: string
+        aerialPhotoDate:
+          type: string
+      required:
+        - typeCode
+        - aerialPhotoNumber
+        - aerialPhotoDate
+    UsgsSortColumn:
+      type: string
+      enum: [NAME]
+      default: NAME
+    ParcelSortColumn:
+      type: string
+      enum: [PLACEID, ACREAGE, EXAMINEDACREAGE, COUNTYID, COMPLETELEGALLANDDESCRIPTION]
+      default: PLACEID
+    AerialPhotoSortColumn:
+      type: string
+      enum: [TYPECODE, AERIALPHOTONUMBER, AERIALPHOTODATE]
+      default: TYPECODE
+    WaterResourceSurveySortColumn:
+      type: string
+      enum: [COUNTYNAME, YEAR]
+      default: COUNTYNAME
+  parameters:
+    data-source-id:
+      name: pexmId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: The Data Source Id
+      required: true
+    aerial-id:
+      name: aerialId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: The Aerial Id
+      required: true
+    place-id:
+      name: placeId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: The Place Id
+      required: true
+    survey-id:
+      name: surveyId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: The Water Resource Survey Id
+      required: true
+    usgs-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/UsgsSortColumn'
+    water-survey-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterResourceSurveySortColumn'
+    parcel-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/ParcelSortColumn'
+    aerial-photo-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/AerialPhotoSortColumn'

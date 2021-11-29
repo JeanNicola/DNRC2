@@ -1,0 +1,52 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 10px 20px;
+
+  .label {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.6);
+    padding-bottom: 4px;
+    white-space: break-spaces;
+  }
+}
+
+.mat-form-field:focus ::ng-deep .mat-form-field-flex .mat-form-field-outline {
+  opacity: 0;
+  transition: opacity 600ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.mat-form-field:focus
+  ::ng-deep
+  .mat-form-field-flex
+  .mat-form-field-outline-thick {
+  opacity: 1;
+}
+
+.mat-form-field:focus {
+  outline: none;
+}
+
+.remove-padding {
+  padding-bottom: 0;
+}
+
+.remove-padding ::ng-deep .mat-form-field-wrapper {
+  padding-bottom: 0;
+}
+
+mat-form-field {
+  width: -webkit-fill-available;
+  width: -moz-available;
+}
+
+.counter-btn {
+  background-color: white;
+  color: black;
+}
+
+.counter-btn.active {
+  opacity: 1;
+}

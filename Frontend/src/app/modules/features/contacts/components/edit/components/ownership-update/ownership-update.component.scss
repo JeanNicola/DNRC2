@@ -1,0 +1,22 @@
+.ownership-update-container {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.ownership-update-subcontainer {
+  width: -webkit-fill-available;
+  width: -moz-available;
+  display: flex;
+  justify-content: space-around;
+  margin-top: -30px;
+}
+
+.affected-water-rights-container {
+  width: 60%;
+  margin-right: 20px;
+}
+
+.affected-applications-container {
+  width: 38%;
+}

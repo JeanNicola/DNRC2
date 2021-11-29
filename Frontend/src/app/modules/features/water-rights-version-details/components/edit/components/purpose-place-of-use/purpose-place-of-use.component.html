@@ -1,0 +1,45 @@
+<div class="vol-acres-container">
+  <div class="child">
+    <app-max-volume
+      [canEdit]="canEdit"
+      [isDecreed]="headerData?.isDecreed"
+      [isEditableIfDecreed]="headerData?.isEditableIfDecreed"
+      [has645Application]="has645Application"
+      [versionNumber]="versionNumber"
+      [waterRightTypeCode]="waterRightTypeCode"
+      [waterRightStatusCode]="waterRightStatusCode"
+      [idArray]="idArray"
+      [reloadData]="reloadVolumeAndAcreage.asObservable()"
+    ></app-max-volume>
+  </div>
+
+  <div class="child">
+    <app-max-acres
+      [canEdit]="canEdit"
+      [isDecreed]="headerData?.isDecreed"
+      [isEditableIfDecreed]="headerData?.isEditableIfDecreed"
+      [idArray]="idArray"
+      [waterRightTypeCode]="waterRightTypeCode"
+      [waterRightStatusCode]="waterRightStatusCode"
+      [reloadData]="reloadVolumeAndAcreage.asObservable()"
+    ></app-max-acres>
+  </div>
+</div>
+
+<div class="purpose-table-container">
+  <app-purposes-table
+    (dataChanged)="reloadVolumeAndAcreage.next(null)"
+    [canEdit]="canEdit"
+    [isDecreed]="headerData?.isDecreed"
+    [isEditableIfDecreed]="headerData?.isEditableIfDecreed"
+    [applicationTypeCodes]="applicationTypeCodes"
+    [waterRightNumber]="waterRightNumber"
+    [waterRightTypeCode]="waterRightTypeCode"
+    [waterRightStatusCode]="waterRightStatusCode"
+    [basin]="basin"
+    [ext]="ext"
+    [versionNumber]="versionNumber"
+    [waterRightId]="waterRightId"
+  >
+  </app-purposes-table>
+</div>

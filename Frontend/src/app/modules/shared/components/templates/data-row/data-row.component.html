@@ -1,0 +1,51 @@
+<div
+  class="data-row"
+  [ngClass]="title ? 'row-with-title' : ''"
+  [ngStyle]="containerStyles"
+>
+  <div *ngIf="title" class="row-title">
+    <span [ngStyle]="titleStyles">{{ title }}</span>
+
+    <ng-template ngFor let-button [ngForOf]="rowButtons" let-i="index">
+      <button
+        *ngIf="button?.position == buttonPositions.TOP_RIGHT_CORNER"
+        [ngStyle]="button.styles"
+        mat-raised-button
+        color="primary"
+        [disabled]="button?.disabled"
+        [matTooltip]="button?.tooltip"
+        (click)="button.onClick ? button.onClick($event) : null"
+      >
+        {{ button?.title }}
+      </button>
+    </ng-template>
+  </div>
+  <ng-container *ngIf="data">
+    <ng-container *ngFor="let item of columns">
+      <shared-data-row-field
+        *ngIf="item.displayInTable != null ? item.displayInTable : true"
+        [field]="item"
+        [dataValue]="displayData[item.columnId]"
+        (click)="clickCell(item)"
+      ></shared-data-row-field>
+    </ng-container>
+
+    <!-- Button Action -->
+    <div class="data-row-actions">
+      <button
+        #editButton
+        *ngIf="showEdit"
+        mat-mini-fab
+        color="primary"
+        matTooltip="Edit"
+        (click)="onEdit()"
+        [disabled]="!permissions.canPUT || disableEdit"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
+  </ng-container>
+  <div class="loading" *ngIf="!data && showLoading">
+    <h2>{{ dataMessage }}</h2>
+  </div>
+</div>

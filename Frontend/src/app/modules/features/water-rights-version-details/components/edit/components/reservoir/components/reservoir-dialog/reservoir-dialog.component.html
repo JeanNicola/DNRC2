@@ -1,0 +1,149 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content>
+  <form [formGroup]="formGroup" (keyup)="keyPress($event)">
+    <div class="input-form">
+      <!-- Name and POD ID -->
+      <div class="one-lined">
+        <div
+          class="form-field lined"
+          *ngFor="let field of displayFirstFields; let i = index"
+        >
+          <shared-data-form-field
+            [mode]="mode"
+            [field]="field"
+            [value]="data?.values !== null ? data.values[field.columnId] : null"
+            (shiftTabEvent)="receiveShiftTab($event, i)"
+            (changeEvent)="_onChange($event)"
+            (blurEvent)="_onBlur($event)"
+          >
+          </shared-data-form-field>
+        </div>
+      </div>
+      <div class="one-lined">
+        <div
+          class="form-field lined"
+          *ngFor="let field of displaySecondFields; let i = index"
+        >
+          <shared-data-form-field
+            [mode]="mode"
+            [field]="field"
+            [value]="data?.values !== null ? data.values[field.columnId] : null"
+            (shiftTabEvent)="receiveShiftTab($event, i)"
+            (changeEvent)="_onChange($event)"
+            (blurEvent)="_onBlur($event)"
+          >
+          </shared-data-form-field>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <!-- Capacities, depth, height, surface area and elevation -->
+      <h3>Reservoir Properties</h3>
+      <div class="one-lined">
+        <div
+          class="form-field"
+          *ngFor="
+            let field of displayFirstReservoirCharacteristicFields;
+            let i = index
+          "
+        >
+          <shared-data-form-field
+            [mode]="mode"
+            [field]="field"
+            [value]="data?.values !== null ? data.values[field.columnId] : null"
+            (shiftTabEvent)="receiveShiftTab($event, i)"
+            (changeEvent)="_onChange($event)"
+            (blurEvent)="_onBlur($event)"
+          >
+          </shared-data-form-field>
+        </div>
+      </div>
+      <div class="one-lined">
+        <div
+          class="form-field"
+          *ngFor="
+            let field of displaySecondReservoirCharacteristicFields;
+            let i = index
+          "
+        >
+          <shared-data-form-field
+            [mode]="mode"
+            [field]="field"
+            [value]="data?.values !== null ? data.values[field.columnId] : null"
+            (shiftTabEvent)="receiveShiftTab($event, i)"
+            (changeEvent)="_onChange($event)"
+            (blurEvent)="_onBlur($event)"
+          >
+          </shared-data-form-field>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <h3>Legal Land Description</h3>
+      <div>
+        <div class="one-lined">
+          <div
+            class="form-field"
+            *ngFor="
+              let field of displayFirstLegalLandDescriptionFields;
+              let i = index
+            "
+          >
+            <shared-data-form-field
+              [mode]="mode"
+              [field]="field"
+              [value]="
+                data?.values !== null ? data.values[field.columnId] : null
+              "
+              (shiftTabEvent)="receiveShiftTab($event, i)"
+              (changeEvent)="_onChange($event)"
+              (blurEvent)="_onBlur($event)"
+            >
+            </shared-data-form-field>
+          </div>
+        </div>
+        <div class="one-lined">
+          <div
+            class="form-field"
+            *ngFor="
+              let field of displaySecondLegalLandDescriptionFields;
+              let i = index
+            "
+          >
+            <shared-data-form-field
+              [mode]="mode"
+              [field]="field"
+              [value]="
+                data?.values !== null ? data.values[field.columnId] : null
+              "
+              (shiftTabEvent)="receiveShiftTab($event, i)"
+              (changeEvent)="_onChange($event)"
+              (blurEvent)="_onBlur($event)"
+            >
+            </shared-data-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <button
+    (click)="save()"
+    [matTooltip]="tooltip"
+    mat-mini-fab
+    color="primary"
+    [disabled]="!formGroup.valid || (!formGroup.dirty && mode !== 'search')"
+  >
+    <mat-icon>done</mat-icon>
+  </button>
+  <button
+    (click)="close()"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>

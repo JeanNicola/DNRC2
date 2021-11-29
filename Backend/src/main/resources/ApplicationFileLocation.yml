@@ -1,0 +1,538 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /applications/{applicationId}/office:
+    get:
+      summary: get the responsible office
+      operationId: getResponsibleOffice
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: the responsible office for the application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsibleOfficeDto'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: change the Responsible Office
+      operationId: editApplicationResponsibleOffice
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated office
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResponsibleOfficeDto'
+      responses:
+        200:
+          description: The new Office
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsibleOfficeDto'
+  /applications/{applicationId}/processor:
+    get:
+      summary: get the current processor 
+      operationId: getApplicationProcessor
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: the processor for the application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessorDto'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: change the Processor
+      operationId: editApplicationProcessor
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated Processor
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessorDto'
+      responses:
+        200:
+          description: The new Processor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessorDto'
+  /applications/{applicationId}/locations:
+    get:
+      summary: get a page of offices
+      operationId: getApplicationOffices
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/office-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+      responses:
+        200:
+          description: the offices for the application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficePageDto'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: attach a new office
+      operationId: addApplicationOffice
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new office
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfficeCreationDto'
+      responses:
+        201:
+          description: The new Office
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficeDto'
+  /applications/{applicationId}/locations/{officeXrefId}:
+    put:
+      summary: edit an attached office
+      operationId: editApplicationOffice
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: officeXrefId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated office
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfficeDto'
+      responses:
+        200:
+          description: The new Office
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficeDto'
+    delete:
+      summary: delete an attached office
+      operationId: deleteApplicationOffice
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: officeXrefId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: The office was deleted
+  /applications/{applicationId}/staff:
+    get:
+      summary: get a page of staff
+      operationId: getApplicationStaff
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/staff-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+      responses:
+        200:
+          description: the staff for the application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffPageDto'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: attach a new staff member
+      operationId: addApplicationStaff
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new staff member
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffCreationDto'
+      responses:
+        201:
+          description: The new Staff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffDto'
+  /applications/{applicationId}/staff/{staffXrefId}:
+    put:
+      summary: edit an attached staff
+      operationId: editApplicationStaff
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: staffXrefId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated staff
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffDto'
+      responses:
+        200:
+          description: The updated Office
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffDto'
+    delete:
+      summary: delete an attached staff
+      operationId: deleteApplicationStaff
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: staffXrefId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: The staff member was removed
+  /offices/all:
+    get:
+      summary: get all the Offices
+      operationId: getAllOffices
+      responses:
+        200:
+          description: all the available offices
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllOfficesDto'
+  /staff/all:
+    get:
+      summary: get all the Staff Members
+      operationId: getAllStaff
+      responses:
+        200:
+          description: all the staff members
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllStaffDto'
+components:
+  schemas:
+    ResponsibleOfficeDto:
+      type: object
+      properties:
+        office:
+          type: string
+          pattern: '^[ -~]*$'
+        officeId:
+          type: integer
+          format: int64
+    ProcessorDto:
+      type: object
+      properties:
+        office:
+          type: string
+          pattern: '^[ -~]*$'
+        officeId:
+          type: integer
+          format: int64
+        staff:
+          type: string
+          pattern: '^[ -~]*$'
+        staffId:
+          type: integer
+          format: int64
+      required:
+        - officeId
+        - staffId
+    OfficePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/OfficeSortColumn'
+        canInsert:
+          type: boolean
+        latestSentDate:
+          type: string
+          format: date
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OfficeDto'
+    OfficeDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        officeId:
+          type: integer
+          format: int64
+        officeDescription:
+          type: string
+          pattern: '^[ -~]*$'
+        receivedDate:
+          type: string
+          format: date
+        sentDate:
+          type: string
+          format: date
+        notes:
+          type: string
+        isSystemGenerated:
+          type: boolean
+      required:
+        - id
+        - officeId
+    StaffPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/StaffSortColumn'
+        canInsert:
+          type: boolean
+        latestEndDate:
+          type: string
+          format: date
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffDto'
+    StaffDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        staffId:
+          type: integer
+          format: int64
+        name:
+          type: string
+          pattern: '^[ -~]*$'
+        beginDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        isSystemGenerated:
+          type: boolean
+      required:
+        - id
+        - staffId
+        - beginDate
+    AllOfficesDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OfficeDropdownDto'
+    OfficeDropdownDto:
+      type: object
+      properties:
+        officeId:
+          type: integer
+          format: int64
+        description:
+          type: string
+    AllStaffDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffDropdownDto'
+    StaffDropdownDto:
+      type: object
+      properties:
+        staffId:
+          type: integer
+          format: int64
+        name:
+          type: string
+    OfficeCreationDto:
+      type: object
+      properties:
+        officeId:
+          type: integer
+          format: int64
+        officeDescription:
+          type: string
+          pattern: '^[ -~]*$'
+        receivedDate:
+          type: string
+          format: date
+      required:
+        - officeId
+    StaffCreationDto:
+      type: object
+      properties:
+        staffId:
+          type: integer
+          format: int64
+        name:
+          type: string
+          pattern: '^[ -~]*$'
+        beginDate:
+          type: string
+          format: date
+      required:
+        - staffId
+        - beginDate
+    OfficeSortColumn:
+      type: string
+      enum: [OFFICEDESCRIPTION, RECEIVEDDATE, SENTDATE]
+      default: SENTDATE
+    StaffSortColumn:
+      type: string
+      enum: [STAFFDESCRIPTION, BEGINDATE, ENDDATE]
+      default: ENDDATE
+  parameters:
+    office-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/OfficeSortColumn'
+    staff-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/StaffSortColumn'

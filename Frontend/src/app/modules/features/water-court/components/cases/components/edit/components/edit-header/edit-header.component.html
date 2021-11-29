@@ -1,0 +1,80 @@
+<div *ngIf="title" class="edit-header-title">{{ title }}</div>
+<div *ngIf="!data && !error; else loaded" class="loading-container">
+  <p class="edit-header-title">Loading...</p>
+</div>
+<ng-template #loaded>
+  <div class="app-edit-header" *ngIf="data && !error; else failed">
+    <div class="data-row">
+      <ng-container *ngFor="let item of displayedColumns">
+        <div
+          [ngClass]="{
+            'expired-issued-date-field':
+              item.columnId === 'decreeIssueDate' && issuedDateIsExpired
+          }"
+          *ngIf="
+            (data.programType === programTypes.NA_PROGRAM &&
+              naAvailableColumns.includes(item.columnId)) ||
+            (data.programType === programTypes.WC_PROGRAM &&
+              wcAvailableColumns.includes(item.columnId)) ||
+            generalColumns.includes(item.columnId)
+          "
+        >
+          <shared-data-row-field
+            [inputStyles]="{ whiteSpace: 'normal', overflow: 'auto' }"
+            [field]="item"
+            [dataValue]="data[item.columnId]"
+            [removePadding]="true"
+            (keydown.enter)="onFieldDblClickHandler(item)"
+            (keydown.space)="onFieldDblClickHandler(item)"
+            (dblclick)="onFieldDblClickHandler(item)"
+          ></shared-data-row-field>
+        </div>
+      </ng-container>
+    </div>
+    <!-- Button Action -->
+    <div class="data-row-actions">
+      <app-reports-button
+        class="data-row-actions"
+        [data]="data"
+        [reportConfig]="reports"
+        [title]="reportTitle"
+      ></app-reports-button>
+      <button
+        #editButton
+        mat-mini-fab
+        color="primary"
+        matTooltip="Edit Case/Hearing"
+        (click)="onEdit()"
+        [disabled]="!permissions.canPUT"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button
+        #firstInsert
+        mat-mini-fab
+        color="primary"
+        matTooltip="Add Case/Hearing"
+        (click)="onInsert()"
+        [disabled]="!permissions.canPOST"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+      <button
+        mat-mini-fab
+        color="warn"
+        matTooltip="Delete Case/Hearing"
+        (click)="onDelete()"
+        [disabled]="!permissions.canDELETE"
+        #deleteButtons
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #failed>
+  <div class="loading-container">
+    <p class="edit-header-title">Case/Hearing not found.</p>
+  </div>
+</ng-template>

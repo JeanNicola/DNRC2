@@ -1,0 +1,245 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /water-rights/{waterRightId}/geocodes:
+    get:
+      summary: Get a page of Water Right Geocodes
+      operationId: getWaterRightGeocodes
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-geocode-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+        - $ref: '#/components/parameters/water-right-id'
+      responses:
+        200:
+          description: The page of Water Right Geocodes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightGeocodePageDto'
+    post:
+      summary: Attach Geocodes to a Water Right
+      operationId: addWaterRightGeocodes
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+      requestBody:
+        description: The new Geocodes
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaterRightGeocodesCreationDto'
+      responses:
+        204:
+          description: successful creation
+        404:
+          description: bad request, duplicates, incorrect geocodes, etc.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        409:
+          description: conflict, bad water right id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Remove invalid Geocodes attached to a Water Right
+      operationId: deleteInvalidWaterRightGeocodes
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+      responses:
+        204:
+          description: successful removal
+  /water-rights/{waterRightId}/geocodes/{xrefId}:
+    put:
+      summary: Edit a Geocode attached to a Water Right
+      operationId: editWaterRightGeocode
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - in: path
+          name: xrefId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated Geocode 
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaterRightGeocodeDto'
+      responses:
+        200:
+          description: successful removal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightGeocodeDto'
+        404:
+          description: this geocode doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Remove a Geocode attached to a Water Right
+      operationId: deleteWaterRightGeocode
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - in: path
+          name: xrefId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: successful removal
+  /water-rights/{waterRightId}/geocodes/unresolve:
+    post:
+      summary: Unresolve all Geocodes attached to this water right
+      operationId: unresolveWaterRightGeocodes
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+      responses:
+        204:
+          description: successful
+  /water-rights/{waterRightId}/geocodes/sever:
+    post:
+      summary: Sever all Geocodes attached to this water right
+      operationId: severWaterRightGeocodes
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+      responses:
+        204:
+          description: successful
+components:
+  schemas:
+    WaterRightGeocodeDto:
+      type: object
+      properties:
+        xrefId:
+          type: integer
+          format: int64
+        geocodeId:
+          type: string
+        formattedGeocode:
+          type: string
+        beginDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        valid:
+          type: boolean
+        comments:
+          type: string
+          pattern: '^[ -~\n]*$'
+          maxLength: 4000
+        unresolved:
+          type: boolean
+        sever:
+          type: boolean
+        createdDate:
+          type: string
+          format: date
+          x-message-name: Date Created
+        createdBy:
+          type: string
+          x-message-name: The Staff Member who created this
+        modifiedDate:
+          type: string
+          format: date
+          x-message-name: Date Last Modified
+        modifiedBy:
+          type: string
+          x-message-name: The Staff Member who last modified this
+      required:
+        - beginDate
+    WaterRightGeocodePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightGeocodeSortColumn'
+        allUnresolved:
+          type: boolean
+        allSevered:
+          type: boolean
+        allValid:
+          type: boolean
+        geocodeUrl:
+          type: string
+        nrisUrl:
+          type: string
+        mapVersionNumber:
+          type: integer
+          format: int64
+        results:
+          type: array
+          items:
+            $ref: 'WaterRightGeocodeDto'
+    WaterRightGeocodesCreationDto:
+      type: object
+      properties:
+        newGeocodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/WaterRightGeocodeNewDto'
+    WaterRightGeocodeNewDto:
+      type: object
+      properties:
+        geocodeId:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 17
+        beginDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        valid:
+          type: boolean
+        unresolved:
+          type: boolean
+        sever:
+          type: boolean
+        comments:
+          type: string
+          pattern: '^[ -~\n]*$'
+          maxLength: 4000
+      required:
+        - geocodeId
+        - beginDate
+    WaterRightGeocodeSortColumn:
+      type: string
+      enum: [FORMATTEDGEOCODE, BEGINDATE, ENDDATE, VALID, COMMENTS, UNRESOLVED, SEVER]
+      default: ENDDATE
+  parameters:
+    water-right-geocode-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightGeocodeSortColumn'

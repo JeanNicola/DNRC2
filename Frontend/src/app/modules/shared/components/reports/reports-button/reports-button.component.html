@@ -1,0 +1,9 @@
+<button
+mat-mini-fab
+color="primary"
+matTooltip="Reports"
+(click)="openReports()"
+[disabled]="!(availableReports?.length > 0)"
+>
+  <mat-icon>article</mat-icon>
+</button>

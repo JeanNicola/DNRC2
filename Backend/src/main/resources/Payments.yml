@@ -1,0 +1,372 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /applications/{applicationId}/payments:
+    get:
+      summary: get a page of Payments
+      operationId: getPayments
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/payments-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: a page of Payments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentsPageDto'
+    post:
+      summary: add a payment to an Application
+      operationId: createPayment
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new Payment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentDto'
+      responses:
+        201:
+          description: the new PaymentDto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentDto'
+    put:
+      summary: update the Payment Summary
+      operationId: updatePaymentSummary
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new Payment Summary
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentSummaryDto'
+      responses:
+        200:
+          description: the updated PaymentDto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentSummaryDto'
+  /ownership-updates/{ownershipUpdateId}/payments:
+    get:
+      summary: get a page of Payments
+      operationId: getOwnershipUpdatePayments
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/payments-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: a page of Payments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdatePaymentsPageDto'
+    post:
+      summary: add a payment to an Ownership Update
+      operationId: createOwnershipUpdatePayment
+      parameters:
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new Payment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentDto'
+      responses:
+        201:
+          description: the new PaymentDto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentDto'
+  /applications/{applicationId}/payments/{paymentId}:
+    put:
+      summary: update a payment to an Application
+      operationId: updatePayment
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: paymentId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated Payment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentDto'
+      responses:
+        200:
+          description: the updated PaymentDto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentDto'
+    delete:
+      summary: delete a payment to an Application
+      operationId: deletePayment
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: paymentId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: delete PaymentDto
+  /ownership-updates/{ownershipUpdateId}/payments/{paymentId}:
+    put:
+      summary: update a payment to an Ownership Update
+      operationId: updateOwnershipUpdatePayment
+      parameters:
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: paymentId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated Payment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentDto'
+      responses:
+        200:
+          description: the updated PaymentDto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentDto'
+    delete:
+      summary: delete a payment to an Ownership Update
+      operationId: deleteOwnershipUpdatePayment
+      parameters:
+        - in: path
+          name: ownershipUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: paymentId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: delete PaymentDto
+components:
+  schemas:
+    PaymentsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/PaymentSortColumn'
+        results:
+          type: object
+          properties:
+            summary:
+              $ref: '#/components/schemas/PaymentSummaryDto'
+            details:
+              type: array
+              items:
+                $ref: 'PaymentDto'
+    OwnershipUpdatePaymentsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/PaymentSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentDto'
+    PaymentSummaryDto:
+      type: object
+      properties:
+        feeStatus:
+          type: string
+        feeStatusDescription:
+          type: string
+        feeDue:
+          type: number
+          format: double
+        amountPaid:
+          type: number
+          format: double
+        totalDue:
+          type: number
+          format: double
+        feeWaived:
+          type: string
+        feeWaivedDescription:
+          type: string
+        feeWaivedReason:
+          type: string
+          pattern: '^[ -~]*$'
+        feeDiscount:
+          type: string
+        appFeeDiscount:
+          type: number
+          format: double
+        feeDiscountDescription:
+          type: string
+        feeOther:
+          type: string
+        appFeeOther:
+          type: number
+          format: double
+        feeOtherDescription:
+          type: string
+        feeCGWA:
+          type: string
+        appFeeCGWA:
+          type: number
+          format: double
+        feeCGWADescription:
+          type: string
+        canAutoComplete:
+          type: boolean
+          default: false
+          x-message-name: Can Auto Complete
+    PaymentDto:
+      type: object
+      properties:
+        paymentId:
+          type: integer
+          format: int64
+        trackingNumber:
+          type: string
+          maxLength: 14
+          x-message-name: Tracking Number
+        origin:
+          type: string
+        originDescription:
+          type: string
+          x-message-name: Origin
+        datePaid:
+          type: string
+          format: date
+          x-message-name: Date Paid
+        amountPaid:
+          type: number
+          format: double
+          x-message-name: Amount Paid
+      required:
+        - trackingNumber
+        - origin
+        - datePaid
+        - amountPaid
+    AllOriginsDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OriginDto'
+    OriginDto:
+      type: object
+      properties:
+        value:
+          type: string
+        description:
+          type: string
+    PaymentSortColumn:
+      type: string
+      enum: [TRACKINGNUMBER, ORIGIN, DATEPAID, AMOUNTPAID]
+      default: TRACKINGNUMBER
+  parameters:
+    payments-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/PaymentSortColumn'

@@ -1,0 +1,160 @@
+<div *ngIf="data; else loading" style="margin: 10px">
+  <table
+    table-striped
+    table-hover
+    table-active
+    class="mat-elevation-z{{ zHeight }}"
+    mat-table
+    [dataSource]="data"
+    matSort
+    (matSortChange)="onSortData($event)"
+    [matSortActive]="
+      !!primarySortColumn ? primarySortColumn : columns[0].columnId
+    "
+    [matSortDirection]="
+      noSort ? '' : !!primaryDirection ? primaryDirection : 'asc'
+    "
+    matSortDisableClear
+    multiTemplateDataRows
+  >
+    <ng-container *ngFor="let column of columns">
+      <ng-container matColumnDef="{{ column.columnId }}">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          [disabled]="column.noSort || noSort"
+          [ngClass]="isInMain ? 'extraTop' : ''"
+          [width]="column?.width || 'auto'"
+        >
+          {{ column.title }}
+        </th>
+        <td
+          [width]="column?.width || 'auto'"
+          (mouseenter)="
+            column.showCounter ? toggleCounterForRow($event, column) : null
+          "
+          (mouseleave)="
+            column.showCounter ? toggleCounterForRow($event, column) : null
+          "
+          (click)="clickCell(i, column.columnId)"
+          [ngClass]="
+            (column?.showCounter && element[column?.counterRef]) >= 0
+              ? 'counter-container'
+              : ''
+          "
+          [class.icon-container]="column.type.toString() == 'checkbox'"
+          mat-cell
+          *matCellDef="let element; let i = dataIndex"
+        >
+          <div class="cell-container">
+            <span [class.material-icons]="column.type.toString() == 'checkbox'"
+              >{{
+                formatCellText(element[column.columnId], column.type.toString())
+              }}
+            </span>
+            <button
+              class="counter-btn"
+              *ngIf="column?.showCounter && element[column?.counterRef] >= 0"
+              mat-mini-fab
+            >
+              {{ element[column.counterRef] }}
+            </button>
+          </div>
+        </td>
+      </ng-container>
+    </ng-container>
+
+    <!-- Add in the representative column -->
+    <ng-container matColumnDef="representatives">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        [ngClass]="isInMain ? 'extraTop' : ''"
+      >
+        Representatives
+      </th>
+      <td
+        class="table-actions"
+        mat-cell
+        *matCellDef="let element; let i = dataIndex; let row"
+      >
+        <div class="table-row-actions">
+          <button
+            class="rep-btn"
+            mat-mini-fab
+            matTooltip="Open Representatives"
+            (click)="openRepresentatives($event, row)"
+          >
+            {{ row.representativeCount }}
+          </button>
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Add in the row actions -->
+    <ng-container matColumnDef="actions" *ngIf="!hideActions">
+      <th
+        class="table-actions"
+        mat-header-cell
+        *matHeaderCellDef
+        [ngClass]="isInMain ? 'extraTop' : ''"
+      >
+        Actions
+      </th>
+      <td
+        class="table-actions"
+        mat-cell
+        *matCellDef="let element; let i = dataIndex; let row"
+      >
+        <!-- Button Action Column -->
+        <div class="table-row-actions">
+          <button
+            *ngIf="!hideEdit && !row?.hideEdit"
+            mat-mini-fab
+            color="primary"
+            matTooltip="Edit"
+            (click)="editRow($event, i)"
+            [disabled]="!permissions.canPUT"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            *ngIf="
+              !hideDelete && !row?.hideDelete && row.representativeCount == 0
+            "
+            mat-mini-fab
+            color="warn"
+            matTooltip="Delete"
+            (click)="deleteRow($event, i)"
+            [disabled]="!permissions.canDELETE"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container *ngIf="!hideHeader">
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    </ng-container>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns; let i = dataIndex"
+      class="element-row"
+      [tabIndex]="dblClickableRow || expandChildRef ? 0 : -1"
+      [ngClass]="[
+        selectedRow == i && highlightOneRow ? 'selected' : '',
+        clickableRow ? 'pointer' : ''
+      ]"
+      [ngStyle]="selectedRow == i && highlightOneRow ? selectedRowStyles : {}"
+      (click)="row.isExpanded = !row.isExpanded"
+      (dblclick)="dblclickRow($event, i)"
+      (keydown.enter)="dblclickRow($event, i)"
+    ></tr>
+  </table>
+</div>
+
+<ng-template #loading>
+  <div class="loading">Loading...</div>
+</ng-template>

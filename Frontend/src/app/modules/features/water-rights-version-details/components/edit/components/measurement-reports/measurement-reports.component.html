@@ -1,0 +1,23 @@
+<app-reports-table
+  [idArray]="idArray"
+  [isDecreed]="isDecreed"
+  [isEditableIfDecreed]="isEditableIfDecreed"
+  [canEdit]="canEdit && !!operatingAuthorityDate"
+  [operatingAuthorityDate]="operatingAuthorityDate"
+  (selectReport)="onReportSelect($event)"
+></app-reports-table>
+<div class="child-container">
+  <app-measurements-table
+    [idArray]="[idArray[0], idArray[1], selectedReport]"
+    [isDecreed]="isDecreed"
+    [isEditableIfDecreed]="isEditableIfDecreed"
+    [canEdit]="canEdit && !!operatingAuthorityDate"
+    [operatingAuthorityDate]="operatingAuthorityDate"
+  ></app-measurements-table>
+  <app-measurement-variables-table
+    [idArray]="[idArray[0], idArray[1], selectedReport]"
+    [isDecreed]="isDecreed"
+    [isEditableIfDecreed]="isEditableIfDecreed"
+    [canEdit]="canEdit && !!operatingAuthorityDate"
+  ></app-measurement-variables-table>
+</div>

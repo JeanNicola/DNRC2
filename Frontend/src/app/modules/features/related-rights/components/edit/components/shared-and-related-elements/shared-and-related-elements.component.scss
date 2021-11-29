@@ -1,0 +1,12 @@
+.shared-related-elements-container {
+  padding: 16px;
+  display: flex;
+
+  ::ng-deep .mat-card {
+    width: 90%;
+  }
+
+  ::ng-deep .data-row {
+    width: 90%;
+  }
+}

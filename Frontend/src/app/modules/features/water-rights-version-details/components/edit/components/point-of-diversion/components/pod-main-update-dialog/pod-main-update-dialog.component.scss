@@ -1,0 +1,13 @@
+.one-lined {
+    display:flex;
+    gap: 0 16px;
+    flex-wrap: wrap;
+}
+
+::ng-deep .checkbox-container {
+    padding-top: 17px;
+}
+
+.edit-button {
+    margin-top: 9px;
+}

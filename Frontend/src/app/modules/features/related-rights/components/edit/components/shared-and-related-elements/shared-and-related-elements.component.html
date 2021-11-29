@@ -1,0 +1,9 @@
+<div class="shared-related-elements-container">
+  <app-shared-elements [relatedRightId]="relatedRightId"> </app-shared-elements>
+  <app-related-elements
+    style="min-width: 30%; margin-bottom: 10px"
+    [reloadRelatedElements]="reloadRelatedElements"
+    [relatedRightId]="relatedRightId"
+    (relatedElementsChanged)="relatedElementsChanged.emit()"
+  ></app-related-elements>
+</div>

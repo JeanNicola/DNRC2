@@ -1,0 +1,25 @@
+.acreages-header,
+.periods-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.create-sub-title {
+  white-space: nowrap;
+}
+
+.no-data-message {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.purpose-form {
+  min-width: 400px;
+}
+
+.form-field {
+  margin-bottom: 10px;
+}

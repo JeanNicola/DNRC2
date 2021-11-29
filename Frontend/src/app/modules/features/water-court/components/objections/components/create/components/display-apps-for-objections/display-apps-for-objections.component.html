@@ -1,0 +1,35 @@
+<app-data-table
+  *ngIf="appDataFound; else noData"
+  [data]="appRows"
+  [selectedRow]="selectedAppRowIdx"
+  [columns]="appsDisplayColumns"
+  [hideActions]="appHideActions"
+  [hideEdit]="true"
+  [hideDelete]="true"
+  [hideHeader]="appHideHeader"
+  [clickableRow]="appClickableRow"
+  [dblClickableRow]="appDblClickableRow"
+  [highlightOneRow]="true"
+  [isInMain]="false"
+  [primarySortColumn]="appSortColumn"
+  [primaryDirection]="appSortDirection"
+  (sortEvent)="onSortRequest($event)"
+  (rowClickEvent)="onRowClick($event)"
+  (rowDblClickEvent)="onRowDoubleClick($event)"
+>
+</app-data-table>
+
+<mat-paginator
+  *ngIf="appQueryResult && appRows?.length"
+  [length]="appQueryResult.totalElements"
+  [pageIndex]="appQueryParameters.pageNumber - 1"
+  [pageSize]="appQueryResult.pageSize"
+  [pageSizeOptions]="appPageSizeOptions"
+  [showFirstLastButtons]="true"
+  (page)="onPaging($event)"
+>
+</mat-paginator>
+
+<ng-template #noData>
+  <h3 class="data-message">No data found</h3>
+</ng-template>

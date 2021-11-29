@@ -1,0 +1,127 @@
+{{#pattern}}
+  {{^isByteArray}}
+  @Pattern(regexp="{{{pattern}}}", message = {{#vendorExtensions.x-pattern-message}}"{{!
+    }}{{#vendorExtensions.x-message-name}}{{vendorExtensions.x-message-name}}{{/vendorExtensions.x-message-name}}{{!
+    }}{{^vendorExtensions.x-message-name}}{{!
+        }}{{#lambda.titlecase}}{{#name}}{{name}}{{/name}}{{^name}}{{#paramName}}{{paramName}}{{/paramName}}{{/name}}{{/lambda.titlecase}}{{!
+    }}{{/vendorExtensions.x-message-name}} {{vendorExtensions.x-pattern-message}}"{{/vendorExtensions.x-pattern-message}}{{!
+    }}{{^vendorExtensions.x-pattern-message}}"{{!
+    }}{{#vendorExtensions.x-message-name}}{{vendorExtensions.x-message-name}}{{/vendorExtensions.x-message-name}}{{!
+    }}{{^vendorExtensions.x-message-name}}{{!
+        }}{{#lambda.titlecase}}{{#name}}{{name}}{{/name}}{{^name}}{{#paramName}}{{paramName}}{{/paramName}}{{/name}}{{/lambda.titlecase}}{{!
+    }}{{/vendorExtensions.x-message-name}}{{!
+    }} must only include basic letters, numbers and symbols."{{/vendorExtensions.x-pattern-message}})
+  {{/isByteArray}}
+{{/pattern}}
+{{! minLength && maxLength set }}
+{{#minLength}}
+  {{#maxLength}}
+  @Size(min={{minLength}},max={{maxLength}}, message = {{#vendorExtensions.x-length-message}}"{{!
+    }}{{#vendorExtensions.x-message-name}}{{vendorExtensions.x-message-name}}{{/vendorExtensions.x-message-name}}{{!
+    }}{{^vendorExtensions.x-message-name}}{{!
+        }}{{#lambda.titlecase}}{{#name}}{{name}}{{/name}}{{^name}}{{#paramName}}{{paramName}}{{/paramName}}{{/name}}{{/lambda.titlecase}}{{!
+    }}{{/vendorExtensions.x-message-name}} {{vendorExtensions.x-length-message}}"{{/vendorExtensions.x-length-message}}{{!
+    }}{{^vendorExtensions.x-length-message}}"{{!
+    }}{{#vendorExtensions.x-message-name}}{{vendorExtensions.x-message-name}}{{/vendorExtensions.x-message-name}}{{!
+    }}{{^vendorExtensions.x-message-name}}{{!
+      }}{{#lambda.titlecase}}{{#name}}{{name}}{{/name}}{{^name}}{{#paramName}}{{paramName}}{{/paramName}}{{/name}}{{/lambda.titlecase}}{{/vendorExtensions.x-message-name}}{{!
+    }} size must be between {{minLength}} and {{maxLength}}"{{/vendorExtensions.x-length-message}})
+  {{/maxLength}}
+{{/minLength}}
+{{! minLength set, maxLength not }}
+{{#minLength}}
+  {{^maxLength}}
+  @Size(min={{minLength}}, message = {{#vendorExtensions.x-length-message}}"{{!
+    }}{{#vendorExtensions.x-message-name}}{{vendorExtensions.x-message-name}}{{/vendorExtensions.x-message-name}}{{!
+    }}{{^vendorExtensions.x-message-name}}{{!
+        }}{{#lambda.titlecase}}{{#name}}{{name}}{{/name}}{{^name}}{{#paramName}}{{paramName}}{{/paramName}}{{/name}}{{/lambda.titlecase}}{{!
+    }}{{/vendorExtensions.x-message-name}} {{vendorExtensions.x-length-message}}"{{/vendorExtensions.x-length-message}}{{!
+    }}{{^vendorExtensions.x-length-message}}"{{!
+    }}{{#vendorExtensions.x-message-name}}{{vendorExtensions.x-message-name}}{{/vendorExtensions.x-message-name}}{{!
+    }}{{^vendorExtensions.x-message-name}}{{!
+    }}{{#lambda.titlecase}}{{#name}}{{name}}{{/name}}{{^name}}{{#paramName}}{{paramName}}{{/paramName}}{{/name}}{{/lambda.titlecase}}{{/vendorExtensions.x-message-name}}{{!
+    }} size must be more than {{minLength}}"{{/vendorExtensions.x-length-message}})
+  {{/maxLength}}
+{{/minLength}}
+{{! minLength not set, maxLength set }}
+{{^minLength}}
+  {{#maxLength}}
+  @Size(max={{maxLength}}, message = {{#vendorExtensions.x-length-message}}"{{!
+    }}{{#vendorExtensions.x-message-name}}{{vendorExtensions.x-message-name}}{{/vendorExtensions.x-message-name}}{{!
+    }}{{^vendorExtensions.x-message-name}}{{!
+        }}{{#lambda.titlecase}}{{#name}}{{name}}{{/name}}{{^name}}{{#paramName}}{{paramName}}{{/paramName}}{{/name}}{{/lambda.titlecase}}{{!
+    }}{{/vendorExtensions.x-message-name}} {{vendorExtensions.x-length-message}}"{{/vendorExtensions.x-length-message}}{{!
+    }}{{^vendorExtensions.x-length-message}}"{{!
+    }}{{#vendorExtensions.x-message-name}}{{vendorExtensions.x-message-name}}{{/vendorExtensions.x-message-name}}{{!
+    }}{{^vendorExtensions.x-message-name}}{{!
+    }}{{#lambda.titlecase}}{{#name}}{{name}}{{/name}}{{^name}}{{#paramName}}{{paramName}}{{/paramName}}{{/name}}{{/lambda.titlecase}}{{/vendorExtensions.x-message-name}}{{!
+    }} size must be less than {{maxLength}}"{{/vendorExtensions.x-length-message}})
+  {{/maxLength}}
+{{/minLength}}
+{{! @Size: minItems && maxItems set }}
+{{#minItems}}
+  {{#maxItems}}
+  @Size(min={{minItems}},max={{maxItems}}) 
+  {{/maxItems}}
+{{/minItems}}
+{{! @Size: minItems set, maxItems not }}
+{{#minItems}}
+  {{^maxItems}}
+  @Size(min={{minItems}}, message = {{#vendorExtensions.x-length-message}}"{{!
+    }}{{#vendorExtensions.x-message-name}}{{vendorExtensions.x-message-name}}{{/vendorExtensions.x-message-name}}{{!
+    }}{{^vendorExtensions.x-message-name}}{{!
+        }}{{#lambda.titlecase}}{{#name}}{{name}}{{/name}}{{^name}}{{#paramName}}{{paramName}}{{/paramName}}{{/name}}{{/lambda.titlecase}}{{!
+    }}{{/vendorExtensions.x-message-name}} {{vendorExtensions.x-length-message}}"{{/vendorExtensions.x-length-message}}{{!
+    }}{{^vendorExtensions.x-length-message}}"{{!
+    }}{{#vendorExtensions.x-message-name}}{{vendorExtensions.x-message-name}}{{/vendorExtensions.x-message-name}}{{!
+    }}{{^vendorExtensions.x-message-name}}{{!
+    }}{{#lambda.titlecase}}{{#name}}{{name}}{{/name}}{{^name}}{{#paramName}}{{paramName}}{{/paramName}}{{/name}}{{/lambda.titlecase}}{{/vendorExtensions.x-message-name}}{{!
+    }} must be greater than or equal to {{minItems}}"{{/vendorExtensions.x-length-message}})
+  {{/maxItems}}
+{{/minItems}}
+{{! @Size: minItems not set && maxItems set }}
+{{^minItems}}
+  {{#maxItems}}
+  @Size(max={{maxItems}}) 
+  {{/maxItems}}
+{{/minItems}}
+{{! @Email: useBeanValidation set && isEmail && java8 set }}
+{{#useBeanValidation}}
+  {{#isEmail}}
+    {{#java8}}@javax.validation.constraints.Email{{/java8}}
+  {{/isEmail}}
+{{/useBeanValidation}}
+{{! @Email: performBeanValidation set && isEmail && not java8 set }}
+{{#performBeanValidation}}
+  {{#isEmail}}
+    {{^java8}}@org.hibernate.validator.constraints.Email{{/java8}}
+  {{/isEmail}}
+{{/performBeanValidation}}
+{{! check for integer or long / all others=decimal type with @Decimal* isInteger set }}
+{{#isInteger}}
+  {{#minimum}}
+  @Min(value = {{minimum}}, message = "{{#vendorExtensions.x-minimum-message}}{{vendorExtensions.x-minimum-message}}{{/vendorExtensions.x-minimum-message}}{{!
+    }}{{^vendorExtensions.x-minimum-message}}{{!
+    }}{{#vendorExtensions.x-message-name}}{{vendorExtensions.x-message-name}}{{/vendorExtensions.x-message-name}}{{!
+    }}{{^vendorExtensions.x-message-name}}{{#lambda.titlecase}}{{#name}}{{name}}{{/name}}{{^name}}{{#paramName}}{{paramName}}{{/paramName}}{{/name}}{{/lambda.titlecase}}{{/vendorExtensions.x-message-name}}{{!
+    }} must be at least {{minimum}}{{/vendorExtensions.x-minimum-message}}")
+  {{/minimum}}
+  {{#maximum}}
+  @Max(value = {{maximum}}, message = "{{#vendorExtensions.x-maximum-message}}{{vendorExtensions.x-maximum-message}}{{/vendorExtensions.x-maximum-message}}{{!
+    }}{{^vendorExtensions.x-maximum-message}}{{!
+    }}{{#vendorExtensions.x-message-name}}{{vendorExtensions.x-message-name}}{{/vendorExtensions.x-message-name}}{{!
+    }}{{^vendorExtensions.x-message-name}}{{#lambda.titlecase}}{{#name}}{{name}}{{/name}}{{^name}}{{#paramName}}{{paramName}}{{/paramName}}{{/name}}{{/lambda.titlecase}}{{/vendorExtensions.x-message-name}}{{!
+    }} must be at most {{maximum}}{{/vendorExtensions.x-maximum-message}}") 
+  {{/maximum}}
+{{/isInteger}}
+{{! isLong set Not Integer, not Long => we have a decimal value! }}
+{{^isInteger}}
+  {{^isLong}}
+    {{#minimum}}
+  @DecimalMin({{#exclusiveMinimum}}value={{/exclusiveMinimum}}"{{minimum}}"{{#exclusiveMinimum}},inclusive=false{{/exclusiveMinimum}})
+    {{/minimum}}
+    {{#maximum}}
+  @DecimalMax({{#exclusiveMaximum}}value={{/exclusiveMaximum}}"{{maximum}}"{{#exclusiveMaximum}},inclusive=false{{/exclusiveMaximum}}) 
+    {{/maximum}}
+  {{/isLong}}
+{{/isInteger}}

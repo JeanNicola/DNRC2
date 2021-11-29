@@ -1,0 +1,11 @@
+<app-related-rights-table
+  (selectRelatedRight)="onSelection($event)"
+></app-related-rights-table>
+<div class="child-container">
+  <app-related-water-rights-table
+    [idArray]="[selectedRelatedRight]"
+  ></app-related-water-rights-table>
+  <app-related-elements-table
+    [idArray]="[selectedRelatedRight]"
+  ></app-related-elements-table>
+</div>

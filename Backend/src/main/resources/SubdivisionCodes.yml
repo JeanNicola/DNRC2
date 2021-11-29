@@ -1,0 +1,223 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+tags:
+- name: SubdivisionCodes
+  description: Subdivision Codes
+paths:
+  /subdivision-codes:
+    get:
+      summary: get all the Subdivision Codes
+      operationId: getSubdivisionCodes
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/subdivision-codes-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: query
+          name: code
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+        - in: query
+          name: countyId
+          schema:
+            type: number
+        - in: query
+          name: countyName
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+        - in: query
+          name: dnrcName
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+        - in: query
+          name: dorName
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+      responses:
+        200:
+          description: a list of Subdivision Codes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubdivisionCodePageDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: create a new Subdivision Code
+      operationId: createSubdivisionCode
+      requestBody:
+        description: The new Subdivision Code
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubdivisionCodeDto'
+      responses:
+        201:
+          description: Created a Subdivision Code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubdivisionCodeDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        409:
+          description: A Subdivision Code  with this code already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /subdivision-codes/{code}:
+    delete:
+      summary: delete an existing Subdivision Code
+      operationId: deleteSubdivisionCode
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 5
+          description: The Subdivision Code
+      responses:
+        204:
+          description: deleted the Subdivision Code
+        404:
+          description: No Subdivision Code  was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: change an existing Subdivision Code
+      operationId: changeSubdivisionCode
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 5
+          description: The Subdivision Code
+      requestBody:
+          description: The updated Subdivision Code
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubdivisionCodeDto'
+      responses:
+        200:
+          description: Changed the Subdivision Code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubdivisionCodeDto'
+        301:
+          description: Changed and Moved the Subdivision Code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubdivisionCodeDto'
+        404:
+          description: No Subdivision Code was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    SubdivisionCodeDto:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 5
+          pattern: '^[ -~]+$'
+        countyName:
+          x-message-name: County Name
+          type: string
+          maxLength: 34
+          pattern: '^[ -~]+$'
+        countyId:
+          x-message-name: County Id
+          type: number
+        dnrcName:
+          x-message-name: DNRC Name
+          type: string
+          maxLength: 50
+          pattern: '^[ -~]+$'
+        dorName:
+          x-message-name: DOR Name
+          type: string
+          maxLength: 50
+          pattern: '^[ -~]*$'
+      required:
+        - code
+        - countyId
+        - dnrcName
+      example:
+        code: TEST
+        countyId: 0
+        dnrcName: Test Example
+        dorName: Test Example
+    SubdivisionCodePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/SubdivisionCodesSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubdivisionCodeDto'
+    SubdivisionCodesSortColumn:
+      type: string
+      enum: [CODE, COUNTYID, COUNTYNAME, DNRCNAME, DORNAME]
+      default: CODE
+  parameters:
+    subdivision-codes-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/SubdivisionCodesSortColumn'

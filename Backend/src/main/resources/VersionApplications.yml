@@ -1,0 +1,136 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /water-rights/{waterRightId}/versions/{versionNumber}/applications:
+    get:
+      summary: Get Application references to a Water Right Version
+      operationId: getWaterRightVersionApplicationReferences
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-version-application-references-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of application references for one water right version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightVersionApplicationReferencesPageDto'
+  /water-rights/{waterRightId}/versions/{versionNumber}/applications/{applicationId}:
+    post:
+      summary: Add Application reference to a Water Right Version
+      operationId: addApplicationReferenceToWaterRightVersion
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: the application id
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        201:
+          description: The new Application reference to Water Right Version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightVersionApplicationReferencesDto'
+        404:
+          description: Either the Application or Water Right Version doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete specific Application reference to a Water Right Version
+      operationId: deleteApplicationReferenceToWaterRightVersion
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: the application id
+      responses:
+        204:
+          description: Deleted Application reference to Water Right Version
+        404:
+          description: Either the Application or Water Right Version doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    WaterRightVersionApplicationReferencesPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightVersionApplicationReferencesSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WaterRightVersionApplicationReferencesDto'
+    WaterRightVersionApplicationReferencesDto:
+      type: object
+      properties:
+        applicationId:
+          type: integer
+          format: int64
+        basin:
+          type: string
+        applicationType:
+          type: string
+          x-message-name: Application Type
+        dateTimeReceived:
+          type: string
+          format: date-time
+          x-message-name: Date/Time Received
+        contactId:
+          type: integer
+          format: int64
+          x-message-name: Contact Id
+        applicant:
+          type: string
+          x-message-name: Applicant Name
+    WaterRightVersionApplicationReferencesSortColumn:
+      type: string
+      enum: [BASIN, APPLICATIONID, APPLICATIONTYPE, DATETIMERECEIVED, CONTACTID, APPLICANT]
+      default: APPLICATIONID
+  parameters:
+    water-right-version-application-references-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightVersionApplicationReferencesSortColumn'

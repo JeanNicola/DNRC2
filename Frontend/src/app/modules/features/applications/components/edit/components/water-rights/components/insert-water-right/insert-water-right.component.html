@@ -1,0 +1,103 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px">
+  <mat-horizontal-stepper [linear]="true" #stepper>
+    <ng-template matStepperIcon="edit" let-index="index">
+      {{ index + 1 }}
+    </ng-template>
+    <mat-step [completed]="true" label="Search for a Water Right">
+      <form [formGroup]="formGroup">
+        <div
+          class="form-field"
+          *ngFor="let field of searchColumns; let i = index"
+        >
+          <shared-data-form-field
+            [mode]="mode"
+            [field]="field"
+            (shiftTabEvent)="receiveShiftTab($event, i)"
+            (keyup.enter)="stepper.selectedIndex = 1"
+          >
+          </shared-data-form-field>
+        </div>
+        <div class="button-container">
+          <button
+            mat-stroked-button
+            color="primary"
+            matTooltip="Search"
+            matStepperNext
+          >
+            Search
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [completed]="!!row" label="Select a Water Right">
+      <app-data-table
+        *ngIf="dataFound; else noData"
+        [data]="rows"
+        [columns]="displayFields"
+        [hideActions]="hideActions"
+        [hideEdit]="hideEdit"
+        [hideDelete]="hideDelete"
+        [hideHeader]="hideHeader"
+        [expandChildRef]="expandRef"
+        [permissions]="permissions"
+        [clickableRow]="clickableRow"
+        [dblClickableRow]="dblClickableRow"
+        [highlightOneRow]="true"
+        [isInMain]="false"
+        [primarySortColumn]="queryParameters.sortColumn"
+        [primaryDirection]="queryParameters.sortDirection"
+        (sortEvent)="onSortRequest($event)"
+        (rowClickEvent)="onRowClick(rows[$event])"
+        (rowDblClickEvent)="onRowDoubleClick(rows[$event])"
+      >
+      </app-data-table>
+      <mat-paginator
+        *ngIf="queryResult && rows?.length"
+        [length]="queryResult.totalElements"
+        [pageIndex]="queryParameters.pageNumber - 1"
+        [pageSize]="queryResult.pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        [showFirstLastButtons]="true"
+        (page)="onPaging($event)"
+      >
+      </mat-paginator>
+      <div class="button-container" *ngIf="!!queryResult">
+        <button
+          mat-stroked-button
+          color="primary"
+          matTooltip="Go to the Previous Step"
+          matStepperPrevious
+        >
+          Back
+        </button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <button
+    [mat-dialog-close]="row"
+    [matTooltip]="tooltip"
+    mat-mini-fab
+    color="primary"
+    [disabled]="row == null"
+  >
+    <mat-icon>done</mat-icon>
+  </button>
+  <button
+    [mat-dialog-close]="null"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>
+
+<ng-template #noData>
+  <h3 class="data-message">No data found</h3>
+</ng-template>

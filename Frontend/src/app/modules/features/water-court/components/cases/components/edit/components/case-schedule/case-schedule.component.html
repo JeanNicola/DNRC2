@@ -1,0 +1,114 @@
+<div #content class="content">
+  <mat-card class="card-content" [ngStyle]="containerStyles">
+    <mat-card-title>
+      <div class="title-container">
+        <div class="title" [ngStyle]="titleStyles">{{ title }}</div>
+        <div class="title-buttons-container" *ngIf="areDropdownsPopulated">
+          <!--
+              For focus to work, use #initialFocus to ensure all elements are initialized
+              Then use #firstSearchand #firstInsert to identify the buttons to focus
+            -->
+          <button
+            mat-mini-fab
+            color="primary"
+            matTooltip="Search"
+            (click)="onSearch()"
+            #firstSearch
+            #initialFocus
+            *ngIf="searchable"
+          >
+            <mat-icon>search</mat-icon>
+          </button>
+          <button
+            *ngIf="!hideInsert"
+            mat-mini-fab
+            color="primary"
+            matTooltip="Insert"
+            #firstInsert
+            #initialFocus
+            (click)="onInsert()"
+            [disabled]="!permissions?.canPOST"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-card-title>
+    <mat-card-content>
+      <div class="data-container">
+        <h2 *ngIf="!rows?.length && dataMessage" class="data-message">
+          {{ dataMessage }}
+        </h2>
+        <app-case-schedule-data-table
+          #dataTable
+          #initialFocus
+          *ngIf="rows?.length && !hideTable"
+          [data]="rows"
+          [selectedRowStyles]="selectedRowStyles"
+          [columns]="columns"
+          [permissions]="permissions"
+          [hideActions]="hideActions"
+          [hideEdit]="hideEdit"
+          [hideDelete]="hideDelete"
+          [hideHeader]="hideHeader"
+          [expandChildRef]="expandRef"
+          [clickableRow]="clickableRow"
+          [highlightOneRow]="highlightOneRow"
+          [highlightFirstRowOnInit]="highlightFirstRowOnInit"
+          [dblClickableRow]="dblClickableRow"
+          [enableMoreInfo]="enableMoreInfo"
+          [zHeight]="zHeight"
+          [isInMain]="isInMain ? isInMain : false"
+          [primarySortColumn]="primarySortColumn"
+          [primaryDirection]="sortDirection"
+          (moreInfoEvent)="moreInfoHandler($event)"
+          (sortEvent)="onSortRequest($event)"
+          (editEvent)="onEdit(data?.results[$event], $event)"
+          (deleteEvent)="onDelete($event)"
+          (rowDblClickEvent)="onRowDoubleClick(data?.results[$event])"
+          (rowClickEvent)="rowClick(data?.results[$event])"
+          (cellClickEvent)="cellClick($event)"
+          (cellDblClickEvent)="cellDblClick($event)"
+        >
+        </app-case-schedule-data-table>
+      </div>
+      <div
+        class="title-buttons-container"
+        *ngIf="areDropdownsPopulated && !!rows && rows.length > 5"
+      >
+        <button
+          mat-mini-fab
+          color="primary"
+          matTooltip="Search"
+          (click)="onSearch()"
+          *ngIf="searchable"
+        >
+          <mat-icon>search</mat-icon>
+        </button>
+        <button
+          mat-mini-fab
+          color="primary"
+          matTooltip="Insert"
+          *ngIf="!hideInsert"
+          (click)="onInsert()"
+          [disabled]="!permissions?.canPOST"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+      <div *ngIf="paging">
+        <mat-paginator
+          [ngStyle]="containerStyles"
+          *ngIf="data && rows?.length"
+          [length]="data.totalElements"
+          [pageIndex]="queryParameters.pageNumber - 1"
+          [pageSize]="data.pageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          [showFirstLastButtons]="true"
+          (page)="onPaging($event)"
+        >
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,282 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /remarks/all:
+    get:
+      summary: search remark codes
+      operationId: searchRemarkCodes
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/remark-code-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/remark-code'
+        - in: query
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: a result list of remark codes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemarkCodeSearchPageDto'
+
+  /remarks/{remarkId}:
+    put:
+      summary: change an existing remark
+      operationId: changeRemark
+      parameters:
+        - $ref: '#/components/parameters/remark-id'
+      requestBody:
+        description: the remark update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemarkUpdateDto'
+      responses:
+        200:
+          description: the changed remark
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemarkDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: remark id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: delete a remark
+      operationId: deleteRemark
+      parameters:
+        - $ref: '#/components/parameters/remark-id'
+      responses:
+        204:
+          description: sucessfully deleted
+
+  /remarks/{remarkId}/variables:
+    get:
+      summary: retrieve a page of remark variables
+      operationId: getRemarkVariables
+      parameters:
+        - $ref: '#/components/parameters/remark-id'
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/remark-variables-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of remark variables
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemarkVariablesPageDto'
+        404:
+          description: remark id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /remarks/{remarkId}/variables/{variableId}:
+    put:
+      summary: change an existing remark variable
+      operationId: changeRemarkVariable
+      parameters:
+        - $ref: '#/components/parameters/remark-id'
+        - in: path
+          name: variableId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: the remark variable update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemarkVariableUpdateDto'
+      responses:
+        200:
+          description: the changed remark variable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemarkVariableDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: remark id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /remarks/{remarkId}/text:
+    get:
+      summary: retrieve remark text
+      operationId: getRemarkText
+      parameters:
+        - $ref: '#/components/parameters/remark-id'
+      responses:
+        200:
+          description: the remark text
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemarkTextDto'
+        404:
+          description: remark id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+components:
+  schemas:
+    RemarkVariablesPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/RemarkVariablesSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'RemarkVariableDto'
+    RemarkVariableDto:
+      type: object
+      properties:
+        dataId:
+          type: integer
+          format: int64
+        variableId:
+          type: integer
+          format: int64
+        variableNumberType:
+          type: string
+        variableType:
+          type: string
+          enum: [STRING, DATE, NUMERIC]
+        maxLength:
+          type: integer
+          format: int64
+        precedingText:
+          type: string
+        variableText:
+          type: string
+        trailingText:
+          type: string
+    RemarkCodeSearchPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/RemarkCodeSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'RemarkCodeDto'
+    RemarkCodeDto:
+      type: object
+      properties:
+        remarkCode:
+          type: string
+        remarkCategoryDescription:
+          type: string
+        remarkTypeDescription:
+          type: string
+        elementTypeDescription:
+          type: string
+    RemarkTextDto:
+      type: object
+      properties:
+        remarkText:
+          type: string
+    RemarkUpdateDto:
+      type: object
+      properties:
+        addedDate:
+          type: string
+          format: date
+          x-message-name: Added date
+      required:
+        - addedDate
+    RemarkVariableUpdateDto:
+      type: object
+      properties:
+        variableText:
+          type: string
+          maxLength: 2600
+          x-message-name: Variable text
+    RemarkVariablesSortColumn:
+      type: string
+      enum: [ VARIABLENUMBERTYPE, VARIABLETYPE, PRECEDINGTEXT, VARIABLETEXT, TRAILINGTEXT ]
+      default: VARIABLENUMBERTYPE
+    RemarkCodeSortColumn:
+      type: string
+      enum: [ REMARKCODE, REMARKCATEGORYDESCRIPTION, REMARKTYPEDESCRIPTION, ELEMENTTYPEDESCRIPTION]
+      default: REMARKCODE
+
+  parameters:
+    remark-code-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/RemarkCodeSortColumn'
+    remark-variables-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/RemarkVariablesSortColumn'
+    remark-code:
+      name: remarkCode
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+        default: '%'

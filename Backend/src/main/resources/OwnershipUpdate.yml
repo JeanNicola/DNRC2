@@ -1,0 +1,1914 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /ownership-updates:
+    get:
+      summary: Search Ownership Updates
+      operationId: searchOwnershipUpdates
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/ownership-update-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/ownership-update-id'
+        - $ref: '#/components/parameters/ownership-update-type'
+        - $ref: '#/components/parameters/water-right-number'
+        - $ref: '#/components/parameters/date-received'
+        - $ref: '#/components/parameters/date-sale'
+        - $ref: '#/components/parameters/date-processed'
+        - $ref: '#/components/parameters/date-terminated'
+      responses:
+        200:
+          description: A page of Ownership Update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdatePageDto'
+    post:
+      summary: Create an Ownership Update
+      operationId: createOwnershipUpdate
+      requestBody:
+        description: The new Ownership Update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OwnershipUpdateCreationDto'
+      responses:
+        201:
+          description: The new Ownership Update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdateSearchResultDto'
+
+  /ownership-updates/{ownerUpdateId}:
+    get:
+      summary: Get an existing Ownership Update
+      operationId: getOwnershipUpdate
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: The Ownership Update requested
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdateDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: No OwnershipUpdate found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: Change an existing Ownership Update
+      operationId: changeOwnershipUpdate
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The Ownership Update changes
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OwnershipUpdateUpdateDto'
+      responses:
+        200:
+          description: The changed Ownership Update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdateDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Ownership Update not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /ownership-updates/{contactId}/contacts:
+    get:
+      summary: Get Buyer and Seller Ownership Updates for a Contact
+      operationId: getOwnershipUpdatesForContact
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/ownership-updates-for-contact-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: path
+          name: contactId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+      responses:
+        200:
+          description: Page of Ownership Updates for a Contacts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdatesForContactPageDto'
+        404:
+          description: No Ownership Updates found for Contact
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /ownership-updates/sellers:
+    get:
+      summary: Search Seller Ownership Updates
+      operationId: searchOwnershipUpdateSellers
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/ownership-update-sellers-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/last-name'
+        - $ref: '#/components/parameters/first-name'
+        - $ref: '#/components/parameters/contact-id'
+      responses:
+        200:
+          description: A page of Seller Ownership Updates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdateSellersPageDto'
+
+  /ownership-updates/sellers/{ownerUpdateId}:
+    get:
+      summary: Get Seller Ownership Updates for an ownerUpdateId
+      operationId: getOwnershipUpdateSellers
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/ownership-update-sellers-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+      responses:
+        200:
+          description: A page of Seller Ownership Updates for an ownerUpdateId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdateSellersPageDto'
+        404:
+          description: No Seller Ownership Updates found for ownerUpdateId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /ownership-updates/buyers:
+    get:
+      summary: Search Buyer Ownership Updates
+      operationId: searchOwnershipUpdateBuyers
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/ownership-update-buyers-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/last-name'
+        - $ref: '#/components/parameters/first-name'
+        - $ref: '#/components/parameters/contact-id'
+      responses:
+        200:
+          description: A page of Ownership Update Buyers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdateBuyersPageDto'
+
+  /ownership-updates/buyers/{ownerUpdateId}:
+    get:
+      summary: Get Buyer Ownership Updates for an ownerUpdateId
+      operationId: getOwnershipUpdateBuyers
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/ownership-update-buyers-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+      responses:
+        200:
+          description: A page of Buyer Ownership Updates for an ownerUpdateId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdateBuyersPageDto'
+        404:
+          description: No Buyer Ownership Updates found for ownerUpdateId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /ownership-updates/{ownerUpdateId}/water-rights:
+    get:
+      summary: search water rights for one ownership update
+      operationId: getOwnershipUpdateWaterRights
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/ownership-update-water-right-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of water rights for one ownership update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdateWaterRightPageDto'
+    post:
+      summary: Create Water Right reference to an Ownership Update
+      operationId: createWaterRightReferenceToOwnershipUpdate
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+      requestBody:
+        description: Water Right references to be added to Ownership Update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaterRightReferenceToOwnershipUpdateCreationDto'
+      responses:
+        201:
+          description: The new Water Right references to Ownership Update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightReferenceToOwnershipUpdateResultDto'
+
+  /ownership-updates/{ownerUpdateId}/water-rights/{waterRightId}:
+    delete:
+      summary: Delete a Water Right reference to an Ownership Update
+      operationId: deleteWaterRightReferenceToOwnershipUpdate
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Deleted Water Right reference to Onwership Update
+        404:
+          description: Either the Water Right or Ownership Update doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: Change Water Right dividedOwnership
+      operationId: changeWaterRight
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownership Update Id
+        - in: path
+          name: waterRightId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Water Right Id
+      requestBody:
+        description: Water Right dividedOwnership
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaterRightUpdateDividedOwnershipDto'
+      responses:
+        200:
+          description: The changed Water Right dividedOwnership
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightUpdateDividedOwnershipDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Ownership Update not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /ownership-updates/{ownerUpdateId}/applications:
+    post:
+      summary: Create Application reference to an Ownership Update
+      operationId: createApplicationReferenceToOwnershipUpdate
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+      requestBody:
+        description: Application references to be added to Ownership Update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationReferenceToOwnershipUpdateCreationDto'
+      responses:
+        201:
+          description: The new Application references to Ownership Update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationReferenceToOwnershipUpdateResultDto'
+    get:
+      summary: search applications for one ownership update
+      operationId: getOwnershipUpdateApplications
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/ownership-update-application-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of applications for one ownership update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdateApplicationPageDto'
+  /ownership-updates/{ownerUpdateId}/fee-summary:
+    get:
+      summary: Get Fee Summary Information for the Ownership Update
+      operationId: searchOwnershipFeeSummary
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+      responses:
+        200:
+          description: A object with the Fee Summary information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdateFeeSummaryDto'
+    put:
+      summary: Change Fee Due
+      operationId: changeFeeDue
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The Fee Due changes
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OwnershipUpdateChangeFeeSummaryDto'
+      responses:
+        200:
+          description: The changed Fee Due
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdateFeeSummaryDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Ownership Update not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /ownership-updates/{ownerUpdateId}/calculate-fee-due:
+    put:
+      summary: Calculate or recalculate FeeDue for a Ownership Update
+      operationId: calculateOwnershipUpdateFeeDue
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: The changed Fee Due
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdateFeeSummaryDto'
+        404:
+          description: Ownership Update not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /ownership-updates/{ownerUpdateId}/fee-letter:
+    get:
+      summary: Get Fee Letter Information for the Ownership Update
+      operationId: searchOwnershipFeeLetter
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+      responses:
+        200:
+          description: A object with the Fee Letter information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdateFeeLetterDto'
+    put:
+      summary: Change Fee Letter information
+      operationId: changeFeeLetter
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The Fee Letter changes
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OwnershipUpdateChangeFeeLetterDto'
+      responses:
+        200:
+          description: The changed Fee Due
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdateFeeLetterDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Ownership Update not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /ownership-updates/{ownerUpdateId}/applications/{applicationId}:
+    delete:
+      summary: Delete a Application reference to an Ownership Update
+      operationId: deleteApplicationReferenceToOwnershipUpdate
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Deleted Application reference to Ownership Update
+        404:
+          description: Either the Application or Ownership Update doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /ownership-updates/{ownerUpdateId}/sellers:
+    get:
+      summary: Get associated sellers for one ownership update
+      operationId: getSellersForOwnershipUpdate
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/sellers-for-ownership-update-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of associated sellers for one ownership update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellersForOwnershipUpdatePageDto'
+    post:
+      summary: Create Seller reference to an Ownership Update
+      operationId: createSellerReferenceToOwnershipUpdate
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+      requestBody:
+        description: Seller references to be added to Ownership Update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SellerReferenceToOwnershipUpdateCreationDto'
+      responses:
+        201:
+          description: The new Seller references to Ownership Update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerForOwnershipUpdateResultDto'
+
+  /ownership-updates/{ownerUpdateId}/buyers:
+    get:
+      summary: Get associated buyers for one ownership update
+      operationId: getBuyersForOwnershipUpdate
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/buyers-for-ownership-update-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of associated buyers for one ownership update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyersForOwnershipUpdatePageDto'
+    post:
+      summary: Create Buyer reference to an Ownership Update
+      operationId: createBuyerReferenceToOwnershipUpdate
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+      requestBody:
+        description: Buyer references to be added to Ownership Update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuyerReferenceToOwnershipUpdateCreationDto'
+      responses:
+        201:
+          description: The new Buyer references to Ownership Update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyerForOwnershipUpdateResultDto'
+
+  /ownership-updates/{ownerUpdateId}/sellers/all:
+    delete:
+      summary: Delete all sellers of one Ownership Update
+      operationId: deleteAllSellers
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Empty response
+        404:
+          description: Ownership Update does not exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /ownership-updates/{ownerUpdateId}/applications/all:
+    delete:
+      summary: Delete all applications of one Ownership Update
+      operationId: deleteAllApps
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Empty response
+        404:
+          description: Ownership Update does not exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /ownership-updates/{ownerUpdateId}/sellers/{sellerId}:
+    put:
+      summary: Change an existing Seller Ownership Update record
+      operationId: changeOwnershipUpdateSeller
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: sellerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The Seller Ownership Update changes
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OwnershipUpdateSellerUpdateDto'
+      responses:
+        200:
+          description: The changed Seller Ownership Update record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdateSellerDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Ownership Update Seller record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete Seller reference to an Ownership Update
+      operationId: deleteSellerReferenceToOwnershipUpdate
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: sellerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Deleted Reference
+        404:
+          description: Either the Ownership Update or Contact doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /ownership-updates/{ownerUpdateId}/buyers/{buyerId}:
+    delete:
+      summary: Delete Buyer reference to an Ownership Update
+      operationId: deleteBuyerReferenceToOwnershipUpdate
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: buyerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Deleted Reference
+        404:
+          description: Either the Ownership Update or Contact doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /ownership-updates/{ownerUpdateId}/populate-by-geocodes:
+    get:
+      summary: Get list of Water Rights by Geocodes for an Ownership Update
+      operationId: getWaterRightsByGeocode
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/populate-by-geocodes-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of associated water rights by geocode for one ownership update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PopulateByGeocodesPageDto'
+  /ownership-updates/{ownerUpdateId}/populate-by-sellers:
+    get:
+      summary: Get list of Water Rights by Sellers for an Ownership Update
+      operationId: getWaterRightsBySellers
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/populate-by-sellers-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of associated water rights by sellers for one ownership update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PopulateBySellersPageDto'
+
+
+  /ownership-updates/{ownerUpdateId}/transfer:
+    post:
+      summary: Transfer Water Rights Ownership
+      operationId: transferWaterRightsOwnership
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        201:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferWaterRightsOwnershipResultDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /ownership-updates/{ownerUpdateId}/applications/active:
+    get:
+      summary: Get Change Applications for all Water Rights associated with ownerUpdateId
+      operationId: searchOwnershipUpdatesChangeApplications
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/ownership-updates-change-applications-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/application-id'
+        - $ref: '#/components/parameters/basin'
+      responses:
+        200:
+          description: A page of Ownership Update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnershipUpdatesChangeApplicationsPageDto'
+
+  /ownership-updates/{ownerUpdateId}/customers/active:
+    get:
+      summary: search customers
+      operationId: searchActiveSellersOwnershipUpdate
+      parameters:
+        - in: path
+          name: ownerUpdateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/customer-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/contact-id'
+        - $ref: '#/components/parameters/customer-last-name'
+        - $ref: '#/components/parameters/customer-first-name'
+      responses:
+        200:
+          description: a page of Customers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerPageDto'
+
+components:
+  schemas:
+    OwnershipUpdatesChangeApplicationsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/OwnershipUpdatesChangeApplicationsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OwnershipUpdatesChangeApplicationsSearchResultDto'
+
+    OwnershipUpdatesChangeApplicationsSearchResultDto:
+      type: object
+      properties:
+        applicationId:
+          type: integer
+          format: int64
+        basin:
+          type: string
+
+    WaterRightUpdateDividedOwnershipDto:
+      type: object
+      properties:
+        dividedOwnship:
+          type: boolean
+
+    PopulateByGeocodesPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/PopulateByGeocodesSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PopulateByGeocodesSearchResultDto'
+    PopulateBySellersPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/PopulateBySellersSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PopulateBySellersSearchResultDto'
+
+    PopulateByGeocodesSearchResultDto:
+      type: object
+      properties:
+        basin:
+          type: string
+        waterRightId:
+          type: integer
+          format: int64
+        waterRightNumber:
+          type: integer
+          format: int64
+        completeWaterRightNumber:
+          type: string
+          pattern: '^[ -~]+$'
+        version:
+          type: string
+        ext:
+          type: string
+        typeDescription:
+          type: string
+    PopulateBySellersSearchResultDto:
+      type: object
+      properties:
+        basin:
+          type: string
+        waterRightId:
+          type: integer
+          format: int64
+        waterRightNumber:
+          type: integer
+          format: int64
+        completeWaterRightNumber:
+          type: string
+          pattern: '^[ -~]+$'
+        typeDescription:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 30
+        version:
+          type: string
+        ext:
+          type: string
+
+    OwnershipUpdateCreationDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        ownershipUpdateType:
+          type: string
+          pattern: '^[ -~]*$'
+        pendingDORValidation:
+          type: boolean
+        receivedAs608:
+          type: boolean
+        receivedDate:
+          type: string
+          format: date
+        buyers:
+          type: array
+          items:
+            type: integer
+            format: int64
+        sellers:
+          type: array
+          items:
+            type: integer
+            format: int64
+        waterRights:
+          type: array
+          items:
+            type: integer
+            format: int64
+      required:
+        - ownershipUpdateType
+        - pendingDORValidation
+        - receivedAs608
+        - receivedDate
+        - buyers
+        - sellers
+        - waterRights
+
+    OwnershipUpdatePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/OwnershipUpdateSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OwnershipUpdateSearchResultDto'
+
+    OwnershipUpdateSearchResultDto:
+      type: object
+      properties:
+        ownershipUpdateId:
+          type: integer
+          format: int64
+        ownershipUpdateType:
+          type: string
+        ownershipUpdateTypeValue:
+          type: string
+        receivedDate:
+          type: string
+          format: date
+        saleDate:
+          type: string
+          format: date
+        waterRightCount:
+          type: integer
+        dateProcessed:
+          type: string
+          format: date
+        dateTerminated:
+          type: string
+          format: date
+
+    OwnershipUpdatesForContactPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/OwnershipUpdatesForContactSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OwnershipUpdatesForContactSearchResultDto'
+
+    OwnershipUpdatesForContactSearchResultDto:
+      type: object
+      properties:
+        ownershipUpdateId:
+          type: integer
+          format: int64
+        ownershipUpdateType:
+          type: string
+        ownershipUpdateTypeVal:
+          type: string
+        receivedDate:
+          type: string
+          format: date
+        saleDate:
+          type: string
+          format: date
+        waterRightCount:
+          type: integer
+
+    OwnershipUpdateSellersPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/OwnershipUpdateSellersSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OwnershipUpdateSellersAndBuyerSearchResultDto'
+
+    OwnershipUpdateSellersAndBuyerSearchResultDto:
+      type: object
+      properties:
+        contactId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        lastName:
+          type: string
+        firstName:
+          type: string
+        count:
+          type: integer
+
+
+    OwnershipUpdateBuyersPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/OwnershipUpdateBuyersSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OwnershipUpdateSellersAndBuyerSearchResultDto'
+
+    OwnershipUpdateWaterRightPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/OwnershipUpdateWaterRightSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OwnershipUpdateWaterRightDto'
+
+    OwnershipUpdateWaterRightDto:
+      type: object
+      properties:
+        basin:
+          type: string
+          pattern: '^[ -~]+$'
+          x-message-name: Basin number
+          maxLength: 4
+        waterRightNumber:
+          type: integer
+          format: int64
+          x-message-name: Water Right Id
+          maxLength: 10
+        completeWaterRightNumber:
+          type: string
+          pattern: '^[ -~]+$'
+        waterRightId:
+          type: integer
+          format: int64
+          x-message-name: The Water Right Id
+          maxLength: 10
+        typeCode:
+          type: string
+          pattern: '^[ -~]+$'
+        typeDescription:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 30
+        statusCode:
+          type: string
+          pattern: '^[ -~]+$'
+        statusDescription:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 20
+        ext:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 3
+        dividedOwnship:
+          type: boolean
+        severed:
+          type: boolean
+        validGeocode:
+          type: boolean
+
+    OwnershipUpdateApplicationPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/OwnershipUpdateApplicationSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OwnershipUpdateApplicationDto'
+
+    OwnershipUpdateApplicationDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          x-message-name: Application Id
+          maxLength: 10
+        basin:
+          type: string
+          pattern: '^[ -~]+$'
+          x-message-name: Basin number
+          maxLength: 4
+
+    OwnershipUpdateUpdateDto:
+      type: object
+      properties:
+        ownershipUpdateId:
+          type: integer
+          format: int64
+          x-message-name: Ownership Update Id
+        ownershipUpdateType:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 7
+          x-message-name: Ownership Update Type
+        dateReceived:
+          type: string
+          format: date
+          x-message-name: Date Received
+        dateProcessed:
+          type: string
+          format: date
+        dateTerminated:
+          type: string
+          format: date
+        dateSale:
+          type: string
+          format: date
+        pendingDor:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+        receivedAs608:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+        notes:
+          type: string
+          pattern: '^[ -~\n]*$'
+          maxLength: 4000
+      required:
+        - ownershipUpdateId
+        - ownershipUpdateType
+        - dateReceived
+
+    OwnershipUpdateDto:
+      type: object
+      properties:
+        ownershipUpdateId:
+          type: integer
+          format: int64
+        ownershipUpdateType:
+          type: string
+        ownershipUpdateTypeVal:
+          type: string
+        dateReceived:
+          type: string
+          format: date
+        dateProcessed:
+          type: string
+          format: date
+        dateTerminated:
+          type: string
+          format: date
+        dateSale:
+          type: string
+          format: date
+        pendingDor:
+          type: string
+        pendingDorVal:
+          type: string
+        receivedAs608:
+          type: string
+        receivedAs608Val:
+          type: string
+        canTransfer:
+          type: string
+        canTransferVal:
+          type: string
+        notes:
+          type: string
+        parentCount:
+          type: integer
+        childCount:
+          type: integer
+        otherOwnerUpdateId:
+          type: boolean
+        allAppsInc:
+          type: boolean
+        canPrintDecreeReport:
+          type: boolean
+
+    SellerReferenceToOwnershipUpdateCreationDto:
+      type: object
+      properties:
+        contactIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+
+    SellerForOwnershipUpdateResultDto:
+      type: object
+      properties:
+        contactIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+
+    BuyerReferenceToOwnershipUpdateCreationDto:
+      type: object
+      properties:
+        contactIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+
+    BuyerForOwnershipUpdateResultDto:
+      type: object
+      properties:
+        contactIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+
+    SellersForOwnershipUpdatePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/SellersForOwnershipUpdateSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SellersForOwnershipUpdateSearchResultDto'
+
+    SellersForOwnershipUpdateSearchResultDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        contactId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        lastName:
+          type: string
+        firstName:
+          type: string
+        endDate:
+          type: string
+          format: date
+        contractForDeedRle:
+          type: string
+        contractForDeedRleVal:
+          type: string
+
+    BuyersForOwnershipUpdatePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/BuyersForOwnershipUpdateSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuyersForOwnershipUpdateSearchResultDto'
+
+    BuyersForOwnershipUpdateSearchResultDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        contactId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        lastName:
+          type: string
+        firstName:
+          type: string
+        startDate:
+          type: string
+          format: date
+
+    WaterRightReferenceToOwnershipUpdateCreationDto:
+      type: object
+      properties:
+        waterRightIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+
+    ApplicationReferenceToOwnershipUpdateCreationDto:
+      type: object
+      properties:
+        applicationIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+
+    WaterRightReferenceToOwnershipUpdateResultDto:
+      type: object
+      properties:
+        waterRightIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+
+    ApplicationReferenceToOwnershipUpdateResultDto:
+      type: object
+      properties:
+        applicationIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+
+    OwnershipUpdateSellerUpdateDto:
+      type: object
+      properties:
+        ownershipUpdateId:
+          type: integer
+          format: int64
+        contactId:
+          type: integer
+          format: int64
+        contractForDeedRle:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 1
+
+    OwnershipUpdateSellerDto:
+      type: object
+      properties:
+        ownershipUpdateId:
+          type: integer
+          format: int64
+        contactId:
+          type: integer
+          format: int64
+        contractForDeedRle:
+          type: string
+    OwnershipUpdateFeeSummaryDto:
+      type: object
+      properties:
+        feeStatus:
+          type: string
+        feeDue:
+          type: number
+          format: double
+        amountPaid:
+          type: number
+          format: double
+        totalDue:
+          type: number
+          format: double
+    OwnershipUpdateFeeLetterDto:
+      type: object
+      properties:
+        dateSent:
+          type: string
+          format: date
+    OwnershipUpdateChangeFeeLetterDto:
+      type: object
+      properties:
+        dateSent:
+          type: string
+          format: date
+
+    OwnershipUpdateChangeFeeSummaryDto:
+      type: object
+      properties:
+        feeDue:
+          type: number
+          format: double
+
+    TransferWaterRightsOwnershipResultDto:
+        type: object
+        properties:
+          ownershipUpdateId:
+            type: integer
+            format: int64
+          messages:
+            type: array
+            items:
+              type: string
+
+
+    OwnershipUpdateWaterRightSortColumn:
+      type: string
+      enum: [ COMPLETEWATERRIGHTNUMBER, BASIN, WATERRIGHTNUMBER, TYPEDESCRIPTION, EXT, DIVIDEDOWNSHIP, STATUSCODE ]
+      default: WATERRIGHTNUMBER
+
+    OwnershipUpdateApplicationSortColumn:
+      type: string
+      enum: [ BASIN, ID ]
+      default: ID
+
+    OwnershipUpdateSortColumn:
+      type: string
+      enum: [ OWNERSHIPUPDATEID, OWNERSHIPUPDATETYPE, OWNERSHIPUPDATETYPEVALUE, RECEIVEDDATE, SALEDATE ]
+      default: OWNERSHIPUPDATEID
+
+    OwnershipUpdatesForContactSortColumn:
+      type: string
+      enum: [ OWNERSHIPUPDATEID, OWNERSHIPUPDATETYPE, OWNERSHIPUPDATETYPEVALUE, RECEIVEDDATE, SALEDATE ]
+      default: OWNERSHIPUPDATEID
+
+    OwnershipUpdateSellersSortColumn:
+      type: string
+      enum: [ NAME, CONTACTID, ENDDATE ]
+      default: NAME
+
+    OwnershipUpdateBuyersSortColumn:
+      type: string
+      enum: [ NAME, CONTACTID, ENDDATE ]
+      default: NAME
+
+    SellersForOwnershipUpdateSortColumn:
+      type: string
+      enum: [ CONTACTID, NAME, ENDDATE ]
+      default: CONTACTID
+
+    BuyersForOwnershipUpdateSortColumn:
+      type: string
+      enum: [ CONTACTID, NAME, STARTDATE ]
+      default: CONTACTID
+
+    PopulateByGeocodesSortColumn:
+      type: string
+      enum: [ COMPLETEWATERRIGHTNUMBER, WATERRIGHTID, BASIN, WATERRIGHTNUMBER, VERSION, EXT, TYPEDESCRIPTION ]
+      default: WATERRIGHTID
+    PopulateBySellersSortColumn:
+      type: string
+      enum: [ COMPLETEWATERRIGHTNUMBER, WATERRIGHTID, BASIN, WATERRIGHTNUMBER, VERSION, EXT, TYPEDESCRIPTION ]
+      default: WATERRIGHTID
+
+    OwnershipUpdatesChangeApplicationsSortColumn:
+      type: string
+      enum: [ APPLICATIONID, BASIN ]
+      default: APPLICATIONID
+
+  parameters:
+
+    ownership-updates-change-applications-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/OwnershipUpdatesChangeApplicationsSortColumn'
+
+    populate-by-geocodes-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/PopulateByGeocodesSortColumn'
+
+    populate-by-sellers-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/PopulateBySellersSortColumn'
+
+    ownership-update-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/OwnershipUpdateSortColumn'
+
+    ownership-update-water-right-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/OwnershipUpdateWaterRightSortColumn'
+
+    ownership-update-application-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/OwnershipUpdateApplicationSortColumn'
+
+    ownership-updates-for-contact-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/OwnershipUpdatesForContactSortColumn'
+
+    ownership-update-sellers-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/OwnershipUpdateSellersSortColumn'
+
+    ownership-update-buyers-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/OwnershipUpdateBuyersSortColumn'
+
+    sellers-for-ownership-update-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/SellersForOwnershipUpdateSortColumn'
+
+    buyers-for-ownership-update-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/BuyersForOwnershipUpdateSortColumn'
+
+    ownership-update-id:
+      name: ownershipUpdateId
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+
+    ownership-update-type:
+      name: ownershipUpdateType
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    basin:
+      name: basin
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    water-right-number:
+      name: waterRightNumber
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    ext:
+      name: ext
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    last-name:
+      name: lastName
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    first-name:
+      name: firstName
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    ownership-type:
+      name: ownershipType
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    contact-id:
+      name: contactId
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    application-id:
+      name: applicationId
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    date-received:
+      name: dateReceived
+      in: query
+      schema:
+        type: string
+        format: date
+    date-sale:
+      name: dateSale
+      in: query
+      schema:
+        type: string
+        format: date
+    date-processed:
+      name: dateProcessed
+      in: query
+      schema:
+        type: string
+        format: date
+    date-terminated:
+      name: dateTerminated
+      in: query
+      schema:
+        type: string
+        format: date

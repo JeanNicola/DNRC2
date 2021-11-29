@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>gov.mt</groupId>
+		<artifactId>wris</artifactId>
+    <!--
+      This version MUST match the parent <version>.
+	  	If that value changes, so MUST this one.
+    -->
+    <version>1.0.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>wris-backend</artifactId>
+	<name>wris-backend</name>
+  <!-- Once in production this value should be changed with any backend code changes -->
+  <!-- <version>0.0.1</version> -->
+  <version>BUILD</version>
+	<description>Water Rights Information System - Backend REST APIs</description>
+	<packaging>war</packaging>
+
+  <!-- This sets the build environment. To set, pass in "-P {dev|qa|uat|test|prod}" on the mvn command line -->
+  <profiles>
+    <profile>
+      <id>local</id>
+      <activation>
+          <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <build-env>local</build-env>
+        <fileVersion>1.0-SNAPSHOT</fileVersion>
+      </properties>
+    </profile>
+    <profile>
+      <id>dev</id>
+      <properties>
+        <build-env>dev</build-env>
+        <fileVersion>1.0-SNAPSHOT</fileVersion>
+      </properties>
+    </profile>
+    <profile>
+      <id>qa</id>
+      <properties>
+        <build-env>qa</build-env>
+        <fileVersion>1.0-SNAPSHOT</fileVersion>
+      </properties>
+    </profile>
+    <profile>
+      <id>uat</id>
+      <properties>
+        <build-env>uat</build-env>
+        <fileVersion>1.0-SNAPSHOT</fileVersion>
+      </properties>
+    </profile>
+    <profile>
+      <id>test</id>
+      <properties>
+        <build-env>test</build-env>
+        <!--
+            Set this to the type of change being compiled:
+            - <blank> - normal release
+            - PATCH - bugfix
+            - SNAPSHOT - in development
+        -->
+    	  <change-type></change-type>
+        <fileVersion>${maven.build.timestamp}${change-type}</fileVersion>
+      </properties>
+    </profile>
+    <profile>
+      <id>prod</id>
+      <properties>
+        <build-env>prod</build-env>
+        <!--
+            Set this to the type of change being compiled:
+            - <blank> - normal release
+            - PATCH - bugfix
+            - SNAPSHOT - in development
+        -->
+    	  <change-type></change-type>
+        <fileVersion>${maven.build.timestamp}${change-type}</fileVersion>
+      </properties>
+    </profile>
+  </profiles>
+
+  <properties>
+			<!--
+				Set this to the type of change being compiled:
+				- <blank> - normal release
+				- PATCH - bugfix
+				- SNAPSHOT - in development
+			-->
+		  <change-type></change-type>
+      <!-- Global proprrties defined in the parent pom.xml -->
+      <!-- This is the default build environment. To change pass in -Dbuild-env=??? on the mvn command line -->
+      <build-env>local</build-env>
+			<springfox-boot-starter-version>3.0.0</springfox-boot-starter-version>
+			<mockito-core-version>3.11.0</mockito-core-version>
+			<assertj-core-version>3.19.0</assertj-core-version>
+			<jackson-databind-nullable-version>0.2.1</jackson-databind-nullable-version>
+			<jackson-datatype-jsr310-version>2.12.3</jackson-datatype-jsr310-version>
+			<spring-security-jwt-version>1.1.1.RELEASE</spring-security-jwt-version>
+			<jjwt-api-version>0.11.2</jjwt-api-version>
+			<jjwt-impl-version>0.11.2</jjwt-impl-version>
+			<jjwt-jackson-version>0.11.2</jjwt-jackson-version>
+			<aspectjweaver-version>1.9.6</aspectjweaver-version>
+			<spring-data-oracle-version>1.2.1.RELEASE</spring-data-oracle-version>
+			<commons-math3-version>3.6.1</commons-math3-version>
+			<commons-lang3-version>3.12.0</commons-lang3-version>
+			<clean-plugin-version>3.1.0</clean-plugin-version>
+  </properties>
+
+	<dependencies>
+		<!-- Developer tools -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		
+		<!-- lombok getter / setter annotations -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+
+		<!-- Spring Framework Starter dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+			<!-- OpenAPI/Swagger dependencies -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>${springfox-boot-starter-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>${jackson-databind-nullable-version}</version>
+		</dependency>
+
+		<!-- Testing -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito-core-version}</version>
+		</dependency>
+
+		<!-- Assertion tools -->
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>${assertj-core-version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Validation -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>${jackson-datatype-jsr310-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<!-- Security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+		</dependency>
+
+		<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-test</artifactId>
+				<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-ldap</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-jwt</artifactId>
+			<version>${spring-security-jwt-version}</version>
+		</dependency>
+
+		<!-- JWT Tokens -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>${jjwt-api-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>${jjwt-impl-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>${jjwt-jackson-version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Database -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-oracle</artifactId>
+			<version>${spring-data-oracle-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.oracle.database.jdbc</groupId>
+			<artifactId>ojdbc8</artifactId>
+			<!-- <scope>runtime</scope> -->
+		</dependency>
+
+		<!-- Aspect programming -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${aspectjweaver-version}</version>
+		</dependency>
+
+		<!-- Utilites -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>${commons-math3-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.15</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.15</version>
+		</dependency>
+
+    </dependencies>
+
+	<build>
+		<finalName>${project.name}-${fileVersion}-${build-env}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>repackage</id>
+						<configuration>
+							<outputDirectory>${project.parent.basedir}/deploy</outputDirectory>
+						</configuration>
+				</execution>
+				</executions>
+			</plugin>
+
+			<!-- Clean out the node and node_modules directories -->
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+			  <version>${clean-plugin-version}</version>
+        <configuration>
+        <filesets>
+          <fileset>
+            <directory>node</directory>
+							<includes>
+								<include>**/*</include>
+								<include>**</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+
+			<!-- Install node and npm for the YAML configuration process -->
+			<plugin>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>${frontend-maven-version}</version>
+				<configuration>
+					<nodeVersion>${node-version}</nodeVersion>
+					<installDirectory>node</installDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>install node and npm</id>
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>merge yml</id>
+						<goals>
+							<goal>npx</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<arguments>openapi-merge-cli</arguments>	
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Build the YAML files for the REST APIs -->
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>5.0.1</version>
+				<!-- As of 5/26/21, version 5.1.1 in Maven repository did not properly support default values for enums -->
+				<executions>
+					<execution>
+						<id>openapi-code-generation</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<!-- <verbose>true</verbose> -->
+							<inputSpec>${project.basedir}/src/main/resources/output.json</inputSpec>
+							<generatorName>spring</generatorName>
+							<!--apiPackage>gov.mt.wris.api</apiPackage -->
+							<apiPackage>${project.parent.groupId}.${project.parent.artifactId}.api</apiPackage>
+							<!-- modelPackage>gov.mt.wris.dtos</modelPackage -->
+							<modelPackage>${project.parent.groupId}.${project.parent.artifactId}.dtos</modelPackage>
+							<templateDirectory>${project.basedir}/src/main/resources/templates</templateDirectory>
+							<!-- <generateModels>false</generateModels> -->
+							<supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+								<configOptions>
+									<delegatePattern>true</delegatePattern>
+									<dateLibrary>java8-localdatetime</dateLibrary>
+								</configOptions>
+							</configuration>
+						</execution>
+				</executions>
+			</plugin>
+
+			<!-- Move the deployment artifacts to the parent directory for ease in finding -->
+			<!-- <plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-deployment</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.parent.basedir}/deploy</outputDirectory>
+							<overwrite>true</overwrite>
+							<resources>
+								<resource>
+									<directory>target</directory>
+									<includes>
+										<include>${project.name}-${fileVersion}-${build-env}.war</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin> -->
+		</plugins>
+	</build>
+</project>

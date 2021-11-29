@@ -1,0 +1,81 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /water-rights/{waterRightId}/ownership-updates:
+    get:
+      summary: get ownership updates attached to a water right
+      operationId: getWaterRightOwnershipUpdates
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/water-right-ownership-update-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/water-right-id'
+      responses:
+        200:
+          description: a page of ownership updates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterRightOwnershipUpdatePageDto'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    WaterRightOwnershipUpdatePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/WaterRightOwnershipSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WaterRightOwnershipUpdateDto'
+    WaterRightOwnershipUpdateDto:
+      type: object
+      properties:
+        ownerUpdateId:
+          type: integer
+          format: int64
+        updateType:
+          type: string
+        dateReceived:
+          type: string
+          format: date
+        dateProcessed:
+          type: string
+          format: date
+        dateTerminated:
+          type: string
+          format: date
+    WaterRightOwnershipSortColumn:
+      type: string
+      enum: [ OWNERUPDATEID, UPDATETYPE, DATERECEIVED, DATEPROCESSED, DATETERMINATED ]
+      default: OWNERUPDATEID
+  parameters:
+    water-right-ownership-update-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/WaterRightOwnershipSortColumn'

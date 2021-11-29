@@ -1,0 +1,63 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px">
+  <div class="review-ownership-update-information">
+    <div class="ownership-update-row">
+      <app-ownership-update-data-row
+        [data]="data.values"
+        [displayData]="data.values"
+      ></app-ownership-update-data-row>
+    </div>
+    <mat-tab-group #tabs>
+      <mat-tab label="Water Rights">
+        <app-affected-water-rights
+          style="width: 100%"
+          [showDividedOwnership]="false"
+          [idArray]="[data.values.ownershipUpdateId]"
+          [hideInsert]="true"
+          [hideActions]="true"
+          [title]="''"
+          [dblClickableRow]="false"
+          [containerStyles]="{}"
+        ></app-affected-water-rights>
+      </mat-tab>
+      <mat-tab label="Sellers">
+        <app-sellers-table
+          style="width: 100%"
+          [readOnly]="true"
+          [dblClickableRow]="false"
+          [clickableRow]="false"
+          [hideActions]="true"
+          [hideInsert]="true"
+          [ownerUpdateId]="data.values.ownershipUpdateId"
+          [hideTitle]="true"
+        >
+        </app-sellers-table>
+      </mat-tab>
+      <mat-tab label="Buyers">
+        <app-buyers-table
+          style="width: 100%"
+          [readOnly]="true"
+          [ownerUpdateId]="data.values.ownershipUpdateId"
+          [dblClickableRow]="false"
+          [clickableRow]="false"
+          [hideActions]="true"
+          [hideInsert]="true"
+          [hideTitle]="true"
+        ></app-buyers-table>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <button
+    [mat-dialog-close]="null"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Close"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>

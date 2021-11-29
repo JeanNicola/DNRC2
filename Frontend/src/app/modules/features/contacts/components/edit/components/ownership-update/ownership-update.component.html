@@ -1,0 +1,25 @@
+<div class="ownership-update-container">
+  <app-ownership-update-table
+    style="width: 100%"
+    (ownerUpdateClick)="onOwnerUpdateClickHandler($event)"
+  ></app-ownership-update-table>
+  <div class="ownership-update-subcontainer">
+    <app-affected-water-rights
+      class="affected-water-rights-container"
+      [idArray]="[selectedOwnerUpdateId]"
+      [focusFirstElementOnInit]="true"
+      [hideActions]="true"
+      [hideEdit]="true"
+      [hideDelete]="true"
+      [hideInsert]="true"
+    ></app-affected-water-rights>
+    <app-affected-change-applications
+      class="affected-applications-container"
+      [ownerUpdateId]="selectedOwnerUpdateId"
+      [hideInsert]="true"
+      [hideDelete]="true"
+      [hideActions]="true"
+      [focusFirstElementOnInit]="false"
+    ></app-affected-change-applications>
+  </div>
+</div>

@@ -1,0 +1,198 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /case-types:
+    get:
+      summary: get paginated list of Case Types
+      operationId: getCaseTypes
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/case-type-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: query
+          name: code
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+        - in: query
+          name: description
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+        - in: query
+          name: program
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+      responses:
+        200:
+          description: a list of Case Types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseTypePageDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: create a new Case Type
+      operationId: createCaseType
+      requestBody:
+        description: The new Case Type
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseTypeDto'
+      responses:
+        201:
+          description: Created a Case Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseTypeDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /case-types/{code}:
+    delete:
+      summary: delete an existing Case Type
+      operationId: deleteCaseType
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Case Type Code
+      responses:
+        204:
+          description: deleted the Case Type
+        404:
+          description: No Case Type with that Code was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: change an existing Case Type
+      operationId: changeCaseType
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Case Type Code
+      requestBody:
+          description: The updated Case Type
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseTypeDto'
+      responses:
+        200:
+          description: Changed the Case Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseTypeDto'
+        301:
+          description: Changed and Moved the Case Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseTypeDto'
+        404:
+          description: No Case Type was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    CaseTypeDto:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 4
+          minLength: 3
+          pattern: '^[ -~]+$'
+        description:
+          type: string
+          maxLength: 35
+          pattern: '^[ -~]+$'
+        program:
+          type: string
+          x-message-name: Program Code
+          enum: [NA, WC]
+        programDescription:
+          type: string
+          x-message-name: Program Description
+      required:
+        - code
+        - description
+        - program
+      example:
+        code: TEST
+        description: Test Example
+        program: WC 
+    CaseTypePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/CaseTypeSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseTypeDto'
+    CaseTypeSortColumn:
+      type: string
+      enum: [CODE, DESCRIPTION, PROGRAMDESCRIPTION]
+      default: CODE
+  parameters:
+    case-type-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/CaseTypeSortColumn'

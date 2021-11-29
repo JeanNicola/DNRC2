@@ -1,0 +1,277 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content>
+  <mat-horizontal-stepper
+    *ngIf="
+      currentProgramType !== null &&
+      currentCaseType !== 'ARMR' &&
+      !data.attachedApplicationId
+    "
+    [selectedIndex]="selectedStepIndex"
+    [linear]="true"
+    #stepper
+    (selectionChange)="stepping($event)"
+  >
+    <ng-template matStepperIcon="edit" let-index="index">
+      {{ index + 1 }}
+    </ng-template>
+
+    <mat-step
+      [completed]="formWasInitialized && formGroup.valid"
+      label="Basic Info"
+    >
+      <div style="margin-top: 15px">
+        <ng-container *ngTemplateOutlet="basicFormTemplate"> </ng-container>
+      </div>
+    </mat-step>
+    <ng-template [ngIf]="currentProgramType === programTypes.WC_PROGRAM">
+      <mat-step [completed]="currentStep >= 1" label="Search Decree Basin">
+        <ng-container *ngTemplateOutlet="searchTemplate"> </ng-container>
+      </mat-step>
+      <mat-step [completed]="!!decreeBasinRow">
+        <ng-template matStepLabel>
+          <div class="stepper-header-overlay" (click)="onSearch()"></div>
+          Select Decree Basin
+        </ng-template>
+        <ng-container *ngTemplateOutlet="resultsTemplate"> </ng-container>
+      </mat-step>
+    </ng-template>
+    <ng-template [ngIf]="currentProgramType === programTypes.NA_PROGRAM">
+      <mat-step [completed]="currentStep >= 1" label="Search an Application">
+        <ng-container *ngTemplateOutlet="searchTemplate"> </ng-container>
+      </mat-step>
+      <mat-step [completed]="!!decreeBasinRow">
+        <ng-template matStepLabel>
+          <div class="stepper-header-overlay" (click)="onSearch()"></div>
+          Select an Application
+        </ng-template>
+        <ng-container *ngTemplateOutlet="resultsTemplate"> </ng-container>
+      </mat-step>
+    </ng-template>
+  </mat-horizontal-stepper>
+  <div
+    style="margin-top: 15px"
+    *ngIf="
+      currentProgramType === null ||
+      currentCaseType === 'ARMR' ||
+      data.attachedApplicationId
+    "
+  >
+    <ng-container *ngTemplateOutlet="basicFormTemplate"> </ng-container>
+  </div>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <ng-template [ngIf]="formGroup">
+    <button
+      (click)="save()"
+      [matTooltip]="tooltip"
+      mat-mini-fab
+      color="primary"
+      [disabled]="!formGroup.valid || (!formGroup.dirty && mode !== 'search')"
+    >
+      <mat-icon>done</mat-icon>
+    </button>
+  </ng-template>
+
+  <button
+    (click)="close()"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>
+
+<!-- Search Template -->
+<ng-template #searchTemplate>
+  <ng-template [ngIf]="currentProgramType === programTypes.WC_PROGRAM">
+    <form [formGroup]="decreeBasinSearchForm" class="decree-search-form">
+      <div
+        class="form-field"
+        *ngFor="let field of decreeBasinSearchColumns; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+        >
+        </shared-data-form-field>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template [ngIf]="currentProgramType === programTypes.NA_PROGRAM">
+    <form [formGroup]="applicationSearchForm" class="decree-search-form">
+      <div
+        class="form-field"
+        *ngFor="let field of applicationSearchColumns; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+        >
+        </shared-data-form-field>
+      </div>
+    </form>
+  </ng-template>
+  <div class="button-container">
+    <button
+      (click)="handleCurrentStep(currentStep - 1)"
+      mat-stroked-button
+      color="primary"
+      matTooltip="Previous Step"
+      matStepperPrevious
+    >
+      Back
+    </button>
+    <button
+      (click)="handleCurrentStep(currentStep + 1)"
+      mat-stroked-button
+      color="primary"
+      matTooltip="Search"
+      matStepperNext
+    >
+      Search
+    </button>
+  </div>
+</ng-template>
+
+<!-- Results Template -->
+<ng-template #resultsTemplate>
+  <ng-template [ngIf]="currentProgramType === programTypes.WC_PROGRAM">
+    <app-data-table
+      *ngIf="decreeBasinDataFound; else noData"
+      [data]="decreeBasinRows"
+      [selectedRow]="selectedRow"
+      [columns]="decreeBasinSearchDisplayColumns"
+      [hideActions]="decreeBasinHideActions"
+      [hideEdit]="true"
+      [hideDelete]="true"
+      [hideHeader]="decreeBasinHideHeader"
+      [clickableRow]="decreeBasinClickableRow"
+      [dblClickableRow]="decreeBasinDblClickableRow"
+      [highlightOneRow]="true"
+      [isInMain]="false"
+      [primarySortColumn]="decreeBasinSortColumn"
+      [primaryDirection]="decreeBasinSortDirection"
+      (sortEvent)="onSortRequest($event)"
+      (rowClickEvent)="onRowClick($event)"
+      (rowDblClickEvent)="onRowDoubleClick($event)"
+    >
+    </app-data-table>
+    <mat-paginator
+      *ngIf="decreeBasinQueryResult && decreeBasinRows?.length"
+      [length]="decreeBasinQueryResult.totalElements"
+      [pageIndex]="decreeBasinQueryParameters.pageNumber - 1"
+      [pageSize]="decreeBasinQueryResult.pageSize"
+      [pageSizeOptions]="decreeBasinPageSizeOptions"
+      [showFirstLastButtons]="true"
+      (page)="onPaging($event)"
+    >
+    </mat-paginator>
+    <div class="button-container">
+      <button
+        (click)="handleCurrentStep(currentStep - 1)"
+        mat-stroked-button
+        color="primary"
+        matTooltip="Previous Step"
+        matStepperPrevious
+      >
+        Back
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template [ngIf]="currentProgramType === programTypes.NA_PROGRAM">
+    <app-data-table
+      *ngIf="applicationDataFound; else noData"
+      [selectedRow]="selectedRow"
+      [data]="applicationRows"
+      [columns]="applicationSearchDisplayColumns"
+      [hideActions]="applicationHideActions"
+      [hideEdit]="true"
+      [hideDelete]="true"
+      [hideHeader]="applicationHideHeader"
+      [clickableRow]="applicationClickableRow"
+      [dblClickableRow]="applicationDblClickableRow"
+      [highlightOneRow]="true"
+      [isInMain]="false"
+      [primarySortColumn]="applicationSortColumn"
+      [primaryDirection]="applicationSortDirection"
+      (sortEvent)="onSortRequest($event)"
+      (rowClickEvent)="onRowClick($event)"
+      (rowDblClickEvent)="onRowDoubleClick($event)"
+    >
+    </app-data-table>
+    <mat-paginator
+      *ngIf="applicationQueryResult && applicationRows?.length"
+      [length]="applicationQueryResult.totalElements"
+      [pageIndex]="applicationQueryParameters.pageNumber - 1"
+      [pageSize]="applicationQueryResult.pageSize"
+      [pageSizeOptions]="applicationPageSizeOptions"
+      [showFirstLastButtons]="true"
+      (page)="onPaging($event)"
+    >
+    </mat-paginator>
+    <div class="button-container">
+      <button
+        (click)="handleCurrentStep(currentStep - 1)"
+        mat-stroked-button
+        color="primary"
+        matTooltip="Previous Step"
+        matStepperPrevious
+      >
+        Back
+      </button>
+    </div>
+  </ng-template>
+</ng-template>
+
+<!-- TEMPLATE FOR BASIC FORM -->
+<ng-template #basicFormTemplate>
+  <form [formGroup]="formGroup" (keyup)="keyPress($event)">
+    <mat-error>
+      <app-form-errors></app-form-errors>
+    </mat-error>
+    <div class="form-field" *ngFor="let field of displayFields; let i = index">
+      <shared-data-form-field
+        *ngIf="
+          field.columnId === 'caseType' ||
+          (currentProgramType !== null &&
+            currentCaseType !== 'ARMR' &&
+            field.columnId !== 'waterCourtCaseNumber') ||
+          (field.columnId === 'waterCourtCaseNumber' &&
+            currentProgramType === programTypes.WC_PROGRAM)
+        "
+        [mode]="mode"
+        [field]="field"
+        [value]="data?.values !== null ? data.values[field.columnId] : null"
+        (shiftTabEvent)="receiveShiftTab($event, i)"
+        (changeEvent)="_onChange($event)"
+        (blurEvent)="_onBlur($event)"
+      >
+      </shared-data-form-field>
+    </div>
+
+    <div class="button-container" *ngIf="currentProgramType !== null">
+      <button
+        *ngIf="currentCaseType !== 'ARMR' && !data.attachedApplicationId"
+        (click)="handleCurrentStep(currentStep + 1)"
+        mat-stroked-button
+        color="primary"
+        matTooltip="Next Step"
+        matStepperNext
+        [disabled]="!formGroup.valid"
+      >
+        Next
+      </button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #noData>
+  <h3 class="data-message">No data found</h3>
+</ng-template>

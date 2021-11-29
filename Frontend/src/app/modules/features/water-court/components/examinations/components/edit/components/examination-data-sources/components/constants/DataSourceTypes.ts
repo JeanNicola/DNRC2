@@ -1,0 +1,7 @@
+export enum DataSourceTypes {
+  AERIAL_PHOTO = 'AER',
+  FIELD_INVESTIGATION = 'FLD',
+  USGS_QUAD_MAPS = 'USQ',
+  WATER_RESOURCE_SURVEY = 'WRS',
+  WRS_AERIAL_PHOTO = 'WAE',
+}

@@ -1,0 +1,98 @@
+<div>
+  <app-pod-table
+    [canEdit]="canEdit"
+    [isDecreed]="headerData?.isDecreed"
+    [isEditableIfDecreed]="headerData?.isEditableIfDecreed"
+    [idArray]="[waterRightId, version]"
+    (podSelect)="onPodSelect($event)"
+    (podUpdate)="onPODUpdate()"
+    [headerReloadEvent]="headerReloadEvent"
+  ></app-pod-table>
+  <ng-container *ngIf="data" class="details-header">
+    <mat-card class="summary">
+      <app-flow-rate-summary
+        [canEdit]="canEdit"
+        [isDecreed]="headerData?.isDecreed"
+        [isEditableIfDecreed]="headerData?.isEditableIfDecreed"
+        [idArray]="[waterRightId, version]"
+        [waterRightTypeCode]="waterRightTypeCode"
+        (reloadPeriods)="reloadPeriods()"
+      ></app-flow-rate-summary>
+    </mat-card>
+    <div>
+      <h3>Point of Diversion Details for POD ID: {{ data.podNumber }}</h3>
+    </div>
+    <div class="child-container">
+      <div class="left">
+        <mat-card>
+          <app-pod-main-detail
+            [canEdit]="canEdit"
+            [isDecreed]="headerData?.isDecreed"
+            [isEditableIfDecreed]="headerData?.isEditableIfDecreed"
+            [idArray]="[waterRightId, version, podId]"
+            [displayData]="data"
+            [values]="data"
+            (reloadDetails)="reloadDetails()"
+          ></app-pod-main-detail>
+        </mat-card>
+        <mat-card>
+          <app-pod-subdivision-info
+            [canEdit]="canEdit"
+            [isDecreed]="headerData?.isDecreed"
+            [isEditableIfDecreed]="headerData?.isEditableIfDecreed"
+            [idArray]="[waterRightId, version, podId]"
+            [values]="data"
+            (reloadDetails)="reloadDetails()"
+          ></app-pod-subdivision-info>
+        </mat-card>
+        <app-period-of-diversions
+          [canEdit]="canEdit"
+          [isDecreed]="headerData?.isDecreed"
+          [isEditableIfDecreed]="headerData?.isEditableIfDecreed"
+          [idArray]="[waterRightId, version, podId]"
+          [periodReloadEvent]="periodReloadEvent"
+        ></app-period-of-diversions>
+      </div>
+      <div class="right">
+        <mat-card>
+          <app-pod-source-detail
+            [canEdit]="canEdit"
+            [isDecreed]="headerData?.isDecreed"
+            [isEditableIfDecreed]="headerData?.isEditableIfDecreed"
+            [idArray]="[waterRightId, version, podId]"
+            [values]="data"
+            (reloadDetails)="reloadDetails()"
+          ></app-pod-source-detail>
+        </mat-card>
+        <mat-card>
+          <app-pod-well-data
+            [canEdit]="canEdit"
+            [isDecreed]="headerData?.isDecreed"
+            [isEditableIfDecreed]="headerData?.isEditableIfDecreed"
+            [idArray]="[waterRightId, version, podId]"
+            [displayData]="data"
+            [values]="data"
+            (reloadDetails)="reloadDetails()"
+          ></app-pod-well-data>
+        </mat-card>
+        <mat-card>
+          <app-pod-address-detail
+            [canEdit]="canEdit"
+            [isDecreed]="headerData?.isDecreed"
+            [isEditableIfDecreed]="headerData?.isEditableIfDecreed"
+            [idArray]="[waterRightId, version, podId]"
+            [displayData]="data"
+            [values]="data"
+            (reloadDetails)="reloadDetails()"
+          ></app-pod-address-detail>
+        </mat-card>
+        <app-pod-enforcements
+          [canEdit]="canEdit"
+          [isDecreed]="headerData?.isDecreed"
+          [isEditableIfDecreed]="headerData?.isEditableIfDecreed"
+          [idArray]="[waterRightId, version, podId]"
+        ></app-pod-enforcements>
+      </div>
+    </div>
+  </ng-container>
+</div>

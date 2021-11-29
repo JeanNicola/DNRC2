@@ -1,0 +1,158 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /ditches:
+    get:
+      summary: search for ditches
+      operationId: searchDitches
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/ditch-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: query
+          name: ditchName
+          schema:
+            type: string
+          description: The ditch name to search for
+      responses:
+        200:
+          description: a page of Ditches
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DitchPageDto'
+    post:
+      summary: create a new ditch
+      operationId: createDitch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DitchCreationDto'
+      responses:
+        201:
+          description: the newly created Ditch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DitchDto'
+components:
+  schemas:
+    DitchPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/DitchSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DitchDto'
+    DitchDto:
+      type: object
+      properties:
+        ditchId:
+          type: integer
+          format: int64
+        ditchType:
+          type: string
+        ditchName:
+          type: string
+        legalLandDescription:
+          type: string
+    DitchCreationDto:
+      type: object
+      properties:
+        ditchName:
+          type: string
+          maxLength: 100
+          pattern: '^[ -~]*$'
+          x-message-name: Diversion/Ditch Name
+        ditchTypeCode:
+          type: string
+        # Legal Land Description
+        governmentLot:
+          type: integer
+          format: int64
+        description40:
+          type: string
+        description80:
+          type: string
+        description160:
+          type: string
+        description320:
+          type: string
+        section:
+          type: integer
+          format: int64
+        township:
+          type: integer
+          format: int64
+        townshipDirection:
+          type: string
+        range:
+          type: integer
+          format: int64
+        rangeDirection:
+          type: string
+        countyId:
+          type: integer
+          format: int64
+        # other fields
+        capacity:
+          type: number
+          format: double
+        depth:
+          type: number
+          format: double
+        width:
+          type: number
+          format: double
+        length:
+          type: number
+          format: double
+        slope:
+          type: number
+          format: double
+        valid:
+          type: boolean
+      required:
+        - ditchName
+        - ditchTypeCode
+        - section
+        - township
+        - townshipDirection
+        - range
+        - rangeDirection
+        - countyId
+    DitchSortColumn:
+      type: string
+      enum: [DITCHNAME, LEGALLANDDESCRIPTION]
+      default: DITCHNAME
+  parameters:
+    ditch-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/DitchSortColumn'

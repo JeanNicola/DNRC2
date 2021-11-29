@@ -1,0 +1,6 @@
+.register-code-table {
+  ::ng-deep .mat-card {
+    width: -webkit-fill-available;
+    width: -moz-available;
+  }
+}

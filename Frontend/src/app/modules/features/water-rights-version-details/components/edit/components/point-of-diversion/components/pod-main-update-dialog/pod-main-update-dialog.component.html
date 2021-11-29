@@ -1,0 +1,160 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px">
+  <form [formGroup]="formGroup" (keyup)="keyPress($event)">
+    <mat-error>
+      <app-form-errors></app-form-errors>
+    </mat-error>
+    <div class="one-lined">
+      <div
+        class="form-field"
+        *ngFor="let field of originColumns; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          [value]="data?.values !== null ? data.values[field.columnId] : null"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+          (changeEvent)="_onChange($event)"
+          (blurEvent)="_onBlur($event)"
+        >
+        </shared-data-form-field>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <h3>Means of Diversion</h3>
+    <div class="one-lined">
+      <div
+        class="form-field one-lined"
+        *ngFor="let field of firstMeansColumns; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          [value]="data?.values !== null ? data.values[field.columnId] : null"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+          (changeEvent)="_onChange($event)"
+          (blurEvent)="_onBlur($event)"
+        >
+        </shared-data-form-field>
+      </div>
+    </div>
+    <div class="one-lined">
+      <div
+        class="form-field one-lined"
+        *ngFor="let field of secondMeansColumns; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          [value]="data?.values !== null ? data.values[field.columnId] : null"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+          (changeEvent)="_onChange($event)"
+          (blurEvent)="_onBlur($event)"
+        >
+        </shared-data-form-field>
+        <ng-container *ngIf="field.columnId === 'ditchId'">
+          <button
+            mat-mini-fab
+            class="edit-button"
+            color="primary"
+            matTooltip="Select a Diversion/Ditch"
+            (click)="onDitchInsert()"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+    <div class="one-lined">
+      <div
+        class="form-field one-lined"
+        *ngFor="let field of thirdMeansColumns; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          [value]="data?.values !== null ? data.values[field.columnId] : null"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+          (changeEvent)="_onChange($event)"
+          (blurEvent)="_onBlur($event)"
+        >
+        </shared-data-form-field>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <h3>Legal Land Description</h3>
+    <div class="one-lined">
+      <div
+        class="form-field one-lined"
+        *ngFor="let field of firstLegalColumns; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          [value]="data?.values !== null ? data.values[field.columnId] : null"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+          (changeEvent)="_onChange($event)"
+          (blurEvent)="_onBlur($event)"
+        >
+        </shared-data-form-field>
+      </div>
+    </div>
+    <div class="one-lined">
+      <div
+        class="form-field one-lined"
+        *ngFor="let field of secondLegalColumns; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          [value]="data?.values !== null ? data.values[field.columnId] : null"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+          (changeEvent)="_onChange($event)"
+          (blurEvent)="_onBlur($event)"
+        >
+        </shared-data-form-field>
+      </div>
+    </div>
+    <div class="one-lined">
+      <div
+        class="form-field one-lined"
+        *ngFor="let field of thirdLegalColumns; let i = index"
+      >
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          [value]="data?.values !== null ? data.values[field.columnId] : null"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+          (changeEvent)="_onChange($event)"
+          (blurEvent)="_onBlur($event)"
+        >
+        </shared-data-form-field>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <ng-template [ngIf]="formGroup">
+    <button
+      (click)="save()"
+      [matTooltip]="tooltip"
+      mat-mini-fab
+      color="primary"
+      [disabled]="formGroup.invalid || (!changedDitch && formGroup.pristine)"
+    >
+      <mat-icon>done</mat-icon>
+    </button>
+  </ng-template>
+
+  <button
+    (click)="close()"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>

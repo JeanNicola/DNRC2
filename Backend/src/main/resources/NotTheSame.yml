@@ -1,0 +1,95 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /customers/{contactId}/not-the-same:
+    get:
+      summary: get a page of Not The Same Contacts
+      operationId: searchNotTheSame
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/not-the-same-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: path
+          name: contactId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: a list of Not The Same Contacts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotTheSameSearchPageDto'
+
+components:
+  schemas:
+    NotTheSameSearchPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/NotTheSameSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotTheSameSearchResultDto'
+
+    NotTheSameSearchResultDto:
+      type: object
+      properties:
+        notthesameId:
+          type: integer
+          format: int64
+        contactId:
+          type: integer
+          format: int64
+        lastName:
+          type: string
+          pattern: '^[ -~]*$'
+        firstName:
+          type: string
+          pattern: '^[ -~]*$'
+        middleInitial:
+          type: string
+          pattern: '^[ -~]*$'
+        suffix:
+          type: string
+          pattern: '^[ -~]*$'
+        name:
+          type: string
+          pattern: '^[ -~]*$'
+
+    NotTheSameSortColumn:
+      type: string
+      enum: [ NAME, CONTACTID ]
+      default: NAME
+
+  parameters:
+    not-the-same-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/NotTheSameSortColumn'

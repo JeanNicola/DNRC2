@@ -1,0 +1,300 @@
+<div>
+  <h2 mat-dialog-title class="title" style="margin-bottom: 10px">
+    {{ title }}
+  </h2>
+
+  <mat-dialog-content *ngIf="!loaded">
+    <h2>Loading...</h2>
+  </mat-dialog-content>
+  <mat-divider></mat-divider>
+  <mat-dialog-content *ngIf="loaded">
+    <mat-horizontal-stepper
+      [selectedIndex]="selectedStepIndex"
+      [linear]="true"
+      #stepper
+      (selectionChange)="stepping($event)"
+    >
+      <ng-template matStepperIcon="edit" let-index="index">
+        {{ index + 1 }}
+      </ng-template>
+      <mat-step
+        [completed]="
+          (basicInformationFormGroup.valid && !!waterRights?.length) ||
+          currentStep === 3
+        "
+        label="Complete basic information"
+      >
+        <form
+          class="ownership-update-form"
+          [formGroup]="basicInformationFormGroup"
+        >
+          <div class="ownership-update-checkboxes">
+            <div
+              class="ownership-update-checkbox"
+              *ngFor="let field of ownershipUpdateCheckboxes; let i = index"
+            >
+              <shared-data-form-field
+                [value]="checkboxesState[field.columnId]"
+                [mode]="mode"
+                [field]="field"
+                [removePadding]="true"
+              >
+              </shared-data-form-field>
+            </div>
+          </div>
+
+          <div
+            class="form-field"
+            *ngFor="let field of displayFields; let i = index"
+          >
+            <shared-data-form-field
+              *ngIf="!field.list"
+              [mode]="mode"
+              [field]="field"
+              (changeEvent)="onChange($event)"
+            >
+            </shared-data-form-field>
+          </div>
+        </form>
+        <div>
+          <div class="water-rights-header">
+            <div class="create-sub-title">Water Rights</div>
+            <div class="text-buttons-container">
+              <button
+                #waterRightAddFocus
+                (click)="onInsertWaterRight()"
+                mat-mini-fab
+                color="primary"
+                matTooltip="Add Water Rights"
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+          </div>
+          <div>
+            <app-data-table
+              *ngIf="waterRights.length"
+              [data]="waterRightsDataSource"
+              [columns]="waterRightColumns"
+              [permissions]="permissions"
+              [isInMain]="false"
+              hideEdit="true"
+              noSort="true"
+              (deleteEvent)="onDeleteWaterRight($event)"
+            ></app-data-table>
+          </div>
+          <div *ngIf="!waterRights.length">
+            At least one Water Right is required.
+          </div>
+        </div>
+
+        <div class="button-container" style="margin-top: 15px">
+          <button
+            *ngIf="basicInformationFormGroup.valid && !!waterRights?.length"
+            mat-stroked-button
+            color="primary"
+            matTooltip="Next Step"
+            matStepperNext
+          >
+            Next
+          </button>
+        </div>
+      </mat-step>
+      <mat-step [completed]="currentStep >= 1" label="Add Sellers">
+        <div class="sellers-header">
+          <div class="create-sub-title">Sellers</div>
+          <div class="text-buttons-container">
+            <button
+              #sellerAddFocus
+              (click)="onInsertSeller()"
+              mat-mini-fab
+              color="primary"
+              matTooltip="Add New Sellers"
+            >
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div>
+          <app-data-table
+            *ngIf="sellers.length"
+            [data]="sellersDataSource"
+            [columns]="contactColumns"
+            [permissions]="permissions"
+            [isInMain]="false"
+            (deleteEvent)="onDelete($event, ownershipUpateTypeEnum.SELLER)"
+            hideEdit="true"
+            noSort="true"
+          ></app-data-table>
+        </div>
+        <div *ngIf="!sellers.length" class="no-customers-message">
+          Search and add Sellers to this Ownership Update
+        </div>
+        <div class="button-container">
+          <button
+            mat-stroked-button
+            color="primary"
+            matTooltip="Previous Step"
+            matStepperPrevious
+          >
+            Back
+          </button>
+          <button
+            mat-stroked-button
+            color="primary"
+            matTooltip="Next Step"
+            matStepperNext
+          >
+            Next
+          </button>
+        </div>
+      </mat-step>
+      <mat-step [completed]="currentStep >= 2" label="Add Buyers">
+        <div class="buyers-header">
+          <div class="create-sub-title">Buyers</div>
+          <div class="text-buttons-container">
+            <button
+              #buyerAddFocus
+              (click)="onInsertBuyer()"
+              mat-mini-fab
+              color="primary"
+              matTooltip="Add New Buyers"
+            >
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div>
+          <app-data-table
+            *ngIf="buyers.length"
+            [data]="buyersDataSource"
+            [columns]="contactColumns"
+            [permissions]="permissions"
+            [isInMain]="false"
+            (deleteEvent)="onDelete($event, ownershipUpateTypeEnum.BUYER)"
+            hideEdit="true"
+            noSort="true"
+          ></app-data-table>
+        </div>
+        <div *ngIf="!buyers.length" class="no-customers-message">
+          Search and add Buyers to this Ownership Update
+        </div>
+        <div class="button-container">
+          <button
+            mat-stroked-button
+            color="primary"
+            matTooltip="Previous Step"
+            matStepperPrevious
+          >
+            Back
+          </button>
+          <button
+            mat-stroked-button
+            color="primary"
+            matTooltip="Next Step"
+            matStepperNext
+          >
+            Next
+          </button>
+        </div>
+      </mat-step>
+      <mat-step [completed]="currentStep >= 3" label="Review Information">
+        <div class="data-row-flex-container" *ngIf="currentStep === 3">
+          <div
+            class="form-field"
+            *ngFor="let field of displayFieldsForDataRow; let i = index"
+          >
+            <shared-data-row-field
+              [dataValue]="basicInformationFormGroup.get(field.columnId)?.value"
+              [inputStyles]="{ whiteSpace: 'nowrap', overflow: 'hidden' }"
+              [field]="field"
+              [removePadding]="true"
+            ></shared-data-row-field>
+          </div>
+          <div
+            class="ownership-update-checkbox"
+            *ngFor="let field of ownershipUpdateCheckboxes; let i = index"
+          >
+            <shared-data-row-field
+              [dataValue]="basicInformationFormGroup.get(field.columnId).value"
+              [inputStyles]="{ whiteSpace: 'nowrap', overflow: 'hidden' }"
+              [field]="field"
+              [removePadding]="true"
+            ></shared-data-row-field>
+          </div>
+        </div>
+
+        <mat-tab-group #tabs>
+          <mat-tab label="Water Rights">
+            <app-data-table
+              *ngIf="waterRights.length"
+              [data]="waterRightsDataSource"
+              [columns]="waterRightColumns"
+              [permissions]="permissions"
+              [isInMain]="false"
+              [hideActions]="true"
+              hideEdit="true"
+              noSort="true"
+            ></app-data-table>
+          </mat-tab>
+          <mat-tab label="Sellers">
+            <app-data-table
+              *ngIf="sellers.length"
+              [data]="sellersDataSource"
+              [columns]="contactColumns"
+              [permissions]="permissions"
+              [isInMain]="false"
+              [hideActions]="true"
+              hideEdit="true"
+              noSort="true"
+            ></app-data-table>
+            <div *ngIf="!sellers.length" class="no-customers-message">
+              No Sellers were added
+            </div>
+          </mat-tab>
+          <mat-tab label="Buyers">
+            <app-data-table
+              *ngIf="buyers.length"
+              [data]="buyersDataSource"
+              [columns]="contactColumns"
+              [permissions]="permissions"
+              [isInMain]="false"
+              [hideActions]="true"
+              hideEdit="true"
+              noSort="true"
+            ></app-data-table>
+            <div *ngIf="!buyers.length" class="no-customers-message">
+              No Buyers were added
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+        <div class="button-container" style="margin-top: 15px">
+          <button
+            mat-stroked-button
+            color="primary"
+            matTooltip="Previous Step"
+            matStepperPrevious
+          >
+            Back
+          </button>
+        </div>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </mat-dialog-content>
+  <mat-divider></mat-divider>
+
+  <mat-dialog-actions align="end">
+    <button
+      mat-mini-fab
+      color="primary"
+      [matTooltip]="currentStep === 3 ? 'Create Ownership Update' : 'Next step'"
+      [disabled]="currentStep !== 3"
+      (click)="save()"
+    >
+      <mat-icon>done</mat-icon>
+    </button>
+    <button mat-mini-fab color="warn" matTooltip="Cancel" (click)="close()">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </mat-dialog-actions>
+</div>

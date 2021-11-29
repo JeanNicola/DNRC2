@@ -1,0 +1,16 @@
+.data-message {
+  text-align: center;
+}
+
+.search-form-container {
+  display: flex;
+  align-items: center;
+}
+
+.search-form {
+  flex: 1;
+
+  ::ng-deep .mat-form-field-wrapper {
+    padding: 0;
+  }
+}

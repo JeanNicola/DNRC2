@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px">
+  <app-affected-water-rights
+    [showDividedOwnership]="false"
+    [idArray]="[data.ownershipUpdateId]"
+    [title]="''"
+    [dblClickableRow]="false"
+    [hideActions]="true"
+    [hideEdit]="true"
+    [hideDelete]="true"
+    [hideInsert]="true"
+  ></app-affected-water-rights>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    [mat-dialog-close]="null"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>

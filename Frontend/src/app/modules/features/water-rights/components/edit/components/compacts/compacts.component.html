@@ -1,0 +1,61 @@
+<mat-card>
+  <p *ngIf="!data && showLoading">Loading...</p>
+
+  <div
+    class="data-row"
+    [ngClass]="title ? 'row-with-title' : ''"
+    [ngStyle]="containerStyles"
+    *ngIf="data"
+  >
+    <div *ngIf="title" class="row-title">
+      <span [ngStyle]="titleStyles">{{ title }}</span>
+
+      <ng-template ngFor let-button [ngForOf]="rowButtons" let-i="index">
+        <button
+          *ngIf="button?.position == buttonPositions.TOP_RIGHT_CORNER"
+          [ngStyle]="button.styles"
+          mat-raised-button
+          color="primary"
+          [disabled]="button?.disabled"
+          [matTooltip]="button?.tooltip"
+          (click)="button.onClick ? button.onClick($event) : null"
+        >
+          {{ button?.title }}
+        </button>
+      </ng-template>
+    </div>
+    <ng-container *ngFor="let item of columns">
+      <shared-data-row-field
+        *ngIf="item.displayInTable != null ? item.displayInTable : true"
+        [field]="item"
+        [dataValue]="displayData[item.columnId]"
+        (click)="clickCell(item)"
+        (dblclick)="compactClick()"
+      ></shared-data-row-field>
+    </ng-container>
+
+    <!-- Button Action -->
+    <div class="data-row-actions">
+      <button
+        mat-mini-fab
+        color="primary"
+        matTooltip="Edit"
+        *ngIf="!hideEdit"
+        (click)="onEdit()"
+        [disabled]="!permissions.canPUT || disableEdit"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button
+        mat-mini-fab
+        color="warn"
+        matTooltip="Delete"
+        *ngIf="!hideDelete"
+        (click)="onDelete()"
+        [disabled]="!permissions.canPUT || disableDelete"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+</mat-card>

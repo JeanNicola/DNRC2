@@ -1,0 +1,16 @@
+<div class="version-objections-container">
+  <app-objections-table
+    [idArray]="[waterRightId, versionId]"
+    (selectObjection)="onObjectionSelect($event)"
+  ></app-objections-table>
+  <div class="child-container" *ngIf="selectedObjection">
+    <app-objectors-table
+      [idArray]="[waterRightId, versionId, selectedObjection]"
+    >
+    </app-objectors-table>
+    <app-elements-table
+      [idArray]="[waterRightId, versionId, selectedObjection]"
+    >
+    </app-elements-table>
+  </div>
+</div>

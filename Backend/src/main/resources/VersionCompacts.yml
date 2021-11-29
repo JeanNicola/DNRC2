@@ -1,0 +1,167 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /water-rights/{waterRightId}/versions/{versionNumber}/compacts:
+    get:
+      summary: Get the Measurement Reports of a Water Right Version
+      operationId: getVersionCompacts
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/version-compact-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of compacts for one water right version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionCompactsPageDto'
+    post:
+      summary: Add a Compact to a Version
+      operationId: addVersionCompact
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+      requestBody:
+        description: The new Compact
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionCompactDto'
+      responses:
+        201:
+          description: the new Version Compact
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionCompactDto'
+        400:
+          description: Bad Validation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: the water right version does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /water-rights/{waterRightId}/versions/{versionNumber}/compacts/{compactId}:
+    put:
+      summary: Edit a Compact attached to a Version
+      operationId: updateVersionCompact
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/version-compact-id'
+      requestBody:
+        description: The updated Compact
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionCompactDto'
+      responses:
+        200:
+          description: the new Version Compact
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionCompactDto'
+        400:
+          description: Bad Validation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: the water right version does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete a Version Compact
+      operationId: deleteVersionCompact
+      parameters:
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version-number'
+        - $ref: '#/components/parameters/version-compact-id'
+      responses:
+        204:
+          description: successfully deleted the Version Compact
+components:
+  schemas:
+    VersionCompactsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/VersionCompactSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/VersionCompactDto'
+    VersionCompactDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        compactId:
+          type: integer
+          format: int64
+        subcompactId:
+          type: integer
+          format: int64
+        subcompact:
+          type: string
+        compact:
+          type: string
+        exemptCompact:
+          type: boolean
+        allocation:
+          type: boolean
+        blm:
+          type: boolean
+      required:
+        - subcompactId
+    VersionCompactSortColumn:
+      type: string
+      enum: [SUBCOMPACT, COMPACT, EXEMPTCOMPACT, ALLOCATION, BLM]
+      default: SUBCOMPACT
+  parameters:
+    version-compact-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/VersionCompactSortColumn'
+    version-compact-id:
+      name: compactId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the version compact id
+      required: true

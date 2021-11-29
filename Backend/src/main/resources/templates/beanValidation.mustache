@@ -1,0 +1,10 @@
+{{#required}}
+  @NotNull(message = {{#vendorExtensions.x-required-message}}"{{vendorExtensions.x-required-message}}"{{/vendorExtensions.x-required-message}}{{!
+                    }}{{^vendorExtensions.x-required-message}}"{{!
+                        }}{{#vendorExtensions.x-message-name}}{{vendorExtensions.x-message-name}}{{/vendorExtensions.x-message-name}}{{!
+                        }}{{^vendorExtensions.x-message-name}}{{#lambda.titlecase}}{{name}}{{/lambda.titlecase}}{{/vendorExtensions.x-message-name}}{{!
+                    }} is missing"{{/vendorExtensions.x-required-message}})
+{{/required}}{{#isContainer}}{{^isPrimitiveType}}{{^isEnum}}
+  @Valid{{/isEnum}}{{/isPrimitiveType}}{{/isContainer}}{{^isContainer}}{{^isPrimitiveType}}
+  @Valid{{/isPrimitiveType}}{{/isContainer}}
+{{>beanValidationCore}}

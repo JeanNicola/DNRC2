@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Delete Water Right</h1>
+<mat-dialog-content class="mat-typography">
+  <p *ngIf="data?.values?.mode !== 'Transfer'">
+    WARNING - This action will clear all currently selected
+    <strong>Sellers</strong>. Are you sure you want to continue?
+  </p>
+  <p *ngIf="data?.values?.mode === 'Transfer'">
+    WARNING - This action will clear all currently selected
+    <strong>Sellers</strong> and <strong>Applications</strong>. Are you sure you
+    want to continue?
+  </p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="'reset'" color="warn">Delete</button>
+  <button mat-button mat-dialog-close cdkFocusInitial>Cancel</button>
+</mat-dialog-actions>

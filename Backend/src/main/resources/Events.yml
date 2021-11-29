@@ -1,0 +1,267 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /applications/{applicationId}/events:
+    get:
+      summary: get a page of events in application
+      operationId: findAllEvents
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 10
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/event-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+
+      responses:
+        200:
+          description: a list of events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventsPageDto'
+    #  /applications/{applicationId}/events:
+    #    get:
+    #      summary: get a page of events in application
+    #      operationId: searchEvents
+    #      parameters:
+    #        - $ref: '#/components/parameters/pagenumber'
+    #        - $ref: '#/components/parameters/pagesize'
+    #        - $ref: '#/components/parameters/event-sort-column'
+    #        - $ref: '#/components/parameters/sortdirection'
+    #        - in: path
+    #          name: applicationId
+    #          required: true
+    #          schema:
+    #            type: string
+    #            pattern: '^[ -~]+$'
+    #            maxLength: 10
+    #        - in: query
+    #          name: eventId
+    #          schema:
+    #            type: integer
+    #            format: int64
+    #        - in: query
+    #          name: event
+    #          schema:
+    #            type: string
+    #            pattern: '^[ -~]+$'
+    #        - in: query
+    #          name: dateTime
+    #          schema:
+    #            type: string
+    #            format: date-time
+    #        - in: query
+    #          name: responseDue
+    #          schema:
+    #            type: string
+    #            format: date-time
+    #        - in: query
+    #          name: comments
+    #          schema:
+    #            type: string
+    #            pattern: '^[ -~]+$'
+    #      responses:
+    #        200:
+    #          description: a list of events
+    #          content:
+    #            application/json:
+    #              schema:
+    #                $ref: '#/components/schemas/EventsPageDto'
+    post:
+      summary: create an event in application
+      operationId: createEvent
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 10
+      requestBody:
+        description: The new event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventsDto'
+      responses:
+        201:
+          description: The new event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventsDto'
+  /applications/{applicationId}/events/{eventId}:
+    put:
+      summary: change an existing event
+      operationId: changeEvent
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 10
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventsDto'
+      responses:
+        200:
+          description: Changed the event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventsDto'
+        301:
+          description: Changed and Moved the event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventsDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: No Event found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: delete an event
+      operationId: deleteEvent
+      parameters:
+        - in: path
+          name: applicationId
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 10
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: deleted the Event
+        404:
+          description: No Event was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+components:
+  schemas:
+    EventsDto:
+      type: object
+      properties:
+        eventId:
+          type: integer
+          format: int64
+          x-message-name: Event id
+        event:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 50
+        eventDesc:
+          type: string
+          pattern: '^[ -~]+$'
+        dateTime:
+          type: string
+          format: date-time
+        responseDue:
+          type: string
+          format: date-time
+          x-message-name: Response Due Date
+        comments:
+          type: string
+          pattern: '^[ -~\n]*$'
+        messages:
+          type: array
+          items:
+            type: string
+            pattern: '^[ -~]+$'
+        createdDate:
+          type: string
+          format: date
+          x-message-name: Date created the event
+        modifiedDate:
+          type: string
+          format: date
+          x-message-name: Date modified the event
+        createBy:
+          type: string
+          pattern: '^[ -~]+$'
+          x-message-name: Created by a staff member or org
+        modifiedBy:
+          type: string
+          pattern: '^[ -~]+$'
+          x-message-name: Modified by a staff member or org
+      required:
+        - event
+        - dateTime
+    EventsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/EventsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventsDto'
+    EventsSortColumn:
+      type: string
+      enum: [ EVENTID, EVENT, DATETIME, DISPLAYDATETIME, RESPONSEDUE, COMMENTS ]
+      default: DATETIME
+  parameters:
+    event-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/EventsSortColumn'

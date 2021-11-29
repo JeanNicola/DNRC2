@@ -1,0 +1,207 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /zip-codes:
+    get:
+      summary: get a page of Zip Codes, Cities and States
+      operationId: getZipCodes
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/zip-code-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: query
+          name: zipCode
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+        - in: query
+          name: cityName
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+        - in: query
+          name: stateCode
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+      responses:
+        200:
+          description: a list of Zip Codes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZipCodePageDto'
+    post:
+      summary: create a new Zip Code, City and State combination
+      operationId: createZipCode
+      requestBody:
+        description: The new Zip Code, City and State
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZipCodeDto'
+      responses:
+        201:
+          description: Created an Event Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZipCodeDto'
+  /zip-codes/{zipCodeId}:
+    delete:
+      summary: delete a Zip Code, City and State combination
+      operationId: deleteZipCode
+      parameters:
+        - in: path
+          name: zipCodeId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Deleted a Zip Code
+    put:
+      summary: update a zipCode
+      operationId: changeZipCode
+      parameters:
+        - in: path
+          name: zipCodeId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new Zip Codes, Cities and State Codes
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZipCodeDto'
+      responses:
+        200:
+          description: Changed the Zip Code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZipCodeDto'
+  /cities/{cityId}:
+    delete:
+      summary: delete a City by Id
+      operationId: deleteCity
+      parameters:
+        - in: path
+          name: cityId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Deleted a City
+  /state-codes/all:
+    get:
+      summary: get all State Codes
+      operationId: getAllStateCodes
+      responses:
+        200:
+          description: a list of all State Codes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllStateCodesDto'
+components:
+  schemas:
+    ZipCodeDto:
+      type: object
+      properties:
+        zipCode:
+          type: string
+          maxLength: 5
+          minLength: 5
+          pattern: '^[0-9]*$'
+          x-pattern-message: must contain numbers only
+          x-message-name: Zip Code
+        cityName:
+          type: string
+          maxLength: 30
+          x-message-name: City Name
+        stateCode:
+          type: string
+          maxLength: 2
+          x-message-name: State Code
+        stateName:
+          type: string
+          x-message-name: State Name
+        id:
+          type: integer
+          format: int64
+          x-message-name: Zip Code Id
+        cityId:
+          type: integer
+          format: int64
+          x-message-name: City Id
+      required:
+        - zipCode
+        - cityName
+        - stateCode
+    AllStateCodesDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/StateCodeDto'
+    StateCodeDto:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 2
+          pattern: '^[ -~]+$'
+        name:
+          type: string
+          maxLength: 15
+          pattern: '^[ -~]+$'
+    ZipCodePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/ZipCodeSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ZipCodeDto'
+    ZipCodeSortColumn:
+      type: string
+      enum: [ZIPCODE, CITYNAME, STATECODE, STATENAME]
+      default: ZIPCODE
+  parameters:
+    zip-code-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/ZipCodeSortColumn'

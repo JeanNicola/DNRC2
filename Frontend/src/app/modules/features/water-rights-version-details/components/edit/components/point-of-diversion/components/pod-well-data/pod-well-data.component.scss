@@ -1,0 +1,16 @@
+::ng-deep mat-checkbox {
+  padding-bottom: 17px;
+}
+
+.info-btn {
+  background-color: white;
+  color: black;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  ::ng-deep .mat-button-wrapper {
+    transform: scale(2);
+  }
+}
+
+.data-row-actions {
+  margin-top: 0;
+}

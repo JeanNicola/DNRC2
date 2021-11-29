@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>gov.mt</groupId>
+  <artifactId>wris</artifactId>
+  <!--
+    Once in production this value should be changed with any changes to this file.
+    Also, the child pom.xml files will need to be updated as well.
+  -->
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+	<name>wris</name>
+  <description>Water Rights Information System Project</description>
+
+  <properties>
+    <node-version>v14.17.0</node-version>
+    <frontend-maven-version>1.12.0</frontend-maven-version>
+    <java.version>11</java.version>
+    <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
+  </properties>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.5.0</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+    
+  <modules>
+    <module>Backend</module>
+    <module>Frontend</module>
+  </modules>
+</project>

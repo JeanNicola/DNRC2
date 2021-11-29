@@ -1,0 +1,54 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+tags:
+- name: Role Types
+  description: Role Types for Representatives
+paths:
+  /role-types:
+    get:
+      summary: get all the Role Types for Representatives
+      operationId: getRoleTypes
+      responses:
+        200:
+          description: a list of Role Types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleTypesResponseDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    RoleTypeDto:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 4
+          pattern: '^[ -~]+$'
+        description:
+          type: string
+          maxLength: 40
+          pattern: '^[ -~]+$'
+      required:
+        - code
+        - description
+      example:
+        code: TEST1
+        description: Test Example
+    RoleTypesResponseDto:
+      type: object
+      properties:
+        results:
+           type: array
+           items:
+             $ref: '#/components/schemas/RoleTypeDto'

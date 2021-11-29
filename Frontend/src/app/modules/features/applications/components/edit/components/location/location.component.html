@@ -1,0 +1,36 @@
+<mat-card>
+  <mat-card-title>Responsible Office</mat-card-title>
+  <mat-card-content>
+    <app-application-responsible-office
+      [idArray]="idArray"
+      [officeSubject]="officeSubject"
+    ></app-application-responsible-office>
+  </mat-card-content>
+</mat-card>
+<mat-card>
+  <mat-card-title>Processor</mat-card-title>
+  <mat-card-content>
+    <app-application-processor
+      [idArray]="idArray"
+      [officeSubject]="officeSubject"
+      [staffSubject]="staffSubject"
+    ></app-application-processor>
+  </mat-card-content>
+</mat-card>
+<p class="file-location-subtitle">File Location</p>
+<div class="tables-container">
+  <div class="table table-left">
+    <app-application-office
+      [idArray]="idArray"
+      [officeSubject]="officeSubject"
+      [comparisonDate]="earliestDate"
+    ></app-application-office>
+  </div>
+  <div class="table table-right">
+    <app-application-staff
+      [idArray]="idArray"
+      [staffSubject]="staffSubject"
+      [comparisonDate]="earliestDate"
+    ></app-application-staff>
+  </div>
+</div>

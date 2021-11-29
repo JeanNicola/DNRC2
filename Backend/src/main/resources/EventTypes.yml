@@ -1,0 +1,616 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /event-types/all:
+    get:
+      summary: get all the Event Types Lookup
+      operationId: getEventTypesAll
+      responses:
+        200:
+          description: a list of all event code description
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllEventCodeDescDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /event-types:
+    get:
+      summary: get all the Event Types
+      operationId: getEventTypes
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/event-type-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: query
+          name: code
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+        - in: query
+          name: description
+          schema:
+            type: string
+            maxLength: 70
+            pattern: '^[ -~]+$'
+        - in: query
+          name: responseDueDays
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+      responses:
+        200:
+          description: a list of Event Types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventTypePageDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: create a new Event Type
+      operationId: createEventType
+      requestBody:
+        description: The new Event Type
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventTypeDto'
+      responses:
+        201:
+          description: Created an Event Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventTypeDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /event-types/{eventCode}:
+    delete:
+      summary: delete an existing Event Type
+      operationId: deleteEventType
+      parameters:
+        - in: path
+          name: eventCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Event Type Code
+      responses:
+        204:
+          description: deleted the Event Type
+        404:
+          description: No Event Type with that Code was found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: change an existing Event Type
+      operationId: changeEventType
+      parameters:
+        - in: path
+          name: eventCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Event Type Code
+      requestBody:
+        description: The new Event Type
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventTypeDto'
+      responses:
+        200:
+          description: Changed the Event Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventTypeDto'
+        301:
+          description: Changed and Moved the Event Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventTypeDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: No Event Type found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /event-types/{eventCode}/case-types:
+    get:
+      summary: get the Case Types
+      operationId: getEventCaseTypes
+      parameters:
+        - in: path
+          name: eventCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Event Type Code
+      responses:
+        200:
+          description: A list of all the case types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllCaseTypesDto'
+    post:
+      summary: create a new Case Type Reference
+      operationId: createCaseTypeXref
+      parameters:
+        - in: path
+          name: eventCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Event Type Code
+      requestBody:
+        description: The new Case Type Reference
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TypeXrefDto'
+      responses:
+        201:
+          description: Added a Case Type to an Event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TypeXrefDto'
+  /event-types/{eventCode}/case-types/{caseCode}:
+    delete:
+      summary: delete an attached Case Type
+      operationId: deleteCaseTypeXref
+      parameters:
+        - in: path
+          name: eventCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Event Type Code
+        - in: path
+          name: caseCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Case Type Code
+      responses:
+        204:
+          description: deleted the Case Type reference
+        404:
+          description: No Case Type with that Code was found attached
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /case-types/all:
+    get:
+      summary: get all Case Types
+      operationId: getAllCaseTypes
+      responses:
+        200:
+          description: a list of all Case Types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllCaseTypesDto'
+  /event-types/{eventCode}/application-types:
+    get:
+      summary: get the Application Types
+      operationId: getEventApplicationTypes
+      parameters:
+        - in: path
+          name: eventCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Event Type Code
+      responses:
+        200:
+          description: A list of all the application types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllApplicationTypesDto'
+    post:
+      summary: create a new Application Type Reference
+      operationId: createApplicationTypeXref
+      parameters:
+        - in: path
+          name: eventCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Event Type Code
+      requestBody:
+        description: The new Application Type Reference
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TypeXrefDto'
+      responses:
+        201:
+          description: Added an Application Type to an Event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TypeXrefDto'
+  /event-types/{eventCode}/application-types/{applicationCode}:
+    delete:
+      summary: delete an attached Application Type
+      operationId: deleteApplicationTypeXref
+      parameters:
+        - in: path
+          name: eventCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Event Type Code
+        - in: path
+          name: applicationCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Application Type Code
+      responses:
+        204:
+          description: deleted the Application Type reference
+        404:
+          description: No Application Type with that Code was found attached
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /application-types/all:
+    get:
+      summary: get all Application Types
+      operationId: getAllApplicationTypes
+      responses:
+        200:
+          description: a list of all Application Types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllApplicationTypesDto'
+  /event-types/{eventCode}/decree-types:
+    get:
+      summary: get the Decree Types
+      operationId: getEventDecreeTypes
+      parameters:
+        - in: path
+          name: eventCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Event Type Code
+      responses:
+        200:
+          description: A list of all the decree types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllDecreeTypesDto'
+    post:
+      summary: create a new Decree Type Reference
+      operationId: createDecreeTypeXref
+      parameters:
+        - in: path
+          name: eventCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Event Type Code
+      requestBody:
+        description: The new Decree Type Reference
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TypeXrefDto'
+      responses:
+        201:
+          description: Added a Decree Type to an Event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TypeXrefDto'
+  /event-types/{eventCode}/decree-types/{decreeCode}:
+    delete:
+      summary: delete an attached Decree Type
+      operationId: deleteDecreeTypeXref
+      parameters:
+        - in: path
+          name: eventCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Event Type Code
+        - in: path
+          name: decreeCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Decree Type Code
+      responses:
+        204:
+          description: deleted the Decree Type reference
+        404:
+          description: No Decree Type with that Code was found attached
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /decree-types/all:
+    get:
+      summary: get all Decree Types
+      operationId: getAllDecreeTypes
+      responses:
+        200:
+          description: a list of all Decree Types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllDecreeTypesDto'
+  /application-types/{typeCode}/event-types:
+    get:
+      summary: get the Event Types
+      operationId: getEventTypesByTypeCode
+      parameters:
+        - in: path
+          name: typeCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Application Type Code
+      responses:
+        200:
+          description: A list of all the application types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllEventCodeDescDto'
+
+  /case-types/{typeCode}/event-types:
+    get:
+      summary: get list of eligible event types for a case or hearing type
+      operationId: getEventTypesByCaseType
+      parameters:
+        - $ref: '#/components/parameters/supported'
+        - in: path
+          name: typeCode
+          required: true
+          schema:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+          description: The Case Type Code
+      responses:
+        200:
+          description: the list of eligible event types for a case or hearing type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllEventCodeDescDto'
+
+components:
+  schemas:
+    AllCaseTypesDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseTypeDto'
+    AllApplicationTypesDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationTypeDto'
+    ApplicationTypeDto:
+      type: object
+      properties:
+        code:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        description:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 70
+    AllDecreeTypesDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DecreeTypeDto'
+    DecreeTypeDto:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 4
+          pattern: '^[ -~]+$'
+        description:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 25
+    TypeXrefDto:
+      type: object
+      properties:
+        code:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+    EventTypeDto:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 4
+        description:
+          type: string
+          maxLength: 70
+        responseDueDays:
+          x-message-name: Response Due Days
+          type: integer
+          maximum: 999
+          minimum: 0
+      required:
+        - code
+        - description
+      example:
+        code: TEST
+        description: Test Example
+        responseDueDays: 30
+    EventTypeScreenDto:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 4
+          pattern: '^[ -~]+$'
+        description:
+          type: string
+          maxLength: 70
+          pattern: '^[ -~]+$'
+        responseDueDays:
+          type: integer
+          maximum: 999
+          minimum: 0
+        applicationTypes:
+          type: array
+          items:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+        caseTypes:
+          type: array
+          items:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+        decreeTypes:
+          type: array
+          items:
+            type: string
+            pattern: '^[ -~]+$'
+            maxLength: 4
+    EventTypePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/EventTypeSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventTypeDto'
+    EventTypeSortColumn:
+      type: string
+      enum: [ CODE, DESCRIPTION, RESPONSEDUEDAYS ]
+      default: CODE
+    AllEventCodeDescDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventCodeDescDto'
+    EventCodeDescDto:
+      type: object
+      properties:
+        code:
+          type: string
+          pattern: '^[ -~]+$'
+        description:
+          type: string
+          pattern: '^[ -~]+$'
+        responseDueDays:
+          type: integer
+  parameters:
+    event-type-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/EventTypeSortColumn'

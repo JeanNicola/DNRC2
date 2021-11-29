@@ -1,0 +1,42 @@
+.dev-content {
+  text-align: center;
+  p {
+    padding: 4rem;
+    font-size: 3rem;
+    font-weight: 300;
+  }
+}
+
+.prod-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  p.title {
+    padding-top: 4rem;
+    font-size: 3rem;
+    font-weight: 500;
+  }
+  p.subTitle {
+    padding-top: 1rem;
+    padding-bottom: 4rem;
+    font-size: 2rem;
+    font-weight: 300;
+  }
+
+  img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+  }
+}
+
+.error-content {
+  text-align: center;
+  p {
+    color: red;
+    font-size: 2rem;
+    font-weight: 300;
+  }
+}

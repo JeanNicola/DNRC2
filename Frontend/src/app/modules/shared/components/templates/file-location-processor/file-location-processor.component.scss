@@ -1,0 +1,31 @@
+mat-card-title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+mat-card {
+  margin-bottom: 16px;
+  margin-top: 16px;
+}
+
+.file-location-subtitle {
+  margin: 20px 12px -20px 0px;
+  font-size: 16px;
+  font-weight: 500;
+  padding-left: 16px;
+}
+
+.tables-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+.table {
+  width: 49%;
+}
+
+.table-left {
+  margin-right: 20px;
+}

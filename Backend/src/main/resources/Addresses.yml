@@ -1,0 +1,511 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1
+paths:
+  /customers/contacts/{customerId}/addresses:
+    get:
+      summary: get a page of Addresses
+      operationId: searchAddresses
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/address-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: a list of Addresses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressSearchPageDto'
+    post:
+      summary: create a new Address
+      operationId: createAddress
+      parameters:
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The new Address
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressCreationDto'
+      responses:
+        201:
+          description: The new Address
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /customers/contacts/{customerId}/addresses/{addressId}:
+    get:
+      summary: get a specific Address
+      operationId: getAddress
+      parameters:
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: addressId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Get the Address Header data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: No Address found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: change an existing Address
+      operationId: changeAddress
+      parameters:
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: addressId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The updated Address
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressUpdateDto'
+      responses:
+        200:
+          description: Changed the Address
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: No Address found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete an existing Address
+      operationId: deleteAddress
+      parameters:
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: addressId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Deleted Address
+        404:
+          description: Either the Customer or Address doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+
+components:
+  schemas:
+    AddressSearchPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/AddressSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'AddressSearchResultDto'
+
+    AddressSearchResultDto:
+      type: object
+      properties:
+        addressId:
+          type: integer
+          format: int64
+        customerId:
+          type: integer
+          format: int64
+        primaryMail:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 1
+        primaryMailValue:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 3
+        addressLine1:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 50
+        addressLine2:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+        addressLine3:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+        pl4:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        foreignAddress:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+        foreignAddressValue:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 3
+        foreignPostal:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+        zipCodeId:
+          type: integer
+          format: int64
+        zipCode:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 5
+        stateCode:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 2
+        stateName:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 35
+        cityId:
+          type: integer
+          format: int64
+        cityName:
+          type: string
+          pattern: '^[ -~]*$'
+        createdBy:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 8
+        createdByValue:
+          type: string
+          pattern: '^[ -~]*$'
+        createdDate:
+          type: string
+          format: date
+        modifiedBy:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 8
+        modifiedByValue:
+          type: string
+          pattern: '^[ -~]*$'
+        modifiedDate:
+          type: string
+          format: date
+        modReason:
+          type: string
+          pattern: '^[ -~\n]*$'
+        unresolvedFlag:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+        unresolvedFlagValue:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 3
+
+    AddressCreationDto:
+      type: object
+      properties:
+        addressId:
+          type: integer
+          format: int64
+        customerId:
+          type: integer
+          format: int64
+        primaryMail:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 1
+        addressLine1:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 50
+        addressLine2:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+        addressLine3:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+        pl4:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        foreignAddress:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+        foreignPostal:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+        zipCodeId:
+          type: integer
+          format: int64
+        stateCode:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 2
+        cityId:
+          type: integer
+          format: int64
+        modReason:
+          type: string
+          pattern: '^[ -~\n]*$'
+        unresolvedFlag:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+
+    AddressUpdateDto:
+      type: object
+      properties:
+        addressId:
+          type: integer
+          format: int64
+        customerId:
+          type: integer
+          format: int64
+        primaryMail:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+        addressLine1:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+        addressLine2:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+        addressLine3:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+        pl4:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        foreignAddress:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+        foreignPostal:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+        zipCodeId:
+          type: integer
+          format: int64
+        stateCode:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 2
+        cityId:
+          type: integer
+          format: int64
+        modReason:
+          type: string
+          pattern: '^[ -~\n]*$'
+        unresolvedFlag:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+
+    AddressDto:
+      type: object
+      properties:
+        addressId:
+          type: integer
+          format: int64
+        customerId:
+          type: integer
+          format: int64
+        primaryMail:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 1
+        primaryMailValue:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 3
+        addressLine1:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 50
+        addressLine2:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+        addressLine3:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+        pl4:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        foreignAddress:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+        foreignAddressValue:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 3
+        foreignPostal:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+        zipCodeId:
+          type: integer
+          format: int64
+        zipCode:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 5
+        stateCode:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 2
+        stateName:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 35
+        cityId:
+          type: integer
+          format: int64
+        cityName:
+          type: string
+          pattern: '^[ -~]*$'
+        createdBy:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 8
+        createdByValue:
+          type: string
+          pattern: '^[ -~]*$'
+        createdDate:
+          type: string
+          format: date
+        modifiedBy:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 8
+        modifiedByValue:
+          type: string
+          pattern: '^[ -~]*$'
+        modifiedDate:
+          type: string
+          format: date
+        modReason:
+          type: string
+          pattern: '^[ -~\n]*$'
+        unresolvedFlag:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 1
+        unresolvedFlagValue:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 3
+
+    AddressSortColumn:
+      type: string
+      enum: [ CUSTOMERID, ADDRESSID, CITY, STATE, ZIP, ADDRESSLINE1, ADDRESSLINE2, ADDRESSLINE3 ]
+      default: CUSTOMERID
+
+  parameters:
+    address-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/AddressSortColumn'

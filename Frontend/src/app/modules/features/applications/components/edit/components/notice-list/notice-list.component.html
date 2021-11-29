@@ -1,0 +1,15 @@
+<div class="notice-list-container">
+  <app-mailing-job
+    (mailingJobSelectedId)="setMailingJobSelectedId($event)"
+  ></app-mailing-job>
+  <div class="notice-list-sub-container">
+    <app-notice-water-rights
+      class="water-rights-container"
+      [mailingJobSelectedId]="mailingJobSelectedId"
+    ></app-notice-water-rights>
+    <app-other-parties
+      class="other-parties-container"
+      [mailingJobSelectedId]="mailingJobSelectedId"
+    ></app-other-parties>
+  </div>
+</div>

@@ -1,0 +1,223 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /mailing-jobs/{mailingJobId}/parties:
+    get:
+      summary: get Interested Parties of a Mailing Job
+      operationId: getMailingJobInterestedParties
+      parameters:
+        - $ref: '#/components/parameters/mailing-job-id'
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/job-parties-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: The Interested Parties of a Mailing Job
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobPartiesPageDto'
+        404:
+          description: This Mailing Job does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: Add a Customer as an Interested Party to a Mailing Job
+      operationId: addJobParty
+      parameters:
+        - $ref: '#/components/parameters/mailing-job-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobPartyCreationDto'
+      responses:
+        204:
+          description: successfully created
+        404:
+          description: Mailing Job or Contact not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /mailing-jobs/{mailingJobId}/parties-by-office/{officeId}:
+    post:
+      summary: Add a Office Contacts as an Interested Parties to a Mailing Job
+      operationId: addJobPartiesByOffice
+      parameters:
+        - $ref: '#/components/parameters/mailing-job-id'
+        - $ref: '#/components/parameters/office-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobPartyByOfficeCreationDto'
+      responses:
+        204:
+          description: successfully created
+        404:
+          description: Mailing Job or Office not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /mailing-jobs/{mailingJobId}/parties/{contactId}:
+    delete:
+      summary: Remove an Interested Party from a Mailing Job
+      operationId: removeJobParty
+      parameters:
+        - $ref: '#/components/parameters/mailing-job-id'
+        - $ref: '#/components/parameters/contact-id'
+      responses:
+        204:
+          description: successfully removed
+  /mailing-jobs/{mailingJobId}/party-offices/{officeId}/contacts:
+    get:
+      summary: get Contacts of an Office Not already addded
+      operationId: getOfficeContactsNotInMailingJob
+      parameters:
+        - $ref: '#/components/parameters/mailing-job-id'
+        - $ref: '#/components/parameters/office-id'
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/office-contact-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: The Contacts of an Office
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficeContactPageDto'
+        404:
+          description: This Office does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    OfficeContactPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/OfficeContactSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OfficeContactDto'
+    OfficeContactDto:
+      type: object
+      properties:
+        contactId:
+          type: integer
+          format: int64
+        firstLastName:
+          type: string
+        contactTypeDescription:
+          type: string
+    JobPartyByOfficeCreationDto:
+      type: object
+      properties:
+        contactIds:
+          type: array 
+          items:
+            type: integer
+            format: int64
+        includeAll:
+          type: boolean
+      required:
+        - contactIds
+        - includeAll
+    JobPartyCreationDto:
+      type: object
+      properties:
+        contactId:
+          type: integer
+          format: int64
+    JobPartiesPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/JobPartiesSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobPartiesDto'
+    JobPartiesDto:
+      type: object
+      properties:
+        contactId:
+          type: integer
+          format: int64
+        firstLastName:
+          type: string
+        contactTypeDescription:
+          type: string
+    OfficeContactSortColumn:
+      type: string
+      enum: [ CONTACTID, FIRSTLASTNAME, CONTACTTYPEDESCRIPTION]
+      default: FIRSTLASTNAME
+    JobPartiesSortColumn:
+      type: string
+      enum: [ CONTACTID, FIRSTLASTNAME, CONTACTTYPEDESCRIPTION]
+      default: FIRSTLASTNAME
+  parameters:
+    job-parties-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/JobPartiesSortColumn'
+    contact-id:
+      in: path
+      name: contactId
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: the contact id
+    office-contact-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/OfficeContactSortColumn'
+    office-id:
+      name: officeId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: office id
+      required: true

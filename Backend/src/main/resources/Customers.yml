@@ -1,0 +1,826 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /customers:
+    get:
+      summary: search customers
+      operationId: searchCustomers
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/customer-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/contact-ID'
+        - $ref: '#/components/parameters/customer-last-name'
+        - $ref: '#/components/parameters/customer-first-name'
+        - $ref: '#/components/parameters/customer-first-last-name'
+      responses:
+        200:
+          description: a page of Customers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerPageDto'
+
+  /customers/active:
+    post:
+      summary: search customers
+      operationId: searchActiveCustomersByWaterRights
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/customer-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/contact-ID'
+        - $ref: '#/components/parameters/customer-last-name'
+        - $ref: '#/components/parameters/customer-first-name'
+      requestBody:
+        description: List of water rights to search against
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActiveCustomersRequestDto'
+      responses:
+        200:
+          description: a page of Customers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerPageDto'
+
+  /customers/contacts:
+    get:
+      summary: search customer contacts
+      operationId: searchCustomerContacts
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/customer-contacts-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/contact-id'
+        - $ref: '#/components/parameters/last-name'
+        - $ref: '#/components/parameters/first-name'
+        - $ref: '#/components/parameters/middle-initial'
+        - $ref: '#/components/parameters/suffix'
+        - $ref: '#/components/parameters/contact-type'
+        - $ref: '#/components/parameters/contact-status'
+      responses:
+        200:
+          description: a page of customer contacts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerContactSearchPageDto'
+    post:
+      summary: create a new customer contact
+      operationId: createCustomerContact
+      requestBody:
+        description: The new Contact
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerContactCreationDto'
+      responses:
+        201:
+          description: The new Contact
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerContactDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /customers/contacts/{id}:
+    get:
+      summary: get a specific customer contact
+      operationId: getCustomerContact
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The Customer Id
+      responses:
+        200:
+          description: Get customer contact data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerContactDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: No Contact found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: change an existing Contact
+      operationId: changeCustomerContact
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The Customer Id
+      requestBody:
+        description: The updated Customer contact
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerContactUpdateDto'
+      responses:
+        200:
+          description: Changed the Contact
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerContactDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: No Contact found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /customers/contacts/{contactId}/water-rights:
+    get:
+      summary: search customer contact water rights
+      operationId: getCustomerContactWaterRights
+      parameters:
+        - in: path
+          name: contactId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The Customer Id
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/customer-water-right-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of water rights
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerWaterRightPageDto'
+
+  /customers/contacts/{contactId}/applications:
+    get:
+      summary: search customer contact applications
+      operationId: getCustomerContactApplications
+      parameters:
+        - in: path
+          name: contactId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The Customer Id
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/application-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: a page of applications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationSearchPageDto'
+
+  /customers/contacts/{contactId}/ownership-updates:
+    get:
+      summary: search customer contact ownership updates
+      operationId: getCustomerContactOwnershipUpdates
+      parameters:
+        - in: path
+          name: contactId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: The Customer Id
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/customer-ownership-update-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/ownership-update-role'
+      responses:
+        200:
+          description: a page of ownership updates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerOwnershipUpdatePageDto'
+
+  /customers/{contactId}/ownership-updates:
+    get:
+      summary: Get All Buyer or Seller Ownership Updates for a Contact
+      operationId: getBuyerSellerOwnershipUpdatesForContact
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/buyer-seller-ownership-updates-for-contact-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/ownership-update-role'
+        - in: path
+          name: contactId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Ownsership Update Id
+      responses:
+        200:
+          description: Page of All Buyer or Seller Ownership Updates for a Contact
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyerSellerOwnershipUpdatesForContactPageDto'
+        404:
+          description: No Contact with Buyer or Seller Ownership Updates found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+components:
+  schemas:
+
+    BuyerSellerOwnershipUpdatesForContactPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/BuyerSellerOwnershipUpdatesForContactSortColumn'
+        ownershipUpdateRole:
+          $ref: '#/components/schemas/OwnershipUpdateRole'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuyerSellerOwnershipUpdatesForContactSearchResultDto'
+
+    BuyerSellerOwnershipUpdatesForContactSearchResultDto:
+      type: object
+      properties:
+        ownershipUpdateId:
+          type: integer
+          format: int64
+        ownershipUpdateType:
+          type: string
+        ownershipUpdateTypeVal:
+          type: string
+        receivedDate:
+          type: string
+          format: date
+        saleDate:
+          type: string
+          format: date
+        waterRightCount:
+          type: integer
+
+    CustomerOwnershipUpdatePageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/CustomerOwnershipSortColumn'
+        ownershipUpdateRole:
+          $ref: '#/components/schemas/OwnershipUpdateRole'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerOwnershipUpdateDto'
+
+    CustomerOwnershipUpdateDto:
+      type: object
+      properties:
+        ownerUpdateId:
+          type: integer
+          format: int64
+        updateType:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 100
+        dateReceived:
+          type: string
+          format: date
+        dateProcessed:
+          type: string
+          format: date
+        dateTerminated:
+          type: string
+          format: date
+        contractForDeed:
+          type: string
+
+    CustomerWaterRightPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/CustomerWaterRightSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerWaterRightDto'
+
+    CustomerWaterRightDto:
+      type: object
+      properties:
+        basin:
+          type: string
+          pattern: '^[ -~]+$'
+          x-message-name: Basin number
+          maxLength: 4
+        waterRightId:
+          type: integer
+          format: int64
+          x-message-name: Water Right Id
+        waterRightNumber:
+          type: integer
+          format: int64
+          x-message-name: Water Right Number
+        typeDescription:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 30
+        conDistNo:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 240
+        objection:
+          type: string
+          pattern: '^[ -~]*$'
+        ext:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 3
+        status:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 20
+
+    CustomerContactSearchPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/CustomerContactsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerContactSearchResultDto'
+
+    CustomerContactSearchResultDto:
+      type: object
+      properties:
+        contactId:
+          type: integer
+          format: int64
+        contactType:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        contactTypeValue:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 25
+        contactStatus:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 3
+        contactStatusValue:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 15
+        lastName:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+        firstName:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 20
+        middleInitial:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 2
+        suffix:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 3
+        suffixValue:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 10
+        name:
+          type: string
+          pattern: '^[ -~]*$'
+        address:
+          type: string
+          pattern: '^[ -~]*$'
+        addressCount:
+          type: integer
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressDto'
+
+    CustomerContactCreationDto:
+      type: object
+      properties:
+        contactType:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Contact Type
+        contactStatus:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 3
+        lastName:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+          x-message-name: Last Name
+        firstName:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 20
+        middleInitial:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 2
+        suffix:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 3
+        addresses:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/AddressCreationDto'
+          x-message-name: Addresses
+
+      required:
+        - contactType
+        - lastName
+        - addresses
+
+    CustomerContactUpdateDto:
+      type: object
+      properties:
+        contactType:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Contact Type
+        contactStatus:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 3
+        lastName:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+          x-message-name: Last Name
+        firstName:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 20
+        middleInitial:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 2
+        suffix:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 3
+        addresses:
+          x-message-name: Addresses
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressUpdateDto'
+      required:
+        - contactType
+        - lastName
+
+    CustomerDto:
+      type: object
+      properties:
+        contactId:
+          type: integer
+          format: int64
+        name:
+          type: string
+          pattern: '^[ -~]+$'
+        firstLastName:
+          type: string
+          pattern: '^[ -~]+$'
+        contactTypeDescription:
+          type: string
+
+    CustomerContactDto:
+      type: object
+      properties:
+        contactId:
+          type: integer
+          format: int64
+        contactType:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        contactTypeValue:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 25
+        contactStatus:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 3
+        contactStatusValue:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 15
+        lastName:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 50
+        firstName:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 20
+        middleInitial:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 2
+        suffix:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 3
+        suffixValue:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 10
+        name:
+          type: string
+          pattern: '^[ -~]*$'
+        address:
+          type: string
+          pattern: '^[ -~]*$'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressDto'
+
+    CustomerPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/CustomerSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerDto'
+    ActiveCustomersRequestDto:
+      type: object
+      properties:
+        waterRights:
+          type: array
+          items:
+            type: integer
+            format: int64
+        ownershipUpdateId:
+          type: integer
+          format: int64
+
+    BuyerSellerOwnershipUpdatesForContactSortColumn:
+      type: string
+      enum: [ OWNERSHIPUPDATEID, OWNERSHIPUPDATETYPE, OWNERSHIPUPDATETYPEVALUE, RECEIVEDDATE, SALEDATE ]
+      default: OWNERSHIPUPDATEID
+
+    CustomerSortColumn:
+      type: string
+      enum: [CONTACTID, NAME, FIRSTLASTNAME, CONTACTTYPEDESCRIPTION]
+      default: NAME
+
+    CustomerContactsSortColumn:
+      type: string
+      enum: [CONTACTID, NAME, ADDRESS]
+      default: NAME
+
+    CustomerOwnershipSortColumn:
+      type: string
+      enum: [ OWNERUPDATEID, UPDATETYPE, DATERECEIVED, DATEPROCESSED, DATETERMINATED ]
+      default: OWNERUPDATEID
+
+    CustomerWaterRightSortColumn:
+      type: string
+      enum: [ BASIN, WATERRIGHTNUMBER, TYPEDESCRIPTION, EXT, STATUS, CONDISTNO ]
+      default: WATERRIGHTNUMBER
+
+    OwnershipUpdateRole:
+      type: string
+      enum: [ BUY, SEL ]
+
+  parameters:
+    buyer-seller-ownership-updates-for-contact-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/BuyerSellerOwnershipUpdatesForContactSortColumn'
+    customer-water-right-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/CustomerWaterRightSortColumn'
+    customer-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/CustomerSortColumn'
+    customer-ownership-update-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/CustomerOwnershipSortColumn'
+    customer-contacts-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/CustomerContactsSortColumn'
+    ownership-update-role:
+      name: ownershipUpdateRole
+      in: query
+      description: The Buyer or Seller role to search
+      schema:
+        $ref: '#/components/schemas/OwnershipUpdateRole'
+    contact-id:
+      name: contactId
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    contact-type:
+      name: contactType
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    contact-status:
+      name: contactStatus
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    last-name:
+      name: lastName
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    first-name:
+      name: firstName
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    middle-initial:
+      name: middleInitial
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    suffix:
+      name: suffix
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]*$'
+    contact-ID:
+      name: contactId
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    customer-last-name:
+      name: lastName
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    customer-first-name:
+      name: firstName
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    customer-first-last-name:
+      name: firstLastName
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'

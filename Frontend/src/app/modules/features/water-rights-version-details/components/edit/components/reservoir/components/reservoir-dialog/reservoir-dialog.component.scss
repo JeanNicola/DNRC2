@@ -1,0 +1,20 @@
+.one-lined {
+    display:flex;
+    gap: 16px;
+}
+
+.one-lined ::ng-deep mat-checkbox {
+    padding-top: 17px;
+}
+
+mat-form-field {
+    width: auto;
+}
+
+form {
+    padding-top: 22px;
+}
+
+h3 {
+    margin-top: 8px;
+}

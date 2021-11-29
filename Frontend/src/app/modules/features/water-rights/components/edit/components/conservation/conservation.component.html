@@ -1,0 +1,42 @@
+<mat-card>
+  <p *ngIf="!data && showLoading">Loading...</p>
+
+  <div
+    class="data-row"
+    [ngClass]="title ? 'row-with-title' : ''"
+    [ngStyle]="containerStyles"
+    *ngIf="data"
+  >
+    <div *ngIf="title" class="row-title">
+      <span [ngStyle]="titleStyles">{{ title }}</span>
+    </div>
+    <ng-container *ngFor="let field of columns">
+      <shared-data-row-field
+        *ngIf="field.columnId == 'waterReservationId'"
+        [field]="field"
+        [dataValue]="data[field.columnId]"
+        (dblclick)="onIdDoubleClick()"
+        (keyup.enter)="onIdDoubleClick()"
+      ></shared-data-row-field>
+      <shared-data-row-field
+        *ngIf="field.columnId != 'waterReservationId'"
+        [field]="field"
+        [dataValue]="data[field.columnId]"
+      ></shared-data-row-field>
+    </ng-container>
+
+    <!-- Button Action -->
+    <div class="data-row-actions">
+      <button
+        *ngIf="showEdit"
+        mat-mini-fab
+        color="primary"
+        matTooltip="Edit"
+        (click)="onEdit()"
+        [disabled]="!permissions.canPUT || disableEdit"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
+  </div>
+</mat-card>

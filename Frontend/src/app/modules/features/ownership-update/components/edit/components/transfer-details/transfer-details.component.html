@@ -1,0 +1,87 @@
+<div class="text-buttons-container" style="margin: 10px 0 0 0">
+  <button
+    style="margin-right: 15px"
+    mat-raised-button
+    color="primary"
+    matTooltip="Populate By Geocodes"
+    (click)="
+      populateByGeoCodesOrSellersHandler(populateByGeocodesService, $event)
+    "
+    [disabled]="ownershipUpdateDateProcessed || ownershipUpdateDateTerminated"
+  >
+    Populate by Geocodes of Listed WR
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    matTooltip="Populate By Sellers"
+    (click)="
+      populateByGeoCodesOrSellersHandler(populateBySellersService, $event)
+    "
+    [disabled]="
+      ownershipUpdateDateProcessed ||
+      ownershipUpdateDateTerminated ||
+      !currentSellersData?.length
+    "
+  >
+    Populate Seller's Water Rights
+  </button>
+</div>
+<div class="transfer-details-content">
+  <div class="flex-space-between" style="margin-top: 0">
+    <div class="sellers-table-component" style="width: 58%">
+      <app-sellers-table
+        [ownerUpdateId]="ownershipUpdateId"
+        [onWaterRightDeleteObservable]="
+          onWaterRightDeleteSubject.asObservable()
+        "
+        [ouWasProcessed]="
+          !!(ownershipUpdateDateProcessed || ownershipUpdateDateTerminated)
+        "
+        (dataLoaded)="onSellersTableLoaded($event)"
+      >
+      </app-sellers-table>
+    </div>
+
+    <app-buyers-table
+      style="width: 40%"
+      [ownerUpdateId]="ownershipUpdateId"
+      (dataLoaded)="onBuyersTableLoaded($event)"
+      [ouWasProcessed]="
+        !!(ownershipUpdateDateProcessed || ownershipUpdateDateTerminated)
+      "
+    ></app-buyers-table>
+  </div>
+  <div class="flex-space-between">
+    <app-affected-water-rights
+      style="width: 74%"
+      [title]="'Water Rights'"
+      [currentSellersData]="currentSellersData"
+      [currentAppsData]="currentAppsData"
+      [focusFirstElementOnInit]="true"
+      [showStatus]="true"
+      [showGeoCodesValid]="true"
+      [showSevered]="true"
+      [idArray]="[ownershipUpdateId]"
+      [ownershipUpdateType]="ownershipUpdateType"
+      [refreshWaterRightsData]="refreshWaterRightsData.asObservable()"
+      [ouWasProcessed]="
+        !!(ownershipUpdateDateProcessed || ownershipUpdateDateTerminated)
+      "
+      (dataLoaded)="onWaterRightsTableLoaded($event)"
+      (waterRightDelete)="onWaterRightDelete()"
+      (feeDueChanged)="feeDueChanged.emit(null)"
+    ></app-affected-water-rights>
+    <app-affected-change-applications
+      style="width: 24%"
+      [title]="'Applications'"
+      [focusFirstElementOnInit]="true"
+      [onWaterRightDeleteObservable]="onWaterRightDeleteSubject.asObservable()"
+      [ouWasProcessed]="
+        !!(ownershipUpdateDateProcessed || ownershipUpdateDateTerminated)
+      "
+      [ownerUpdateId]="ownershipUpdateId"
+      (dataLoaded)="onApplicationsTableLoaded($event)"
+    ></app-affected-change-applications>
+  </div>
+</div>

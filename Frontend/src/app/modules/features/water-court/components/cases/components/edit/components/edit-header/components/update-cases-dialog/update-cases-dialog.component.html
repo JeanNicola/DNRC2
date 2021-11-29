@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<ng-template [ngIf]="currentProgramType === programTypes.WC_PROGRAM">
+  <app-water-court-case-form
+    [displayFields]="displayFields"
+    [values]="data.values"
+    [formIsDirty]="formIsDirty"
+    (onTypeChange)="onTypeChangeHandler($event)"
+    (onSave)="onSaveHandler($event)"
+    (onClose)="close()"
+  ></app-water-court-case-form>
+</ng-template>
+<ng-template [ngIf]="currentProgramType === programTypes.NA_PROGRAM">
+  <app-new-appropriations-case-form
+    [displayFields]="displayFields"
+    [values]="data.values"
+    [formIsDirty]="formIsDirty"
+    (onTypeChange)="onTypeChangeHandler($event)"
+    (onSave)="onSaveHandler($event)"
+    (onClose)="close()"
+  ></app-new-appropriations-case-form>
+</ng-template>

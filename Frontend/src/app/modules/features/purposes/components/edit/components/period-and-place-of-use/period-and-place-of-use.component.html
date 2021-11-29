@@ -1,0 +1,44 @@
+<div class="main-container">
+  <div class="place-of-use-container">
+    <app-place-of-use
+      (dataChanged)="dataChanged.emit(null)"
+      (selectPlaceOfUse)="onPlaceOfUseSelect($event)"
+      [reloadDataObservable]="reloadPlacesOfUse.asObservable()"
+      [purposeId]="purposeId"
+      [versionNumber]="versionNumber"
+      [waterRightTypeCode]="waterRightTypeCode"
+      [waterRightStatusCode]="waterRightStatusCode"
+      [has645Application]="has645Application"
+      [isDecreed]="isDecreed"
+      [isEditableIfDecreed]="isEditableIfDecreed"
+      [canEdit]="canEdit"
+    ></app-place-of-use>
+  </div>
+  <div class="partition">
+    <div class="child">
+      <app-subdivision-information
+        (insert)="reloadPlacesOfUse.next(null)"
+        (delete)="reloadPlacesOfUse.next(null)"
+        [idArray]="[purposeId, placeId]"
+        [countyId]="selectedPlaceOfUse?.countyId"
+        [versionNumber]="versionNumber"
+        [isDecreed]="isDecreed"
+        [isEditableIfDecreed]="isEditableIfDecreed"
+        [canEdit]="canEdit"
+      ></app-subdivision-information>
+    </div>
+    <div class="child">
+      <app-period
+        (dataChanged)="dataChanged.emit(null)"
+        [idArray]="[purposeId]"
+        [has650Application]="has650Application"
+        [waterRightTypeCode]="waterRightTypeCode"
+        [waterRightStatusCode]="waterRightStatusCode"
+        [versionNumber]="versionNumber"
+        [isDecreed]="isDecreed"
+        [isEditableIfDecreed]="isEditableIfDecreed"
+        [canEdit]="canEdit"
+      ></app-period>
+    </div>
+  </div>
+</div>

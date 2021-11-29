@@ -1,0 +1,228 @@
+<div
+  *ngIf="field.type == fieldTypes.Checkbox"
+  [formGroup]="form"
+  class="checkbox-container"
+  [ngClass]="removePadding ? 'remove-padding' : ''"
+>
+  <mat-checkbox
+    [id]="field.columnId"
+    [required]="isRequired"
+    [formControlName]="field.columnId"
+    (change)="change($event)"
+    class="field-checkbox"
+    >{{ field.title }}</mat-checkbox
+  >
+</div>
+
+<!-- For fields not including DateTime Picker -->
+<mat-form-field
+  *ngIf="
+    field.type != fieldTypes.DateTime &&
+    field.type != fieldTypes.DateOrDateTime &&
+    field.type != fieldTypes.Date &&
+    field.type != fieldTypes.MonthDayDate &&
+    field.type != fieldTypes.Checkbox &&
+    field.type != fieldTypes.File
+  "
+  [appearance]="'outline'"
+  [formGroup]="form"
+  [style.width.px]="field.formWidth"
+>
+  <mat-label *ngIf="field.title">{{ field.title }}</mat-label>
+  <!-- Input HTML -->
+  <!-- If the dialog is search and the type is TextArea, use Input -->
+  <input
+    *ngIf="
+      field.type == fieldTypes.Input ||
+      (field.type == fieldTypes.TextArea && mode == dialogTypes.Search)
+    "
+    matInput
+    [type]="'text'"
+    [formControlName]="field.columnId"
+    [required]="isRequired"
+    #focusRef
+    onfocus="select()"
+    (keydown)="keydown($event)"
+    (blur)="blur($event)"
+    (change)="change($event)"
+    [errorStateMatcher]="formErrorMatcher"
+    [placeholder]="field.placeholder"
+  />
+
+  <!-- TextArea HTML -->
+  <!-- if the dialog is search, use Input instead of TextArea -->
+  <textarea
+    *ngIf="field.type == fieldTypes.TextArea && mode != dialogTypes.Search"
+    matInput
+    cdkTextareaAutosize
+    [formControlName]="field.columnId"
+    [required]="isRequired"
+    #focusRef
+    onfocus="select()"
+    (blur)="blur($event)"
+    (keydown)="keydown($event)"
+    [errorStateMatcher]="formErrorMatcher"
+  ></textarea>
+
+  <!-- Select HTML -->
+  <mat-select
+    *ngIf="field.type == fieldTypes.Select"
+    [formControlName]="field.columnId"
+    [required]="isRequired"
+    #focusRef
+    (keydown)="keydown($event)"
+    (selectionChange)="change($event)"
+  >
+    <mat-option *ngFor="let option of field.selectArr" [value]="option.value">{{
+      option.name || option.value
+    }}</mat-option>
+  </mat-select>
+
+  <!-- Autocomplete HTML -->
+  <ng-template [ngIf]="field.type == fieldTypes.Autocomplete">
+    <input
+      matInput
+      [type]="'text'"
+      [formControlName]="field.columnId"
+      [matAutocomplete]="auto"
+      [required]="isRequired"
+      #focusRef
+      #autoPanel
+      onfocus="select()"
+      (blur)="updateAutocomplete()"
+      (keydown)="keydown($event)"
+    />
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      autoActiveFirstOption="true"
+      [displayWith]="autocompleteDisplay.bind(this)"
+      panelWidth="max-content"
+    >
+      <mat-option
+        *ngFor="let option of filteredArr | async"
+        [value]="option.value"
+      >
+        {{ option.name || option.value }}
+      </mat-option>
+    </mat-autocomplete>
+  </ng-template>
+
+  <!-- Display clear button on each field, if the field is editable or the dialog is not Update -->
+  <button
+    mat-button
+    type="button"
+    *ngIf="
+      (field.editable != false || mode != dialogTypes.Update) &&
+      !form.controls[field.columnId].disabled &&
+      field.type != fieldTypes.Select
+    "
+    matSuffix
+    mat-icon-button
+    aria-label="Clear"
+    (click)="clear($event)"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <!-- Use currency mask if a currency field -->
+  <input
+    matInput
+    *ngIf="field.type == fieldTypes.Currency"
+    [type]="'text'"
+    [formControlName]="field.columnId"
+    [required]="isRequired"
+    (blur)="formatCurrency()"
+    #focusRef
+    onfocus="select()"
+    (keydown)="keydown($event)"
+    [errorStateMatcher]="formErrorMatcher"
+  />
+
+  <!-- Provide the user a hint for input -->
+  <mat-hint *ngIf="field?.hint">{{ field?.hint }}</mat-hint>
+
+  <!-- Show the appropriate error if a validation fails -->
+  <mat-error>
+    <shared-data-field-errors [field]="field"></shared-data-field-errors>
+  </mat-error>
+  <!-- mat-icon *ngIf="icon" matSuffix>{{ icon }}</mat-icon -->
+</mat-form-field>
+
+<!-- Separate field for DateTime Picker -->
+<app-date-time-form-field
+  [field]="field"
+  [isRequired]="isRequired"
+  [value]="value"
+  [mode]="mode"
+  #dateTimeInput
+  *ngIf="
+    field.type == fieldTypes.DateTime || field.type == fieldTypes.DateOrDateTime
+  "
+></app-date-time-form-field>
+
+<app-file-form-field
+  [field]="field"
+  [mode]="mode"
+  *ngIf="field.type == fieldTypes.File"
+></app-file-form-field>
+
+<!-- Separate field for Date Picker -->
+<mat-form-field
+  *ngIf="field.type == fieldTypes.Date"
+  [appearance]="'outline'"
+  [formGroup]="form"
+>
+  <mat-label *ngIf="field.title">{{ field.title }}</mat-label>
+
+  <input
+    matInput
+    [matDatepicker]="datePicker"
+    [formControlName]="field.columnId"
+    [required]="isRequired"
+    #focusRef
+    onfocus="select()"
+    (keydown)="keydown($event)"
+    (dateChange)="change($event)"
+  />
+  <mat-datepicker-toggle
+    *ngIf="!form.controls[field.columnId].disabled"
+    matSuffix
+    [for]="datePicker"
+  ></mat-datepicker-toggle>
+  <mat-datepicker #datePicker></mat-datepicker>
+
+  <!-- Display clear button on each field, if the field is editable or the dialog is not Update -->
+  <button
+    mat-button
+    type="button"
+    *ngIf="
+      (field.editable != false || mode != dialogTypes.Update) &&
+      !form.controls[field.columnId].disabled
+    "
+    matSuffix
+    mat-icon-button
+    aria-label="Clear"
+    (click)="clear($event)"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <!-- Provide the user a hint for input -->
+  <mat-hint *ngIf="field?.hint">{{ field?.hint }}</mat-hint>
+
+  <!-- Show the appropriate error if a validation fails -->
+  <mat-error>
+    <shared-data-field-errors [field]="field"></shared-data-field-errors>
+  </mat-error>
+  <!-- mat-icon *ngIf="icon" matSuffix>{{ icon }}</mat-icon -->
+</mat-form-field>
+<app-month-day-date-field
+  *ngIf="field.type == fieldTypes.MonthDayDate"
+  [mode]="mode"
+  [field]="field"
+  [value]="value"
+  (shiftTabEvent)="keydown($event)"
+  (changeEvent)="change($event)"
+  (blurEvent)="blur($event)"
+>
+</app-month-day-date-field>

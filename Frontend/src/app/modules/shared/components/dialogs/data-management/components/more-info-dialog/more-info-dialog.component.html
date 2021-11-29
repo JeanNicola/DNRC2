@@ -1,0 +1,76 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px">
+  <form *ngIf="verticalLayout" [formGroup]="formGroup">
+    <div class="form-field" *ngFor="let field of data.columns; let i = index">
+      <shared-read-only-field [field]="field"></shared-read-only-field>
+    </div>
+  </form>
+  <table
+    *ngIf="!verticalLayout"
+    mat-table
+    [dataSource]="[data.values]"
+    class="mat-elevation-z1"
+  >
+    <ng-container
+      *ngFor="let item of displayedColumns; let i = index"
+      matColumnDef="{{ data.columns[i].columnId }}"
+    >
+      <th mat-header-cell *matHeaderCellDef>{{ data.columns[i].title }}</th>
+      <td mat-cell *matCellDef="let element">
+        <div
+          class="cell-container"
+          *ngIf="data.columns[i].type.toString() == 'datetime'"
+        >
+          {{ data.values[item] | date: dateTimeFormatString }}
+        </div>
+        <div
+          class="cell-container"
+          *ngIf="data.columns[i].type.toString() == 'date'"
+        >
+          {{ data.values[item] | date: dateFormatString }}
+        </div>
+        <div
+          class="cell-container"
+          *ngIf="data.columns[i].type.toString() == 'month_day_date'"
+        >
+          {{ data.values[item] | date: monthDayDateFormatString }}
+        </div>
+        <div
+          class="cell-container"
+          *ngIf="data.columns[i].type.toString() == 'checkbox'"
+        >
+          <mat-icon *ngIf="data.values[item] === true">check_box</mat-icon>
+          <mat-icon *ngIf="data.values[item] !== true"
+            >check_box_outline_blank</mat-icon
+          >
+        </div>
+        <div
+          class="cell-container"
+          *ngIf="
+            !['datetime', 'date', 'checkbox'].includes(
+              data.columns[i].type.toString()
+            )
+          "
+        >
+          {{ data.values[item] }}
+        </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+  <br *ngIf="!verticalLayout" />
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <button
+    [mat-dialog-close]="null"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Close"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,9 @@
+div.loading {
+  display: block;
+  position: fixed;
+  top: 40%;
+  left: 46%;
+  z-index: 9999;
+  overflow-y: hidden;
+  transform: scale(0.75);
+}

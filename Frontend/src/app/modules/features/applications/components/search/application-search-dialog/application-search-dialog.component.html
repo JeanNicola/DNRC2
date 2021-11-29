@@ -1,0 +1,74 @@
+<h2 mat-dialog-title>Search</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content>
+  <form [formGroup]="formGroup">
+    <div class="top-fields">
+      <div class="form-field" *ngFor="let field of mainColumns; let i = index">
+        <shared-data-form-field
+          [mode]="mode"
+          [field]="field"
+          [value]="data?.values !== null ? data.values[field.columnId] : null"
+          (shiftTabEvent)="receiveShiftTab($event, i)"
+          (changeEvent)="_onChange($event)"
+          (blurEvent)="_onBlur($event)"
+          (keyup)="keyPress($event)"
+        >
+        </shared-data-form-field>
+      </div>
+    </div>
+    <mat-tab-group #tabs>
+      <mat-tab label="By Applicant">
+        <div
+          class="form-field"
+          *ngFor="let field of ownerColumns; let i = index"
+        >
+          <shared-data-form-field
+            [mode]="mode"
+            [field]="field"
+            [value]="data?.values !== null ? data.values[field.columnId] : null"
+            (shiftTabEvent)="receiveShiftTab($event, i)"
+            (changeEvent)="_onChange($event)"
+            (blurEvent)="_onBlur($event)"
+            (keyup)="keyPress($event)"
+          >
+          </shared-data-form-field>
+        </div>
+      </mat-tab>
+      <mat-tab label="By Representative">
+        <div class="form-field" *ngFor="let field of repColumns; let i = index">
+          <shared-data-form-field
+            [mode]="mode"
+            [field]="field"
+            [value]="data?.values !== null ? data.values[field.columnId] : null"
+            (shiftTabEvent)="receiveShiftTab($event, i)"
+            (changeEvent)="_onChange($event)"
+            (blurEvent)="_onBlur($event)"
+            (keyup)="keyPress($event)"
+          >
+          </shared-data-form-field>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </form>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <button
+    (click)="save()"
+    [matTooltip]="tooltip"
+    mat-mini-fab
+    color="primary"
+    [disabled]="!formGroup.valid"
+  >
+    <mat-icon>done</mat-icon>
+  </button>
+  <button
+    (click)="close()"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>

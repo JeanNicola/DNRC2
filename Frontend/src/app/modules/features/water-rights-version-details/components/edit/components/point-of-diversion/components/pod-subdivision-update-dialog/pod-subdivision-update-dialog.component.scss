@@ -1,0 +1,22 @@
+.one-lined {
+    display:flex;
+    gap: 0 16px;
+    flex-wrap: wrap;
+}
+
+.row-title {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.row-title > .data-row-actions {
+    align-self: flex-end;
+    margin: 0;
+}
+
+.edit-button {
+  margin-top: 9px;
+}

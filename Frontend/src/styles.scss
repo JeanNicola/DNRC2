@@ -1,0 +1,264 @@
+@import 'src/sass/variables';
+
+html,
+body {
+  // line-height: 1 !important;
+  margin: 0;
+  padding: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif; // We will need to set up variables to represent fonts.
+  background-color: $dnrc-mt-green;
+}
+
+// Chrome update added scroll bars to text areas; this removes them.
+// If TextArea scrollbars start behaving unexpectedly, look here.
+textarea.mat-input-element {
+  margin: inherit !important;
+  .cdk-textarea-autosize {
+    // overflow: hidden !important;
+    box-sizing: content-box !important;
+  }
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// Make the buttons a bit smaller
+button.mat-mini-fab {
+  transform: scale(0.75) !important;
+}
+
+// Change the default background color for the material buttons
+.mat-raised-button.mat-primary,
+.mat-flat-button.mat-primary,
+.mat-fab.mat-primary,
+.mat-mini-fab.mat-primary {
+  background-color: $dnrc-mt-navy; // !important;
+}
+
+// CHange the default color of the Material Divider
+.mat-divider {
+  border-top-color: $dnrc-mt-navy;
+}
+
+// Center snackback text
+.mat-simple-snackbar span {
+  margin: auto;
+  text-align: center;
+}
+
+// Set standard margin for mat-dialog-content
+mat-dialog-content {
+  margin: 10px 0;
+}
+
+.snackbar-container {
+  z-index: 2000;
+}
+
+.cdk-global-overlay-wrapper {
+  z-index: auto;
+}
+
+// Style the Material snackbar popup message
+.snackbar {
+  max-width: 90% !important;
+  margin: 0 auto 24px auto !important; // Margin for the snackbar
+  padding: 10px !important; // spacing between the text and boundary
+  white-space: pre-wrap; // This allows for multi-line messages in the snackbar
+}
+
+// Highlight the button when the user tabs to it
+button:active,
+button:focus {
+  opacity: 1 !important;
+  outline: 2px solid $dnrc-mt-green-selected;
+}
+
+// Content container for main cards
+.content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  min-height: 100%;
+  margin-top: 10px;
+}
+
+// Horizontal display of form field suffix elements
+div.mat-form-field-suffix {
+  display: flex;
+}
+
+// Make sure select dropdowns are wide enough to show the whole content
+.mat-select-panel {
+  max-width: max-content !important;
+}
+
+// Edit Header font size
+.app-edit-header {
+  font-size: 18px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+// Set header on Material Card
+.card-title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+// Align title and buttons for sub-tables inside forms
+.create-text-container {
+  display: flex;
+  align-items: center;
+}
+
+// Button styles for sub-tables inside forms
+.text-buttons-container {
+  width: -webkit-fill-available;
+  width: -moz-available;
+  text-align: end;
+  margin-left: 20px;
+}
+
+// Title styles for sub-tables inside forms
+.create-sub-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+// FIXED HEADER
+
+// Container for the fixed header
+.responsive-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+// Styles for the fixed header
+.sticky-wrapper {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  padding-top: 10px;
+  position: sticky;
+  top: $sticky-height;
+  z-index: 999;
+  background: $dnrc-mt-green;
+  width: 100%;
+}
+
+.fixed-header {
+  min-height: 110px;
+  width: 95%;
+  margin-bottom: 16px;
+  padding: 16px;
+  border-radius: 4px;
+  background: white;
+}
+
+// Styles for the body containing the accordions
+.responsive-body {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  min-height: 100%;
+  // margin-top: 10px;
+}
+
+.responsive-card {
+  width: 95%;
+  height: fit-content;
+}
+
+// Styles for the loading in the fixed header
+.loading-container {
+  height: 100%;
+  min-height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// Styles for the loading title in the fixed header
+.loading-container > .edit-header-title {
+  margin: 0;
+}
+
+.edit-header-title {
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 25px;
+}
+
+// END OF FIXED HEADER
+
+.mat-accordion {
+  width: 100%;
+  margin-bottom: 10px;
+
+  > .mat-expansion-panel {
+    background-color: $dnrc-mt-green-selected;
+    margin: 15px 0;
+  }
+
+  .mat-expansion-panel-header-title {
+    font-weight: 550;
+    font-size: 14pt;
+  }
+  .mat-expansion-panel
+    .mat-expansion-panel-header.cdk-keyboard-focused:not([aria-disabled='true']),
+  .mat-expansion-panel
+    .mat-expansion-panel-header.cdk-program-focused:not([aria-disabled='true']),
+  .mat-expansion-panel:not(.mat-expanded)
+    .mat-expansion-panel-header:hover:not([aria-disabled='true']) {
+    background: rgba(0, 0, 0, 0.14);
+  }
+}
+
+.dialog-title-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.dialog-title-container > h2 {
+  margin-bottom: 5px;
+  margin-right: 10px;
+}
+
+.button-container {
+  text-align: right;
+
+  button {
+    margin-left: 8px;
+  }
+}
+
+// Flex properties
+
+.flex-space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex-space-evenly {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+// Style for auto-sizing dialogs
+.mat-horizontal-stepper-content[aria-expanded='false'] {
+  display: none;
+}
+
+.show-complete-tooltip-text {
+  overflow-wrap: break-word;
+  font-size: 14px;
+}

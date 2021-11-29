@@ -1,0 +1,211 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /mailing-jobs:
+    get:
+      summary: Searching Mailing Jobs
+      operationId: searchMailingJobs
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/mailing-jobs-sort-column'
+        - $ref: '#/components/parameters/descsortdirection'
+        - in: query
+          name: mailingJobNumber
+          schema:
+            type: string
+          description: 'The Mailing Job #'
+        - in: query
+          name: mailingJobHeader
+          schema:
+            type: string
+          description: The Mailing Job Header
+        - in: query
+          name: applicationId
+          schema:
+            type: string
+          description: The Application Id
+      responses:
+        200:
+          description: The page of Mailing Jobs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailingJobsPageDto'
+    post:
+      summary: Creating a Mailing Jobs
+      operationId: createMailingJob
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MailingJobCreationDto'
+      responses:
+        201:
+          description: successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailingJobDto'
+        404:
+          description: Application not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /mailing-jobs/{mailingJobId}:
+    get:
+      summary: Searching Mailing Jobs
+      operationId: getMailingJob
+      parameters:
+        - $ref: '#/components/parameters/mailing-job-id'
+      responses:
+        200:
+          description: The Mailing Job
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailingJobDto'
+        404:
+          description: This Mailing Job does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: Generating a Mailing Job
+      operationId: generateMailingJob
+      parameters:
+        - $ref: '#/components/parameters/mailing-job-id'
+      responses:
+        204:
+          description: Successfully Generated
+        404:
+          description: This Mailing Job does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: Editing a Mailing Job
+      operationId: editMailingJob
+      parameters:
+        - $ref: '#/components/parameters/mailing-job-id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MailingJobUpdateDto'
+      responses:
+        200:
+          description: The Mailing Job
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailingJobDto'
+        404:
+          description: This Mailing Job does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Deleting a Mailing Job
+      operationId: deleteMailingJob
+      parameters:
+        - $ref: '#/components/parameters/mailing-job-id'
+      responses:
+        204:
+          description: The Mailing Job
+components:
+  schemas:
+    MailingJobCreationDto:
+      type: object
+      properties:
+        applicationId:
+          type: integer
+          format: int64
+          x-message-name: "Application #"
+      required:
+        - applicationId
+    MailingJobUpdateDto:
+      type: object
+      properties:
+        applicationId:
+          type: integer
+          format: int64
+          x-message-name: "Application #"
+        mailingJobHeader:
+          type: string
+      required:
+        - applicationId
+        - mailingJobHeader
+    MailingJobDto:
+      type: object
+      properties:
+        mailingJobNumber:
+          type: integer
+          format: int64
+        mailingJobHeader:
+          type: string
+        generatedDate:
+          type: string
+          format: date
+        applicationId:
+          type: integer
+          format: int64
+        applicationTypeDescription:
+          type: string
+        canGenerateLabels:
+          type: boolean
+        responsibleOfficeId:
+          type: integer
+          format: int64
+    MailingJobsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/DescSortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/MailingJobSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MailingJobDto'
+    MailingJobSortColumn:
+      type: string
+      enum: [ MAILINGJOBNUMBER, MAILINGJOBHEADER, GENERATEDDATE, APPLICATIONID, APPLICATIONTYPEDESCRIPTION ]
+      default: MAILINGJOBNUMBER
+  parameters:
+    mailing-jobs-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/MailingJobSortColumn'
+    mailing-job-id:
+      name: mailingJobId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: mailing job id
+      required: true

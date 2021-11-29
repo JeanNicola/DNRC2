@@ -1,0 +1,1814 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: "Montana Water Rights REST API"
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /cases:
+    get:
+      summary: search cases and hearings
+      operationId: searchCases
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/case-search-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/application-id'
+        - $ref: '#/components/parameters/case-number'
+        - $ref: '#/components/parameters/case-type-code'
+        - $ref: '#/components/parameters/case-status-code'
+        - $ref: '#/components/parameters/water-court-case-number'
+      responses:
+        200:
+          description: page of case search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseSearchResultPageDto'
+    post:
+      summary: create case or hearing
+      operationId: createCourtCase
+      requestBody:
+        description: a new case or hearing
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseCreationDto'
+      responses:
+        201:
+          description: the new case or hearing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: case application not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /cases/{caseId}:
+    get:
+      summary: get case or hearing
+      operationId: getCourtCase
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+      responses:
+        200:
+          description: get case or hearing detail data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: update case or hearing
+      operationId: updateCourtCase
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+      requestBody:
+        description: the updated case or hearing
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseUpdateDto'
+      responses:
+        200:
+          description: the updated case or hearing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: case or hearing not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete Case/Hearing
+      operationId: deleteCaseHearing
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+      responses:
+        204:
+          description: Case deleted
+        404:
+          description: Case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /cases/{caseId}/register:
+    get:
+      summary: get case register of events for case or hearing
+      operationId: getCaseEvents
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/case-register-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/case-id'
+      responses:
+        200:
+          description: the case register of events for case or hearing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseRegisterPageDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: create or register a case event
+      operationId: createCaseEvent
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+      requestBody:
+        description: the new case event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseRegisterCreateUpdateDto'
+      responses:
+        201:
+          description: new case event for case or hearing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseRegisterDetailDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /cases/{caseId}/register/{eventId}:
+    put:
+      summary: update a case event
+      operationId: updateCaseEvent
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+        - $ref: '#/components/parameters/event-id'
+      requestBody:
+        description: the updated case event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseRegisterCreateUpdateDto'
+      responses:
+        200:
+          description: the updated case event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseRegisterDetailDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: case or event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: delete case event
+      operationId: deleteCaseEvent
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+        - $ref: '#/components/parameters/event-id'
+      responses:
+        204:
+          description: deleted case event
+        404:
+          description: case or event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /cases/{caseId}/applicants:
+    get:
+      summary: get associated application applicants for case or hearing
+      operationId: getCaseApplicationApplicants
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/applicant-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/case-id'
+      responses:
+        200:
+          description: the associated application applicants for case or hearing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicantsPageDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /cases/{caseId}/objections:
+    get:
+      summary: get associated application objections for case or hearing
+      operationId: getCaseApplicationObjections
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/objection-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/case-id'
+      responses:
+        200:
+          description: the associated application objections for case or hearing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectionsPageDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /cases/{caseId}/assignments:
+    get:
+      summary: get staff assigned to case or hearing
+      operationId: getStaffAssignments
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/staff-assignments-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/case-id'
+      responses:
+        200:
+          description: the staff assigned to case or hearing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffAssignmentsPageDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: create staff assignment for case or hearing
+      operationId: addStaffAssignment
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+      requestBody:
+        description: the new staff assignment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffAssignmentCreateDto'
+      responses:
+        201:
+          description: new staff assignment details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffAssignmentDetailDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /cases/{caseId}/assignments/{assignmentId}:
+    put:
+      summary: update staff assignment for case or hearing
+      operationId: updateStaffAssignment
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+        - $ref: '#/components/parameters/assignment-id'
+      requestBody:
+        description: the update for staff assignment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffAssignmentUpdateDto'
+      responses:
+        200:
+          description: the updated staff assignment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffAssignmentDetailDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: case or assignment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: delete staff assignment for case or hearing
+      operationId: deleteStaffAssignment
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+        - $ref: '#/components/parameters/assignment-id'
+      responses:
+        204:
+          description: deleted staff assignment
+        404:
+          description: case or assignment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /cases/{caseId}/comments:
+    get:
+      summary: get comments for case or hearing
+      operationId: getCaseComments
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+      responses:
+        200:
+          description: the staff assigned to case or hearing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseCommentsDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: update comments for case or hearing
+      operationId: updateCaseComments
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+      requestBody:
+        description: the update for case comments
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseCommentsDto'
+      responses:
+        200:
+          description: the updated case comments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseCommentsDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /staff:
+    get:
+      summary: search staff by name
+      operationId: searchStaff
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/search-staff-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/last-name'
+        - $ref: '#/components/parameters/first-name'
+      responses:
+        200:
+          description: a page of staff search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchStaffPageDto'
+  /cases/{caseId}/schedule:
+    get:
+      summary: get schedule of events for case or hearing
+      operationId: getScheduleEvents
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/schedule-events-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/case-id'
+      responses:
+        200:
+          description: the schedule of events for case or hearing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleEventsPageDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: create schedule event for case or hearing
+      operationId: createScheduleEvent
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+      requestBody:
+        description: the new schedule event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleEventCreateDto'
+      responses:
+        201:
+          description: the new schedule event details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleEventDetailDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /cases/{caseId}/schedule/{scheduleId}:
+    put:
+      summary: update schedule event for case or hearing
+      operationId: updateScheduleEvent
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+        - $ref: '#/components/parameters/schedule-id'
+      requestBody:
+        description: the update for schedule event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleEventUpdateDto'
+      responses:
+        200:
+          description: the updated schedule event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleEventDetailDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: case or schedule event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: delete schedule event for case or hearing
+      operationId: deleteScheduleEvent
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+        - $ref: '#/components/parameters/schedule-id'
+      responses:
+        204:
+          description: deleted schedule event
+        404:
+          description: case or schedule event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /cases/{caseId}/district-court:
+    get:
+      summary: get district court details for case or hearing
+      operationId: getDistrictCourts
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/district-courts-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/case-id'
+      responses:
+        200:
+          description: the district court details for case or hearing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistrictCourtsPageDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: create district court for case or hearing
+      operationId: createDistrictCourt
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+      requestBody:
+        description: the new district court
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DistrictCourtCreateDto'
+      responses:
+        201:
+          description: the new district court
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistrictCourtDetailDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /cases/{caseId}/district-court/{districtId}:
+    put:
+      summary: update district court cause details for case or hearing
+      operationId: updateDistrictCourt
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+        - $ref: '#/components/parameters/district-id'
+      requestBody:
+        description: the updated district court
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DistrictCourtUpdateDto'
+      responses:
+        200:
+          description: the updated district court
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistrictCourtDetailDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: case or district court not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: delete district court for case or hearing
+      operationId: deleteDistrictCourt
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+        - $ref: '#/components/parameters/district-id'
+      responses:
+        204:
+          description: deleted district court
+        404:
+          description: case or district court not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /cases/{caseId}/district-court/{districtId}/events:
+    get:
+      summary: get district court events for case or hearing
+      operationId: getDistrictCourtEvents
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/district-court-events-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/case-id'
+        - $ref: '#/components/parameters/district-id'
+      responses:
+        200:
+          description: the district court events for case or hearing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistrictCourtEventsPageDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: create district court event for case or hearing
+      operationId: createDistrictCourtEvent
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+        - $ref: '#/components/parameters/district-id'
+      requestBody:
+        description: the new district court event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DistrictCourtEventCreateDto'
+      responses:
+        201:
+          description: the new district court event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistrictCourtEventDetailDto'
+        404:
+          description: case or district court not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /cases/{caseId}/district-court/{districtId}/events/{eventDateId}:
+    put:
+      summary: update district court event for case or hearing
+      operationId: updateDistrictCourtEvent
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+        - $ref: '#/components/parameters/district-id'
+        - $ref: '#/components/parameters/event-date-id'
+      requestBody:
+        description: the updated district court event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DistrictCourtEventUpdateDto'
+      responses:
+        200:
+          description: the updated district court event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistrictCourtEventDetailDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: case, district court or event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: delete district court event for case or hearing
+      operationId: deleteDistrictCourtEvent
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+        - $ref: '#/components/parameters/district-id'
+        - $ref: '#/components/parameters/event-date-id'
+      responses:
+        204:
+          description: deleted district court event
+        404:
+          description: case, district court or event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /staff/district-court/{districtCourt}:
+    get:
+      summary: get District Court Staff
+      operationId: getDistrictCourtStaff
+      parameters:
+        - $ref: '#/components/parameters/district-court'
+      responses:
+        200:
+          description: all the staff members
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllStaffDto'
+  /cases/{caseId}/water-right-versions:
+    get:
+      summary: get associated water right versions for case or hearing
+      operationId: getCaseWaterRightVersions
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/case-water-right-versions-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/case-id'
+      responses:
+        200:
+          description: the associated water right versions for case or hearing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseWaterRightVersionsPageDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    post:
+      summary: create water right version reference to case or hearing
+      operationId: createCaseWaterRightVersionReference
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+      requestBody:
+        description: water right version references to be added to case or hearing
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseWaterRightVersionReferenceDto'
+      responses:
+        201:
+          description: the new water right version references to case or hearing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseWaterRightVersionReferenceDto'
+
+  /cases/{caseId}/water-right/{waterRightId}/version/{version}:
+    delete:
+      summary: delete case water right version reference
+      operationId: deleteCaseWaterRightVersionReference
+      parameters:
+        - $ref: '#/components/parameters/case-id'
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version'
+      responses:
+        204:
+          description: deleted case water right version reference
+        404:
+          description: case or water right version does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /cases/{caseId}/water-right/{waterRightId}/version/{version}/objections:
+    get:
+      summary: get associated water right versions objections for case or hearing
+      operationId: getCaseWaterRightVersionObjections
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/case-water-right-version-objections-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/case-id'
+        - $ref: '#/components/parameters/water-right-id'
+        - $ref: '#/components/parameters/version'
+      responses:
+        200:
+          description: the associated water right version objections for case or hearing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseWaterRightVersionObjectionsPageDto'
+        404:
+          description: case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /cases/decree/{decreeId}/eligible-water-rights/{basin}:
+    get:
+      summary: get list of eligible water rights for case or hearing
+      operationId: getEligibleWaterRights
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/eligible-water-rights-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/water-number'
+        - $ref: '#/components/parameters/decree-id'
+        - $ref: '#/components/parameters/basin'
+      responses:
+        200:
+          description: the list of eligible water rights for case or hearing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EligibleWaterRightsPageDto'
+        404:
+          description: decree or basin not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+components:
+  schemas:
+    CaseCreationDto:
+      type: object
+      properties:
+        caseType:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 4
+        programType:
+          type: string
+          pattern: '^[ -~]+$'
+          maxLength: 3
+        waterCourtCaseNumber:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 20
+        officeId:
+          type: integer
+          format: int64
+        applicationId:
+          type: integer
+          format: int64
+        regionalOfficeId:
+          type: integer
+          format: int64
+        decreeBasin:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        caseStatus:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+        decreeId:
+          type: integer
+          format: int64
+      required:
+        - caseType
+    CaseUpdateDto:
+      type: object
+      properties:
+        caseType:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Case Type
+        applicationId:
+          type: integer
+          format: int64
+        waterCourtCaseNumber:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 20
+        officeId:
+          type: integer
+          format: int64
+        decreeId:
+          type: integer
+          format: int64
+        assignId:
+          type: integer
+          format: int64
+        caseStatus:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+      required:
+        - caseType
+    CaseDto:
+      type: object
+      properties:
+        decreeId:
+          type: integer
+          format: int64
+        caseNumber:
+          type: integer
+          format: int64
+        caseType:
+          type: string
+        caseTypeDescription:
+          type: string
+        waterCourtCaseNumber:
+          type: string
+        officeId:
+          type: integer
+          format: int64
+        officeDescription:
+          type: string
+        decreeBasin:
+          type: string
+        decreeType:
+          type: string
+        decreeTypeDescription:
+          type: string
+        decreeIssueDate:
+          type: string
+          format: date
+        caseStatus:
+          type: string
+        caseStatusDescription:
+          type: string
+        assignedTo:
+          type: string
+        hasCaseAdminRole: # WRD_CASES_OBJS_ADMIN_ROLE
+          type: boolean
+        hasOldDecreeIssuedDate: # before 2003/01/22
+          type: boolean
+        programType:
+          type: string
+        basin:
+          type: string
+        applicationId:
+          type: integer
+          format: int64
+        completeApplicationType: # application type code + application type code description
+          type: string
+        canPrintDecreeReport:
+          type: boolean
+        canPrintAllWcReports:
+          type: boolean
+    CaseSearchResultPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/CaseSearchSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseSearchResultDto'
+    CaseSearchResultDto:
+      type: object
+      properties:
+        caseNumber:
+          type: integer
+          format: int64
+        caseType:
+          type: string
+        caseTypeDescription:
+          type: string
+        caseStatus:
+          type: string
+        caseStatusDescription:
+          type: string
+        basin:
+          type: string
+        applicationId:
+          type: integer
+          format: int64
+        completeApplicationType: # application type code + application type code description
+          type: string
+    CaseSearchSortColumn:
+      type: string
+      enum: [CASENUMBER, CASETYPEDESCRIPTION, BASIN, APPLICATIONID, COMPLETEAPPLICATIONTYPE, CASESTATUSDESCRIPTION]
+      default: CASENUMBER
+    CaseRegisterPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/CaseRegisterSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseRegisterDetailDto'
+    CaseRegisterDetailDto:
+      type: object
+      properties:
+        eventId:
+          type: integer
+          format: int64
+        eventType:
+          type: string
+        eventTypeDescription:
+          type: string
+        filedDate:
+          type: string
+          format: date
+        dueDate:
+          type: string
+          format: date
+        enteredBy:
+          type: string
+        comments:
+          type: string
+    CaseRegisterCreateUpdateDto:
+      type: object
+      properties:
+        eventType:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Event Type
+        filedDate:
+          type: string
+          format: date
+          x-message-name: Filed Date
+        dueDate:
+          type: string
+          format: date
+          x-message-name: Due Date
+        comments:
+          type: string
+          maxLength: 800
+          pattern: '^[ -~\n]*$'
+          x-message-name: Comments
+      required:
+        - eventType
+        - filedDate
+    CaseRegisterSortColumn:
+      type: string
+      enum: [EVENTTYPEDESCRIPTION, FILEDDATE, DUEDATE, ENTEREDBY, COMMENTS]
+      default: FILEDDATE
+    CaseEventTypesPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/CaseEventTypesSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseEventTypesDetailDto'
+    CaseEventTypesDetailDto:
+      type: object
+      properties:
+        eventType:
+          type: string
+        eventTypeDescription:
+          type: string
+        dueDays:
+          type: integer
+    CaseEventTypesSortColumn:
+      type: string
+      enum: [EVENTTYPEDESCRIPTION, DUEDAYS]
+      default: EVENTTYPEDESCRIPTION
+    StaffAssignmentsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/StaffAssignmentsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffAssignmentDetailDto'
+    StaffAssignmentDetailDto:
+      type: object
+      properties:
+        assignmentId:
+          type: integer
+          format: int64
+        dnrcId:
+          type: integer
+          format: int64
+        completeName:
+          type: string
+        assignmentType:
+          type: string
+        assignmentTypeDescription:
+          type: string
+        beginDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+    StaffAssignmentCreateDto:
+      type: object
+      properties:
+        dnrcId:
+          type: string
+          x-message-name: Staff Id
+        assignmentType:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Assignment Type
+        beginDate:
+          type: string
+          format: date
+          x-message-name: Begin Date
+        endDate:
+          type: string
+          format: date
+      required:
+        - assignmentType
+    StaffAssignmentUpdateDto:
+      type: object
+      properties:
+        dnrcId:
+          type: string
+          x-message-name: Staff Id
+        assignmentType:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Assignment Type
+        beginDate:
+          type: string
+          format: date
+          x-message-name: Begin Date
+        endDate:
+          type: string
+          format: date
+    StaffAssignmentsSortColumn:
+      type: string
+      enum: [COMPLETENAME, ASSIGNMENTTYPEDESCRIPTION, BEGINDATE, ENDDATE]
+      default: COMPLETENAME
+    CaseCommentsDto:
+      type: object
+      properties:
+        comments:
+          type: string
+          pattern: '^[ -~\n]*$'
+          maxLength: 4000
+          x-message-name: Case Comments
+    SearchStaffPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/SearchStaffSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchStaffResultDto'
+    SearchStaffResultDto:
+      type: object
+      properties:
+        dnrcId:
+          type: string
+        completeName:
+          type: string
+    SearchStaffSortColumn:
+      type: string
+      enum: [NAME, STAFFID]
+      default: NAME
+    ScheduleEventsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/ScheduleEventsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduleEventDetailDto'
+    ScheduleEventDetailDto:
+      type: object
+      properties:
+        scheduleId:
+          type: integer
+          format: int64
+        eventType:
+          type: string
+        eventTypeDescription:
+          type: string
+        eventStatus:
+          type: string
+        eventDate:
+          type: string
+          format: date
+        eventBeginTime:
+          type: string
+          format: date-time
+        notes:
+          type: string
+    ScheduleEventCreateDto:
+      type: object
+      properties:
+        eventType:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Event
+        eventStatus:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 30
+          x-message-name: Event Status
+        eventDate:
+          type: string
+          format: date
+          x-message-name: Event Date
+        eventBeginTime:
+          type: string
+          format: date-time
+        notes:
+          type: string
+          pattern: '^[ -~\n]*$'
+          maxLength: 2000
+          x-message-name: Notes
+      required:
+        - eventType
+        - eventStatus
+        - eventDate
+    ScheduleEventUpdateDto:
+      type: object
+      properties:
+        eventType:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Event
+        eventStatus:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 30
+          x-message-name: Event Status
+        eventDate:
+          type: string
+          format: date
+          x-message-name: Event Date
+        eventBeginTime:
+          type: string
+          format: date-time
+        notes:
+          type: string
+          pattern: '^[ -~\n]*$'
+          maxLength: 2000
+          x-message-name: Notes
+      required:
+        - eventType
+    ScheduleEventsSortColumn:
+      type: string
+      enum: [EVENTTYPEDESCRIPTION, EVENTSTATUS, EVENTDATE, EVENTBEGINTIME, NOTES]
+      default: EVENTTYPEDESCRIPTION
+
+    DistrictCourtsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/DistrictCourtsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistrictCourtDetailDto'
+    DistrictCourtDetailDto:
+      type: object
+      properties:
+        districtId:
+          type: integer
+          format: int64
+        causeNumber:
+          type: string
+        districtCourtNumber:
+          type: integer
+        dnrcId:
+          type: integer
+          format: int64
+        completeName:
+          type: string
+        countyId:
+          type: integer
+          format: int64
+        countyName:
+          type: string
+        supremeCourtCauseNumber:
+          type: string
+    DistrictCourtCreateDto:
+      type: object
+      properties:
+        causeNumber:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 30
+          x-message-name: Cause Number
+        districtCourtNumber:
+          type: integer
+          x-message-name: District Court Number
+        dnrcId:
+          type: integer
+          format: int64
+        countyId:
+          type: integer
+          format: int64
+        supremeCourtCauseNumber:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 30
+          x-message-name: Supreme Court Cause Number
+    DistrictCourtUpdateDto:
+      type: object
+      properties:
+        causeNumber:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 30
+          x-message-name: Cause Number
+        districtCourtNumber:
+          type: integer
+          x-message-name: District Court Number
+        dnrcId:
+          type: integer
+          format: int64
+        countyId:
+          type: integer
+          format: int64
+        supremeCourtCauseNumber:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 30
+          x-message-name: Supreme Court Cause Number
+    DistrictCourtsSortColumn:
+      type: string
+      enum: [CAUSENUMBER, DISTRICTCOURTNUMBER, COMPLETENAME, COUNTYNAME, SUPREMECOURTCAUSENUMBER]
+      default: CAUSENUMBER
+
+    DistrictCourtEventsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/DistrictCourtEventsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistrictCourtEventDetailDto'
+    DistrictCourtEventDetailDto:
+      type: object
+      properties:
+        eventDateId:
+          type: integer
+          format: int64
+        eventType:
+          type: string
+        eventTypeDescription:
+          type: string
+        eventDate:
+          type: string
+          format: date
+        comments:
+          type: string
+    DistrictCourtEventCreateDto:
+      type: object
+      properties:
+        eventType:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Cause Event
+        eventDate:
+          type: string
+          format: date
+          x-message-name: Cause Date
+        comments:
+          type: string
+          pattern: '^[ -~\n]*$'
+          maxLength: 800
+          x-message-name: Comments
+      required:
+        - eventType
+        - eventDate
+    DistrictCourtEventUpdateDto:
+      type: object
+      properties:
+        eventType:
+          type: string
+          pattern: '^[ -~]*$'
+          maxLength: 4
+          x-message-name: Cause Event
+        eventDate:
+          type: string
+          format: date
+          x-message-name: Cause Date
+        comments:
+          type: string
+          pattern: '^[ -~\n]*$'
+          maxLength: 800
+          x-message-name: Comments
+    DistrictCourtEventsSortColumn:
+      type: string
+      enum: [EVENTTYPEDESCRIPTION, EVENTDATE, COMMENTS]
+      default: EVENTTYPEDESCRIPTION
+    CaseWaterRightVersionsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/CaseWaterRightVersionsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: 'CaseWaterRightVersionDetailDto'
+    CaseWaterRightVersionDetailDto:
+      type: object
+      properties:
+        waterRightId:
+          type: integer
+          format: int64
+        versionId:
+          type: integer
+          format: int64
+        completeWaterRightNumber:
+          type: string
+        waterRightType:
+          type: string
+        waterRightTypeDescription:
+          type: string
+        waterRightStatus:
+          type: string
+        waterRightStatusDescription:
+          type: string
+        completeVersion:
+          type: string
+    CaseWaterRightVersionsSortColumn:
+      type: string
+      enum: [COMPLETEWATERRIGHTNUMBER, WATERRIGHTTYPEDESCRIPTION, WATERRIGHTSTATUSDESCRIPTION, COMPLETEVERSION]
+      default: COMPLETEWATERRIGHTNUMBER
+
+    CaseWaterRightVersionObjectionsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/CaseWaterRightVersionObjectionsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WaterRightVersionObjectionsDto'
+    CaseWaterRightVersionObjectionsSortColumn:
+      type: string
+      enum: [ID, OBJECTIONTYPEDESCRIPTION, DATERECEIVED, LATE, OBJECTIONSTATUSDESCRIPTION]
+      default: ID
+
+    CaseWaterRightVersionReferenceDto:
+      type: object
+      properties:
+        waterRightVersions:
+          type: array
+          items:
+            $ref: '#/components/schemas/WaterRightsReferenceDto'
+
+    EligibleWaterRightsPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/EligibleWaterRightsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EligibleWaterRightsDto'
+    EligibleWaterRightsDto:
+      type: object
+      properties:
+        waterRightId:
+          type: integer
+          format: int64
+        versionId:
+          type: integer
+          format: int64
+        waterRightNumber:
+          type: integer
+          format: int64
+        ext:
+          type: string
+        basin:
+          type: string
+        waterRightStatusDescription:
+          type: string
+        completeWaterRightNumber:
+          type: string
+        completeVersion:
+          type: string
+    EligibleWaterRightsSortColumn:
+      type: string
+      enum: [COMPLETEWATERRIGHTNUMBER, EXT, COMPLETEVERSION, BASIN, WATERRIGHTSTATUSDESCRIPTION]
+      default: COMPLETEWATERRIGHTNUMBER
+  parameters:
+    case-search-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/CaseSearchSortColumn'
+    case-register-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/CaseRegisterSortColumn'
+    case-event-types-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/CaseEventTypesSortColumn'
+    staff-assignments-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/StaffAssignmentsSortColumn'
+    search-staff-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/SearchStaffSortColumn'
+    schedule-events-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/ScheduleEventsSortColumn'
+    district-courts-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/DistrictCourtsSortColumn'
+    district-court-events-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/DistrictCourtEventsSortColumn'
+    case-water-right-version-objections-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/CaseWaterRightVersionObjectionsSortColumn'
+    case-water-right-versions-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/CaseWaterRightVersionsSortColumn'
+    eligible-water-rights-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/EligibleWaterRightsSortColumn'
+    case-number:
+      name: caseNumber
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    case-type-code:
+      name: caseTypeCode
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    case-status-code:
+      name: caseStatusCode
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    water-court-case-number:
+      name: waterCourtCaseNumber
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+    case-id:
+      name: caseId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the case id
+      required: true
+    event-id:
+      name: eventId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the case event id
+      required: true
+    assignment-id:
+      name: assignmentId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the case staff assignment id
+      required: true
+    schedule-id:
+      name: scheduleId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the case or hearing schedule event id
+      required: true
+    district-id:
+      name: districtId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the case or hearing court district id
+      required: true
+    event-date-id:
+      name: eventDateId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the case or hearing court event date id
+      required: true
+    district-court:
+      name: districtCourt
+      in: path
+      schema:
+        type: integer
+      description: the case or hearing district court id
+      required: true
+    decree-id:
+      name: decreeId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the case or hearing court decree id
+      required: true
+    version:
+      name: version
+      in: path
+      schema:
+        type: integer
+        format: int64
+      description: the version id
+      required: true
+    basin:
+      name: basin
+      in: path
+      schema:
+        type: string
+        pattern: '^[ -~]+$'
+      required: true

@@ -1,0 +1,69 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px">
+  <form [formGroup]="formGroup" (keyup)="keyPress($event)">
+    <mat-error>
+      <app-form-errors></app-form-errors>
+    </mat-error>
+    <div class="form-field" *ngFor="let field of firstColumns; let i = index">
+      <shared-data-form-field
+        [mode]="mode"
+        [field]="field"
+        [value]="data?.values !== null ? data.values[field.columnId] : null"
+        (shiftTabEvent)="receiveShiftTab($event, i)"
+        (changeEvent)="_onChange($event)"
+        (blurEvent)="_onBlur($event)"
+      >
+      </shared-data-form-field>
+    </div>
+    <div
+      class="form-field one-lined"
+      *ngFor="let field of secondColumns; let i = index"
+    >
+      <shared-data-form-field
+        [mode]="mode"
+        [field]="field"
+        [value]="data?.values !== null ? data.values[field.columnId] : null"
+        (shiftTabEvent)="receiveShiftTab($event, i)"
+        (changeEvent)="_onChange($event)"
+        (blurEvent)="_onBlur($event)"
+      >
+      </shared-data-form-field>
+      <ng-container *ngIf="field.columnId === 'flowRateDescription'">
+        <button
+          mat-mini-fab
+          color="primary"
+          class="edit-button"
+          matTooltip="Select a Flow Rate Description"
+          (click)="onDescriptionInsert()"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+      </ng-container>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <ng-template [ngIf]="formGroup">
+    <button
+      (click)="save()"
+      [matTooltip]="tooltip"
+      mat-mini-fab
+      color="primary"
+      [disabled]="formGroup.invalid || formGroup.pristine"
+    >
+      <mat-icon>done</mat-icon>
+    </button>
+  </ng-template>
+
+  <button
+    (click)="close()"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>

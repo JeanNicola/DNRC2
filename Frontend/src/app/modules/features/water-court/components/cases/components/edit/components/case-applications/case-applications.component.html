@@ -1,0 +1,20 @@
+<div class="applicant-table">
+  <app-case-applicants-code-table
+    [applicationId]="applicationId"
+  ></app-case-applicants-code-table>
+</div>
+<div class="objections-table">
+  <app-case-objections-code-table
+    [applicationId]="applicationId"
+    (objectionEvent)="selectedObjectionId = $event"
+  ></app-case-objections-code-table>
+</div>
+
+<div class="objections-sub-tables" *ngIf="selectedObjectionId">
+  <app-objections-objectors
+    [idArray]="[applicationId, selectedObjectionId]"
+  ></app-objections-objectors>
+  <app-objections-categories
+    [idArray]="[applicationId, selectedObjectionId]"
+  ></app-objections-categories>
+</div>

@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content style="margin-top: 10px"> </mat-dialog-content>
+<app-data-table
+  *ngIf="dataFound; else noData"
+  [data]="rows"
+  [columns]="displayFields"
+  [hideActions]="true"
+  [hideEdit]="true"
+  [hideDelete]="true"
+  [hideHeader]="false"
+  [clickableRow]="clickableRow"
+  [dblClickableRow]="dblClickableRow"
+  [highlightOneRow]="true"
+  [isInMain]="false"
+  [primarySortColumn]="sortColumn"
+  [primaryDirection]="sortDirection"
+  (sortEvent)="onSortRequest($event)"
+  (rowClickEvent)="onRowClick($event)"
+  (rowDblClickEvent)="onRowDoubleClick($event)"
+>
+</app-data-table>
+<mat-dialog-actions align="end">
+  <button
+    (click)="save()"
+    [matTooltip]="tooltip"
+    mat-mini-fab
+    color="primary"
+    [disabled]="!row"
+  >
+    <mat-icon>done</mat-icon>
+  </button>
+
+  <button
+    (click)="close()"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>
+<ng-template #noData>
+  <h3 class="data-message">No data found</h3>
+</ng-template>

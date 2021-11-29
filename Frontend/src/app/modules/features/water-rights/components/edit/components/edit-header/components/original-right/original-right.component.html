@@ -1,0 +1,40 @@
+<div *ngIf="title" class="edit-header-title">{{ title }}</div>
+<div *ngIf="!data; else loaded" class="loading-container"></div>
+<ng-template #loaded>
+  <div class="app-edit-header" *ngIf="data">
+    <div class="data-row">
+      <ng-container *ngFor="let item of displayedColumns">
+        <shared-data-row-field
+          [field]="item"
+          [removePadding]="true"
+          [dataValue]="displayData[item.columnId]"
+          (click)="clickCell(item)"
+          (dblclick)="item.columnId === 'originalWaterRightNumber' && clickWaterRight()"
+          (keydown.enter)="item.columnId === 'originalWaterRightNumber' && clickWaterRight()"
+        ></shared-data-row-field>
+      </ng-container>
+    </div>
+
+    <!-- Button Action -->
+    <div class="data-row-actions">
+      <button
+        mat-mini-fab
+        color="primary"
+        matTooltip="Edit Original Water Right"
+        (click)="onEdit()"
+        [disabled]="!permissions.canPUT"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button
+        mat-mini-fab
+        color="warn"
+        matTooltip="Delete Original Water Right"
+        (click)="onDelete()"
+        [disabled]="!permissions.canPUT"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+</ng-template>

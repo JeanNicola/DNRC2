@@ -1,0 +1,40 @@
+div.data-row {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+shared-data-row-field {
+  margin-right: 10px;
+}
+
+span {
+  padding-bottom: 18px;
+}
+
+div.row-with-title {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.row-title {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.row-title button {
+  height: fit-content;
+}
+
+.data-row-actions {
+  margin-top: 16px;
+}
+
+.loading {
+  width: -webkit-fill-available;
+  text-align: center;
+}

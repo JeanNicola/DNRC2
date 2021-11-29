@@ -1,0 +1,104 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-divider></mat-divider>
+<mat-dialog-content>
+  <mat-horizontal-stepper
+    [linear]="true"
+    #stepper
+    (selectionChange)="stepping($event)"
+  >
+    <ng-template matStepperIcon="edit" let-index="index">
+      {{ index + 1 }}
+    </ng-template>
+    <mat-step [completed]="true" [label]="searchTitle">
+      <form [formGroup]="formGroup">
+        <div
+          class="form-field"
+          *ngFor="let field of searchColumns; let i = index"
+        >
+          <shared-data-form-field
+            [mode]="mode"
+            [field]="field"
+            (shiftTabEvent)="receiveShiftTab($event, i)"
+          >
+          </shared-data-form-field>
+        </div>
+        <div class="button-container">
+          <button
+            mat-stroked-button
+            color="primary"
+            matTooltip="Search"
+            matStepperNext
+          >
+            Search
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [completed]="!!row" [label]="selectTitle">
+      <app-data-table
+        *ngIf="dataFound; else noData"
+        [data]="rows"
+        [columns]="displayFields"
+        [hideActions]="hideActions"
+        [hideEdit]="hideEdit"
+        [hideDelete]="hideDelete"
+        [hideHeader]="hideHeader"
+        [clickableRow]="clickableRow"
+        [dblClickableRow]="dblClickableRow"
+        [highlightOneRow]="true"
+        [isInMain]="false"
+        [primarySortColumn]="sortColumn"
+        [primaryDirection]="sortDirection"
+        (sortEvent)="onSortRequest($event)"
+        (rowClickEvent)="onRowClick($event)"
+        (rowDblClickEvent)="onRowDoubleClick($event)"
+      >
+      </app-data-table>
+      <mat-paginator
+        *ngIf="queryResult && rows?.length"
+        [length]="queryResult.totalElements"
+        [pageIndex]="queryParameters.pageNumber - 1"
+        [pageSize]="queryResult.pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        [showFirstLastButtons]="true"
+        (page)="onPaging($event)"
+      >
+      </mat-paginator>
+      <div class="button-container" *ngIf="!!queryResult">
+        <button
+          mat-stroked-button
+          color="primary"
+          matTooltip="Previous Step"
+          matStepperPrevious
+        >
+          Back
+        </button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</mat-dialog-content>
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <button
+    (click)="save()"
+    type="button"
+    [matTooltip]="addTooltip"
+    mat-mini-fab
+    color="primary"
+    [disabled]="row == null"
+  >
+    <mat-icon>done</mat-icon>
+  </button>
+  <button
+    (click)="close()"
+    mat-mini-fab
+    color="warn"
+    matTooltip="Cancel"
+    #cancel
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-dialog-actions>
+<ng-template #noData>
+  <h3 class="data-message">No data found</h3>
+</ng-template>

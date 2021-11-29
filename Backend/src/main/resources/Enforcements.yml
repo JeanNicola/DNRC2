@@ -1,0 +1,291 @@
+openapi: 3.0.2
+info:
+  title: Montana Water Rights
+  description: Montana Water Rights REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /enforcements:
+    get:
+      summary: search enforcements
+      operationId: searchEnforcements
+      parameters:
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/enforcements-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+        - $ref: '#/components/parameters/enforcement-area'
+        - $ref: '#/components/parameters/enforcement-name'
+        - $ref: '#/components/parameters/enforcement-number'
+        - $ref: '#/components/parameters/basin'
+        - $ref: '#/components/parameters/water-number'
+      responses:
+        200:
+          description: page of enforcements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnforcementsSearchPageDto'
+    post:
+      summary: creating a new Enforcement
+      operationId: createEnforcement
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnforcementDto'
+      responses:
+        200:
+          description: the new Enforcements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnforcementDto'
+
+  /enforcements/all:
+    get:
+      summary: get all the enforcements
+      operationId: getAllEnforcements
+      responses:
+        200:
+          description: All the Enforcement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllEnforcementsDto'
+
+  /enforcements/{areaId}:
+    get:
+      summary: get enforcement
+      operationId: getEnforcement
+      parameters:
+        - $ref: '#/components/parameters/area-id'
+      responses:
+        200:
+          description: get enforcement data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnforcementDto'
+        404:
+          description: enforcement not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: update enforcement area
+      operationId: updateEnforcementArea
+      parameters:
+        - $ref: '#/components/parameters/area-id'
+      requestBody:
+        description: the updated enforcement area
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnforcementDto'
+      responses:
+        200:
+          description: the updated enforcement area
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnforcementDto'
+        400:
+          description: Bad Request, e.g. Missing Field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        404:
+          description: enforcement not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /enforcements/{areaId}/pods:
+    get:
+      summary: get enforcement point of diversion records
+      operationId: getEnforcementPods
+      parameters:
+        - $ref: '#/components/parameters/area-id'
+        - $ref: '#/components/parameters/pagenumber'
+        - $ref: '#/components/parameters/pagesize'
+        - $ref: '#/components/parameters/enforcement-pods-sort-column'
+        - $ref: '#/components/parameters/sortdirection'
+      responses:
+        200:
+          description: get enforcement pods
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnforcementPodPageDto'
+        404:
+          description: enforcement not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    EnforcementPodPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/EnforcementPodsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnforcementPodDto'
+    EnforcementPodDto:
+      allOf:
+        - $ref: '#/components/schemas/PodDto'
+        - type: object
+          properties:
+            enforcementNumber:
+              type: string
+            comment:
+              type: string
+            ditchName:
+              type: string
+            ditchLegalLandDescription:
+              type: string
+            completeWaterRightNumber:
+              type: string
+            completeVersion:
+              type: string
+            waterRightId:
+              type: integer
+              format: int64
+            versionNumber:
+              type: integer
+              format: int64
+    EnforcementPodsSortColumn:
+      type: string
+      enum: [ COMPLETEWATERRIGHTNUMBER, COMPLETEVERSION, ENFORCEMENTNUMBER, SHORTCOMMENT, DITCHNAME, DITCHLEGALLANDDESCRIPTION,  PODNUMBER, MAJORTYPEDESCRIPTION, LEGALLANDDESCRIPTION, MEANSOFDIVERSIONDESCRIPTION]
+      default: COMPLETEWATERRIGHTNUMBER
+    EnforcementsSearchPageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+        sortDirection:
+          $ref: '#/components/schemas/SortDirection'
+        sortColumn:
+          $ref: '#/components/schemas/EnforcementsSortColumn'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnforcementSearchResultDto'
+    EnforcementSearchResultDto:
+      type: object
+      properties:
+        enforcementArea:
+          type: string
+        enforcementName:
+          type: string
+        enforcementNumber:
+          type: string
+        completeWaterRightNumber:
+          type: string
+    EnforcementsSortColumn:
+      type: string
+      enum: [ENFORCEMENTAREA, ENFORCEMENTNAME, ENFORCEMENTNUMBER, COMPLETEWATERRIGHTNUMBER]
+      default: ENFORCEMENTAREA
+    AllEnforcementsDto:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnforcementDto'
+    EnforcementDto:
+      type: object
+      properties:
+        areaId:
+          type: string
+          maxLength: 10
+          pattern: '^[ -~]*$'
+          x-message-name: Enf Area Id
+        name:
+          type: string
+          maxLength: 60
+          pattern: '^[ -~]*$'
+          x-message-name: Enf Name
+      required:
+        - areaId
+        - name
+  parameters:
+    enforcement-pods-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/EnforcementPodsSortColumn'
+    enforcements-sort-column:
+      name: sortColumn
+      in: query
+      description: The column to sort on
+      schema:
+        $ref: '#/components/schemas/EnforcementsSortColumn'
+    enforcement-area:
+      name: enforcementArea
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]*$'
+      description: the enforcement area
+    enforcement-name:
+      name: enforcementName
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]*$'
+      description: the enforcement name
+    enforcement-number:
+      name: enforcementNumber
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]*$'
+      description: the enforcement number
+    water-number:
+      name: waterNumber
+      in: query
+      schema:
+        type: string
+        pattern: '^[ -~]*$'
+      description: the water number
+    area-id:
+      name: areaId
+      in: path
+      schema:
+        type: string
+      description: the enforcement area id
+      required: true
+
